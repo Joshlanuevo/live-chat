@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.lihang.ShadowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@color/gray_99000000"
+    android:orientation="vertical"
+    app:hl_shadowHidden="true"
+    tools:context=".popup.SelectPhotoPopWindow">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_99000000"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_white_10dp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvClear"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="@string/qingkongjilu"
+                android:textColor="@color/color_main"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btnCancel"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/bg_white_10dp"
+            android:gravity="center"
+            android:text="@string/quxiao"
+            android:textColor="@color/color_main"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</com.lihang.ShadowLayout>

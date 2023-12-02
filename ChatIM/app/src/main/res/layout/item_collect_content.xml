@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android_custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/dp_5"
+    android:paddingRight="@dimen/dp_5"
+    android:paddingBottom="@dimen/dp_5">
+
+    <FrameLayout
+        android:id="@+id/ll_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@drawable/shape_solid_white_8"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:minWidth="@dimen/dp_200"
+            android:padding="@dimen/dp_10"
+            android:textColor="#555555"
+            android:textSize="15sp"
+            android:visibility="gone"
+            tools:text="收藏消息的内容" />
+
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/iv_photo"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_180"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:round="4dp" />
+
+
+        <RelativeLayout
+            android:id="@+id/layoutFile"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_70"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="18dp"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingEnd="18dp"
+            android:paddingBottom="30dp">
+
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_chat_file"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/ivIcon2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/shape_file_clip"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_toRightOf="@id/ivIcon"
+                android:ellipsize="middle"
+                android:maxEms="15"
+                android:maxLines="1"
+                android:text="@string/wenjianming"
+                android:textColor="@color/text_main"
+                android:textSize="@dimen/dp_12"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tvSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvName"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_toRightOf="@id/ivIcon"
+                android:text="11Mss"
+                android:textColor="@color/text_second"
+                android:textSize="@dimen/dp_11"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/ivDownload"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="@dimen/dp_36"
+                android:layout_toRightOf="@+id/tvName"
+                android:src="@drawable/icon_chat_download"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_Audio"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_60"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="10dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/audio_animation_left_list"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/tv_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                tools:text="6''" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/ll_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minWidth="30dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/layout_header"
+            app:layout_constraintTop_toTopOf="@id/layout_header">
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/iv_cover_photo"
+                android:layout_width="180dp"
+                android:layout_height="120dp"
+                android:scaleType="centerCrop"
+                app:round="4dp" />
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:contentDescription="@null"
+                android:src="@drawable/video_play" />
+
+            <TextView
+                android:id="@+id/tv_video_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="7dp"
+                android:layout_marginBottom="5dp"
+                android:paddingStart="0dp"
+                android:paddingTop="0dp"
+                android:paddingEnd="7dp"
+                android:paddingBottom="5dp"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:textColor="#ffffffff"
+                android:textSize="12sp"
+                tools:text="0:15" />
+        </FrameLayout>
+
+        <com.ym.chat.widget.RoundProgressBar
+            android:id="@+id/progress"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android_custom:roundColor="#D1D1D1"
+            android_custom:roundProgressColor="@color/color_main"
+            android_custom:roundWidth="3dp"
+            app:layout_constraintBottom_toBottomOf="@id/tvContentRight"
+            app:layout_constraintLeft_toLeftOf="@id/tvContentRight"
+            app:layout_constraintRight_toRightOf="@id/tvContentRight"
+            app:layout_constraintTop_toTopOf="@id/tvContentRight" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:padding="@dimen/dp_10"
+            android:textColor="@color/color_BABABA"
+            android:textSize="@dimen/sp_10"
+            tools:text="15:38" />
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/consSendState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp">
+
+        <com.ym.chat.widget.AnimationImageView
+            android:id="@+id/loadView"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivFail"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="3dp"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:src="@drawable/ic_fail"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

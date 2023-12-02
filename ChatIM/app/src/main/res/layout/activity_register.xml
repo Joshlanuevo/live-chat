@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
+
+
+    <ImageView
+        android:id="@+id/ivIcon1"
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="85dp"
+        android:src="@drawable/ic_login_icon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:text="@string/app_name"
+        android:textColor="#11142D"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="@id/ivIcon1"
+        app:layout_constraintLeft_toRightOf="@id/ivIcon1"
+        app:layout_constraintTop_toTopOf="@id/ivIcon1" />
+
+    <TextView
+        android:id="@+id/tvInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/youliaojiandan"
+        android:textColor="#707281"
+        android:textSize="14dp"
+        app:layout_constraintLeft_toLeftOf="@id/ivIcon1"
+        app:layout_constraintTop_toBottomOf="@id/ivIcon1" />
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:contentInsetStart="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/tvBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:src="@drawable/btn_back_white"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvGoRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/qudenglu"
+            android:textColor="#D93B3E"
+            android:textSize="16dp"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tvMobileLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/zhanghaozhuce"
+        android:textStyle="bold"
+        android:textColor="#6C5DD3"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInfo" />
+
+    <View
+        android:id="@+id/linePhone"
+        android:layout_width="163dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:background="#6C5DD3"
+        app:layout_constraintLeft_toLeftOf="@id/tvMobileLogin"
+        app:layout_constraintRight_toRightOf="@id/tvMobileLogin"
+        app:layout_constraintTop_toBottomOf="@id/tvMobileLogin" />
+
+    <FrameLayout
+        android:id="@+id/fraRegContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linePhone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

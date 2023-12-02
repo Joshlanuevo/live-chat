@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#66000000"
+    android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
+    android:visibility="gone"
+    android:id="@+id/llNoticeLayout"
+    android:orientation="vertical">
+<View
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="7"
+    />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bac_solid_ffffff_corner_all_10"
+        android:layout_weight="175"
+        android:layout_marginRight="28dp"
+        android:layout_marginLeft="28dp"
+        android:orientation="vertical">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="@drawable/bac_solid_db3b40_corner_10"
+            >
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pingtaigonggao"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                />
+            <ImageView
+                android:id="@+id/ivNoticeCancel"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:layout_gravity="right|center_vertical"
+                android:padding="6dp"
+                android:layout_marginRight="9dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/colose_update_bt"
+                />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@drawable/bac_solid_ffffff_corner_13"
+            android:layout_height="0dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+            </WebView>
+
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        />
+</LinearLayout>

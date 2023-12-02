@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
+    android:background="@color/white">
+
+
+    <ImageView
+        android:id="@+id/ivIcon1"
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="85dp"
+        android:src="@drawable/ic_login_icon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:text="@string/app_name"
+        android:textColor="#11142D"
+        android:textSize="22dp"
+        app:layout_constraintBottom_toBottomOf="@id/ivIcon1"
+        app:layout_constraintLeft_toRightOf="@id/ivIcon1"
+        app:layout_constraintTop_toTopOf="@id/ivIcon1" />
+
+    <TextView
+        android:id="@+id/tvInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        tools:text="@string/youliaojiandan"
+        android:textColor="#707281"
+        android:textSize="14dp"
+        app:layout_constraintLeft_toLeftOf="@id/ivIcon1"
+        app:layout_constraintTop_toBottomOf="@id/ivIcon1" />
+
+    <LinearLayout
+        android:id="@+id/llType"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        app:layout_constraintTop_toBottomOf="@id/tvInfo">
+
+        <TextView
+            android:id="@+id/tvMobileLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/zhanghaodenglu"
+            android:textColor="@color/color_main"
+            android:textSize="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/tvAccountLogin"
+            app:layout_constraintTop_toBottomOf="@+id/ivIcon1" />
+
+        <TextView
+            android:visibility="invisible"
+            android:id="@+id/tvAccountLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/youliaohaodenglu"
+            android:textColor="#808191"
+            android:textSize="16dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tvMobileLogin"
+            app:layout_constraintLeft_toRightOf="@+id/tvMobileLogin"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fraLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintTop_toBottomOf="@id/llType">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/linePhone"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#6C5DD3" />
+
+            <View
+                android:id="@+id/lineCode"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#6C5DD3"
+                android:visibility="invisible" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fraLine" />
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/tvSelectCode"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="@dimen/dp_40"-->
+    <!--        android:layout_marginLeft="@dimen/dp_20"-->
+    <!--        android:layout_marginRight="@dimen/dp_15"-->
+    <!--        android:background="@drawable/ic_box_code"-->
+    <!--        android:drawableRight="@drawable/ic_login_dw"-->
+    <!--        android:gravity="center_vertical"-->
+    <!--        android:paddingLeft="@dimen/dp_20"-->
+    <!--        android:paddingRight="@dimen/dp_11"-->
+    <!--        android:text="中国大陆(+86)"-->
+    <!--        android:textSize="12dp"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/view" />-->
+
+
+    <View
+        android:id="@+id/viewCode"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fraLine" />
+
+    <EditText
+        android:id="@+id/etAccount"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/bg_et_login"
+        android:drawablePadding="@dimen/dp_10"
+        android:hint="@string/qingshuruzhanghao"
+        android:paddingLeft="15dp"
+        android:maxLength="16"
+        android:textSize="14dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewCode" />
+
+    <ImageView
+        android:id="@+id/ivAccountDown"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/ic_login_down"
+        app:layout_constraintBottom_toBottomOf="@id/etAccount"
+        app:layout_constraintRight_toRightOf="@id/etAccount"
+        app:layout_constraintTop_toTopOf="@id/etAccount" />
+
+
+    <EditText
+        android:id="@+id/etPwd"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/bg_et_login"
+        android:drawablePadding="@dimen/dp_10"
+        android:hint="@string/qingshurumima"
+        android:inputType="textPassword"
+        android:paddingLeft="15dp"
+        android:textSize="14dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/pwdState"
+        app:layout_constraintTop_toBottomOf="@id/etAccount" />
+
+    <ImageView
+        android:id="@+id/pwdState"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/ic_pwd_open"
+        app:layout_constraintBottom_toBottomOf="@id/etPwd"
+        app:layout_constraintRight_toRightOf="@id/etPwd"
+        app:layout_constraintTop_toTopOf="@id/etPwd" />
+
+    <TextView
+        android:id="@+id/tvForgetPwd"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="@dimen/dp_26"
+        android:text="@string/wangjimima"
+        android:textColor="@color/color_main"
+        android:textSize="14dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etPwd" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="@dimen/dp_30"
+        android:background="@drawable/shape_gradient_login"
+        android:text="@string/login"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintTop_toBottomOf="@id/tvForgetPwd" />
+
+    <Button
+        android:id="@+id/BtnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="@dimen/dp_30"
+        android:background="@drawable/shape_gradient_register"
+        android:text="@string/register"
+        android:textColor="@color/text_red"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintTop_toBottomOf="@id/btnLogin" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="19dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="@id/BtnRegister"
+        app:layout_constraintRight_toRightOf="@id/BtnRegister"
+        app:layout_constraintTop_toBottomOf="@id/BtnRegister">
+
+        <CheckBox
+            android:id="@+id/cb1"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_8"
+            android:background="@drawable/tab_select"
+            android:button="@null"
+            android:checked="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/woyiyuedutongyi"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/tvUserAgreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/yonghuxieyi"
+            android:textColor="@color/color_main"
+            android:textSize="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ji"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/tvPrivacyPolicy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/yinsizhengce"
+            android:textColor="@color/color_main"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

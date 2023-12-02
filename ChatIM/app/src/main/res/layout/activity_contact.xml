@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/view_toolbar" />
+
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:background="@drawable/sel_btn_gray_line_8"
+        android:drawableStart="@drawable/ic_search_contact"
+        android:drawablePadding="10dp"
+        android:hint="@string/sousuohaoyou"
+        android:layout_margin="10dp"
+        android:paddingLeft="@dimen/dp_15"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="#BABABA"
+        android:textSize="16sp"
+        app:drawableELeftHeight="16dp"
+        app:drawableELeftWidth="16dp"
+        tools:ignore="HardcodedText" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_friend" />
+
+
+        <com.ym.base.widget.SideBar
+            android:id="@+id/sideBar"
+            android:layout_width="28dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+        <TextView
+            android:id="@+id/tvSelectBar"
+            android:layout_width="58dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="34dp"
+            android:contentDescription="@null"
+            android:background="@drawable/ic_bg_silding_dailog"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:visibility="invisible"
+            tools:layout_marginTop="48dp"
+            tools:text="A"
+            tools:visibility="visible" />
+
+        <FrameLayout
+            android:id="@+id/flComplete"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_gravity="bottom"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/tvComplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/selector_red_gray_r2"
+                android:enabled="false"
+                android:paddingStart="12dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="4dp"
+                android:text="@string/queding"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                tools:ignore="HardcodedText" />
+        </FrameLayout>
+    </FrameLayout>
+
+
+
+</LinearLayout>

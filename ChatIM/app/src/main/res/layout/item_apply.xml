@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="58dp"
+    android:paddingBottom="10dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tvGroupName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="13dp"
+        android:paddingTop="13dp"
+        android:paddingEnd="13dp"
+        android:paddingBottom="10dp"
+        android:textColor="#ff000000"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="申请群组：shadjhj集团shadjhj集团shadjhj集团shadjhj集团shadjhj集团shadjhj集团shadjhj集团shadjhj集团shadjhj集团shadjhj集团shadjhj集团"
+        tools:visibility="visible" />
+
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/ivHead"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="13dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvGroupName"
+        app:round="4dp"
+        tools:background="@color/color_3573FF" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:enabled="true"
+        android:gravity="center_vertical"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textColor="#ff000000"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/tvMsg"
+        app:layout_constraintEnd_toStartOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@id/ivHead"
+        app:layout_constraintTop_toTopOf="@id/ivHead"
+        tools:background="#5500ffff"
+        tools:text="Abbie Higgins" />
+
+    <TextView
+        android:id="@+id/tvMsg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:enabled="true"
+        android:gravity="center_vertical"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textColor="#BABABA"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/ivHead"
+        app:layout_constraintEnd_toStartOf="@id/barrier"
+        app:layout_constraintStart_toEndOf="@id/ivHead"
+        app:layout_constraintTop_toBottomOf="@id/tvName"
+        tools:background="#55ffff00"
+        tools:text="您好！" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="tvIgnore,tvPass" />
+
+    <View
+        android:id="@+id/vLine"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#F6F6F6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvName"
+        tools:background="@color/color_333333" />
+
+    <TextView
+        android:id="@+id/tvIgnore"
+        android:layout_width="39dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="7dp"
+        android:background="@color/color_333333"
+        android:gravity="center"
+        android:text="@string/jujue"
+        android:textColor="@color/color_BABABA"
+        android:textSize="12sp"
+        app:layout_constraintDimensionRatio="156:96"
+        app:layout_constraintEnd_toStartOf="@id/tvPass"
+        app:layout_constraintTop_toTopOf="@id/ivHead"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/tvPass"
+        android:layout_width="39dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/color_AAAAAA"
+        android:gravity="center"
+        android:text="@string/tongguo"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintDimensionRatio="156:96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivHead"
+        tools:ignore="HardcodedText" />
+</androidx.constraintlayout.widget.ConstraintLayout>

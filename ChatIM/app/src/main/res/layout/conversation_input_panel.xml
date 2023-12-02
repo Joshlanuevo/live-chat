@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/inputPanelFrameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <!--回复时显示-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/consReply"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_input_reply"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/inputPanelFrameLayout"
+            tools:visibility="visible">
+
+
+            <ImageView
+                android:id="@+id/tvCancelReply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:padding="@dimen/dp_5"
+                android:src="@drawable/icon_edit_close"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/viewLine9"
+                android:layout_width="1dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="#EEEEEE"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/ivReplyIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivReplyIcon"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:src="@drawable/ic_reply_chat"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivReplyPreview"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/viewLine9"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvReplyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:textColor="@color/text_red"
+                android:textSize="12dp"
+                app:layout_constraintLeft_toRightOf="@id/ivReplyPreview"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Ali" />
+
+            <TextView
+                android:id="@+id/tvReplyContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_40"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxWidth="@dimen/dp_200"
+                tools:text="宝～我去输液了，"
+                android:textColor="@color/text_four"
+                android:textSize="@dimen/dp_12"
+                app:layout_constraintLeft_toLeftOf="@id/tvReplyName"
+                app:layout_constraintTop_toBottomOf="@id/tvReplyName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--编辑时显示-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/consEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_reply"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/inputPanelFrameLayout"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/ivCancelEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:padding="@dimen/dp_5"
+                android:src="@drawable/icon_edit_close"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/viewEditLine"
+                android:layout_width="1dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="#EEEEEE"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/ivEditPreview"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivEditPreview"
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:src="@drawable/icon_msg_edit"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tvEditName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:text="@string/bianjixiaoxi"
+                android:textColor="@color/text_red"
+                android:textSize="12dp"
+                app:layout_constraintLeft_toRightOf="@id/viewEditLine"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvEditContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_48"
+                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_40"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text=""
+                android:textColor="@color/text_four"
+                android:textSize="@dimen/dp_12"
+                app:layout_constraintLeft_toRightOf="@id/ivEditPreview"
+                app:layout_constraintTop_toBottomOf="@id/tvEditName" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/inputContainerLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@color/white"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
+
+            <Button
+                android:id="@+id/audioButton"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="270dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/shape_session_btn_voice_normal"
+                android:gravity="center"
+                android:text="@string/please_to_talk"
+                android:layout_weight="1"
+                android:textColor="@color/color_main"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/llInputRoot"
+                android:layout_width="270dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_et_chat"
+                android:orientation="horizontal"
+                android:paddingRight="@dimen/dp_10">
+
+                <ImageView
+                    android:id="@+id/emotionImageView"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ic_emoj_chat"
+                    tools:visibility="visible" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.ym.chat.widget.ateditview.AtUserEditText
+                            android:id="@+id/editText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:background="@null"
+                            android:hint="@string/nihao"
+                            android:maxLength="500"
+                            android:maxLines="5"
+                            android:minHeight="42dp"
+                            android:paddingLeft="5dp"
+                            android:textSize="16sp"
+                            android:visibility="visible" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/extImageView"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_add_chat"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_et_chat"
+                android:gravity="center">
+
+                <!--                <ImageView-->
+                <!--                    android:src="@drawable/ic_speak"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"/>-->
+
+                <ImageView
+                    android:id="@+id/audioImageView"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_voice_chat" />
+
+                <ImageView
+                    android:id="@+id/sendButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:src="@drawable/ic_send"
+                    android:text="@string/fasong"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llOption"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ivSelectImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_chat_img" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ivSelectVideo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_chat_video" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ivOpenCamera"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_chat_camera" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ivGIf"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_gif_img" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/ivSelectFile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="21dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_chat_file" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tvMuteState"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/color_main"
+            android:gravity="center"
+            android:text="@string/benqunjinyan"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.ym.chat.widget.panel.KeyboardHeightFrameLayout
+            android:id="@+id/emotionContainerFrameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/default_custom_keyboard_size"
+            android:background="#F8F8F8"
+            android:visibility="gone">
+            <!--表情-->
+            <FrameLayout
+                android:id="@+id/emotionLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </com.ym.chat.widget.panel.KeyboardHeightFrameLayout>
+
+        <com.ym.chat.widget.panel.KeyboardHeightFrameLayout
+            android:id="@+id/extContainerContainerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/default_custom_keyboard_size"
+            android:background="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <!--其他功能-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+                android:orientation="horizontal"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/llSelectPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_chat_photo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/zhaopian"
+                        android:textColor="#8E8E93" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llSelectVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="34dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_chat_camera_ext" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/paishe"
+                        android:textColor="#8E8E93" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llSelect3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="34dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_chat_camera_ext" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/shipin"
+                        android:textColor="#8E8E93" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--显示Gif表情-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listGif"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
+                android:background="#F8F8F8"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="4"
+                tools:listitem="@layout/item_express_gif" />
+
+        </com.ym.chat.widget.panel.KeyboardHeightFrameLayout>
+    </LinearLayout>
+</merge>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="DrawableTextView">
+    <attr name="drawableTLeftWidth" format="dimension"/>
+    <attr name="drawableTLeftHeight" format="dimension"/>
+    <attr name="drawableTRightWidth" format="dimension"/>
+    <attr name="drawableTRightHeight" format="dimension"/>
+    <attr name="drawableTTopWidth" format="dimension"/>
+    <attr name="drawableTTopHeight" format="dimension"/>
+    <attr name="drawableTBottomWidth" format="dimension"/>
+    <attr name="drawableTBottomHeight" format="dimension"/>
+  </declare-styleable>
+
+  <declare-styleable name="DrawableEditText">
+    <attr name="drawableELeftWidth" format="dimension"/>
+    <attr name="drawableELeftHeight" format="dimension"/>
+    <attr name="drawableERightWidth" format="dimension"/>
+    <attr name="drawableERightHeight" format="dimension"/>
+    <attr name="drawableETopWidth" format="dimension"/>
+    <attr name="drawableETopHeight" format="dimension"/>
+    <attr name="drawableEBottomWidth" format="dimension"/>
+    <attr name="drawableEBottomHeight" format="dimension"/>
+  </declare-styleable>
+
+  <!--圆角控件-->
+  <attr name="corner_radius" format="dimension"/>
+  <declare-styleable name="GeneralRoundLinearLayout">
+    <attr name="corner_radius"/>
+  </declare-styleable>
+  <declare-styleable name="GeneralRoundRelativeLayout">
+    <attr name="corner_radius"/>
+  </declare-styleable>
+  <declare-styleable name="GeneralRoundFrameLayout">
+    <attr name="corner_radius"/>
+  </declare-styleable>
+  <declare-styleable name="GeneralRoundConstraintLayout">
+    <attr name="corner_radius"/>
+  </declare-styleable>
+
+  <declare-styleable name="AutofitTextView">
+    <!-- Minimum size of the text. -->
+    <attr name="minTextSize" format="dimension" />
+    <!-- Amount of precision used to calculate the correct text size to fit within its
+    bounds. Lower precision is more precise and takes more time. -->
+    <attr name="precision" format="float" />
+    <!-- Defines whether to automatically resize text to fit to the view's bounds. -->
+    <attr name="sizeToFit" format="boolean" />
+  </declare-styleable>
+
+  <declare-styleable name="CustomTextView">
+    <attr name="textSizeHint" format="dimension"></attr>
+  </declare-styleable>
+</resources>

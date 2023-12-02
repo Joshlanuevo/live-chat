@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F8F8F8"
+        android:fitsSystemWindows="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/tvBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/ic_back" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <TextView
+        android:id="@+id/tvJoinSer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/jiarufuwuqi"
+        android:textColor="@color/color_333333"
+        android:textSize="22dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <EditText
+        android:id="@+id/etInputServiceId"
+        android:layout_width="233dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/shape_et_serviceid"
+        android:hint="@string/tianxiefuwuqi"
+        android:paddingLeft="15dp"
+        app:layout_constraintLeft_toLeftOf="@id/tvJoinSer"
+        app:layout_constraintTop_toBottomOf="@id/tvJoinSer" />
+
+    <TextView
+        android:id="@+id/tvJoin"
+        android:layout_width="74dp"
+        android:layout_height="42dp"
+        android:layout_marginRight="21dp"
+        android:background="@drawable/sel_login_btn"
+        android:gravity="center"
+        android:text="@string/jiaru"
+        android:textColor="@color/white"
+        app:layout_constraintLeft_toRightOf="@id/etInputServiceId"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/etInputServiceId" />
+
+    <TextView
+        android:id="@+id/tvScanInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="75dp"
+        android:text="@string/saomiaoerweima"
+        android:textColor="@color/color_333333"
+        android:textSize="22dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvJoin" />
+
+    <LinearLayout
+        android:id="@+id/llScan"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/sel_open_scan"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvScanInfo">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_scan_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="@string/saomiaoerweima_2"
+            android:textColor="#DA3C40"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

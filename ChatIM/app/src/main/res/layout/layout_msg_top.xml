@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        tools:parentTag="android.widget.LinearLayout">
+
+        <LinearLayout
+            android:id="@+id/llRvTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#EEEEEE"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="4dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginBottom="@dimen/dp_2"
+                    android:background="@drawable/bg_red_10dp"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_1"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:layout_marginBottom="@dimen/dp_3"
+                    android:layout_weight="1"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/item_msg_top" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/ivTopOnUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="-13dp"
+                android:layout_marginRight="@dimen/dp_10"
+                android:padding="@dimen/dp_10"
+                android:src="@drawable/ic_top_up" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llTop"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingBottom="@dimen/dp_2">
+
+            <LinearLayout
+                android:layout_width="@dimen/dp_4"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginRight="@dimen/dp_6"
+                android:orientation="vertical">
+
+                <View
+                    android:id="@+id/view1"
+                    android:layout_width="4dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_red_10dp" />
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="4dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_red_10dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/view3"
+                    android:layout_width="4dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_red_10dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/view4"
+                    android:layout_width="4dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_red_10dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/view5"
+                    android:layout_width="4dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_gray_r5"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.utils.widget.ImageFilterView
+                    android:id="@+id/ivMsg"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center_vertical"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    app:round="4dp"
+                    tools:ignore="MissingConstraints" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvIndex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_2"
+                        android:drawablePadding="@dimen/dp_10"
+                        android:gravity="center"
+                        android:textColor="@color/tv_blue"
+                        android:textSize="12sp"
+                        tools:text="置顶消息#1" />
+
+                    <TextView
+                        android:id="@+id/tvContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_10"
+                        android:ellipsize="end"
+                        android:gravity="left"
+                        android:maxLines="1"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        tools:text="消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容消息内容" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivTopOnDown"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:padding="@dimen/dp_10"
+                    android:src="@drawable/ic_top_down" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

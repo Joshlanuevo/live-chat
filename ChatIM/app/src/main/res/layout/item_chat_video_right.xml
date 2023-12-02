@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android_custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clVideo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/viewSpace"
+        android:layout_width="6dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/layout_header"
+        layout="@layout/layout_header"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:src="@drawable/user_head_default"
+        app:layout_constraintEnd_toStartOf="@id/viewSpace"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/llContentRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/shape_solid_green_8"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/layout_header"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--回复消息显示-->
+        <LinearLayout
+            android:id="@+id/consReply"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/bg_sel_reply"
+            android:orientation="horizontal"
+            android:paddingRight="4dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <View
+                android:id="@+id/viewLine9"
+                android:layout_width="3dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_sel_reply_line"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivReplyPreview"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/viewLine9"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/dp_2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvReplyName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/tv_blue"
+                    android:textSize="12dp"
+                    app:layout_constraintLeft_toRightOf="@id/ivReplyPreview"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Ali" />
+
+                <TextView
+                    android:id="@+id/tvReplyContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_40"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    tools:text="～我去输液了"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp_12"
+                    app:layout_constraintLeft_toLeftOf="@id/tvReplyName"
+                    app:layout_constraintTop_toBottomOf="@id/tvReplyName" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/flContentRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/ivCoverRight"
+                android:layout_width="80dp"
+                android:layout_height="120dp"
+                android:scaleType="fitXY"
+                app:round="8dp" />
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:contentDescription="@null"
+                android:src="@drawable/video_play" />
+
+            <TextView
+                android:id="@+id/tvProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:textColor="#ffffffff"
+                android:textSize="12sp"
+                android:visibility="gone" />
+        </FrameLayout>
+
+
+    </LinearLayout>
+
+    <com.ym.chat.widget.RoundProgressBar
+        android:id="@+id/progress"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android_custom:roundColor="#D1D1D1"
+        android_custom:roundProgressColor="@color/color_main"
+        android_custom:roundWidth="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/llContentRight"
+        app:layout_constraintLeft_toLeftOf="@id/llContentRight"
+        app:layout_constraintRight_toRightOf="@id/llContentRight"
+        app:layout_constraintTop_toTopOf="@id/llContentRight" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/consSendState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/llContentRight"
+        app:layout_constraintEnd_toStartOf="@id/llContentRight"
+        app:layout_constraintTop_toTopOf="@id/llContentRight">
+
+        <com.ym.chat.widget.AnimationImageView
+            android:id="@+id/loadView"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivFail"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@null"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:src="@drawable/ic_fail"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvReadState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/yidu"
+            android:textSize="12dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/shape_time_ivbg"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/llContentRight"
+        app:layout_constraintRight_toRightOf="@id/llContentRight">
+
+        <ImageView
+            android:id="@+id/ivTop"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginLeft="6dp"
+            android:src="@drawable/ic_chat_top"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginRight="@dimen/dp_6"
+            android:gravity="center"
+            android:textColor="@color/tv_blue"
+            android:textSize="11dp"
+            tools:text="10:00" />
+
+        <ImageView
+            android:id="@+id/ivRead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_6"
+            android:src="@drawable/ic_chat_unread"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivSelect"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="7dp"
+        android:contentDescription="@null"
+        android:padding="8dp"
+        android:src="@drawable/ic_group_chat_member_select"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/llContentRight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/llContentRight"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

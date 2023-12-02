@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fl_header"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ivHeader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_mine_header" />
+
+    <ImageView
+        android:id="@+id/ivHeaderLoad"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/dp_2"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivHeaderManage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/dp_3"
+        android:src="@color/red_span"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivHeaderMark"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dp_2"
+        android:elevation="@dimen/dp_4"
+        android:visibility="gone" />
+</FrameLayout>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linMsgPopup"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_5"
+        app:cardCornerRadius="@dimen/dp_10">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|center_vertical"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:background="@drawable/bg_msg_popup"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/llCkjj"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_36"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivCkjj"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_msg_ck" />
+
+                <TextView
+                    android:id="@+id/tvCkjj"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_17"
+                    android:textStyle="bold"
+                    android:text="@string/chakanjianjie"
+                    android:textColor="@color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginRight="@dimen/dp_17"
+                android:background="@color/line_gray" />
+
+            <LinearLayout
+                android:id="@+id/llNotNotify"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_36"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivJy"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_msg_jy" />
+
+                <TextView
+                    android:id="@+id/tvNotNotify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_17"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="@string/kaiqitongzhi"
+                    android:textColor="@color/black"
+                    android:textSize="14dp" />
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginRight="@dimen/dp_17"
+                android:background="@color/line_gray" />
+
+            <LinearLayout
+                android:id="@+id/llDelMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_36"
+                android:gravity="center"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_msg_qk" />
+
+                <TextView
+                    android:id="@+id/tvDelMsg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_17"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="@string/qingkonglishijilu"
+                    android:textColor="@color/black"
+                    android:textSize="14dp" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/vDelMsg"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:visibility="gone"
+                android:layout_marginRight="@dimen/dp_17"
+                android:background="@color/line_gray" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="@dimen/dp_17"
+                android:layout_marginRight="@dimen/dp_17"
+                android:background="@color/line_gray" />
+
+            <LinearLayout
+                android:id="@+id/llDel"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_36"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_msg_sc" />
+
+                <TextView
+                    android:id="@+id/tvDel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_17"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="@string/tuichuqunliao"
+                    android:textColor="#DA3C40"
+                    android:textSize="14dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>

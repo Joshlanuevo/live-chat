@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="37dp"
+        android:text="@string/tianxieyanzhengma"
+        android:textColor="@color/color_333333"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSendPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/yanzhengmayifasongdao"
+        android:textColor="@color/color_333333"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvWelcome" />
+
+    <EditText
+        android:id="@+id/etCode"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginRight="10dp"
+        android:background="@null"
+        android:hint="请输入验证码"
+        android:textSize="15dp"
+        android:inputType="number"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/lineCode"
+        app:layout_constraintTop_toBottomOf="@id/tvSendPhone" />
+
+    <View
+        android:id="@+id/lineCode"
+        android:layout_width="0.8dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="20dp"
+        android:background="#EEEEEE"
+        app:layout_constraintBottom_toBottomOf="@id/etCode"
+        app:layout_constraintRight_toLeftOf="@id/tvSendCode"
+        app:layout_constraintTop_toTopOf="@id/etCode" />
+
+    <TextView
+        android:id="@+id/tvSendCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/huoquyanzhengma"
+        android:textColor="#80C580"
+        app:layout_constraintBottom_toBottomOf="@id/etCode"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/etCode" />
+
+    <View
+        android:id="@+id/lineAccount"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/color_e0e0e0"
+        app:layout_constraintLeft_toLeftOf="@id/etCode"
+        app:layout_constraintRight_toRightOf="@id/tvSendCode"
+        app:layout_constraintTop_toBottomOf="@id/etCode" />
+
+    <EditText
+        android:id="@+id/etPwd"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginRight="10dp"
+        android:background="@null"
+        android:hint="@string/qingshurumima"
+        android:textSize="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/lineCode"
+        app:layout_constraintTop_toBottomOf="@id/lineAccount" />
+
+    <View
+        android:id="@+id/linePwd"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/color_e0e0e0"
+        app:layout_constraintLeft_toLeftOf="@id/etCode"
+        app:layout_constraintRight_toRightOf="@id/tvSendCode"
+        app:layout_constraintTop_toBottomOf="@id/etPwd" />
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginTop="34dp"
+        android:background="@drawable/sel_login_btn"
+        android:text="@string/xiayibu"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/etPwd" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@null"
+        android:padding="4dp"
+        android:src="@drawable/dialog_close"
+        android:visibility="gone" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/bg_white_r10"
+        tools:context="com.ym.dialog.CommDialog"
+        tools:ignore="MissingDefaultResource,MissingPrefix"
+        tools:layout_gravity="center_horizontal">
+
+        <!--标题-->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="12dp"
+            android:gravity="center"
+            android:textColor="@color/text_red"
+            android:textSize="@dimen/dp_16"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="标题" />
+        <!--动态添加View-->
+        <LinearLayout
+            android:id="@+id/llPairsTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="17dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+        <!--多个View的边缘位置确定-->
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tvTitle,llPairsTop" />
+        <!--提示内容-->
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:gravity="center"
+            android:textColor="@color/text_second"
+            android:textSize="@dimen/dp_14"
+            app:layout_constraintTop_toBottomOf="@id/barrTop"
+            tools:text="提示内容" />
+        <!--动态添加View-->
+        <LinearLayout
+            android:id="@+id/llPairsBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvContent" />
+        <!--多个View的边缘位置确定-->
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tvTitle,tvContent,llPairsBottom" />
+
+        <View
+            android:id="@+id/vLineH"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/line_gray"
+            app:layout_constraintTop_toBottomOf="@+id/barrBottom" />
+        <!--取消-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_45"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vLineH">
+
+            <TextView
+                android:id="@+id/tvCancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/quxiao"
+                android:textColor="@color/text_red"
+                android:textSize="@dimen/dp_14" />
+
+            <View
+                android:id="@+id/vLineV"
+                android:layout_width="1px"
+                android:layout_gravity="center_vertical"
+                android:layout_height="@dimen/dp_30"
+                android:background="@color/line_gray" />
+            <!--确定-->
+            <TextView
+                android:id="@+id/tvConfirm"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/queding"
+                android:textColor="@color/text_third"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/tvCancel"
+                app:layout_constraintTop_toBottomOf="@id/vLineH"
+                app:layout_goneMarginStart="0dp"
+                tools:ignore="HardcodedText" />
+
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

@@ -1,0 +1,292 @@
+import com.ym.plugin.*
+
+android {
+
+    compileSdkVersion BuildConfig.compileSdkVersion
+    buildToolsVersion BuildConfig.buildToolsVersion
+
+    defaultConfig {
+
+        applicationId BuildConfig.app.applicationId
+//        applicationId randomPackageName()
+        minSdkVersion BuildConfig.minSdkVersion
+        targetSdkVersion BuildConfig.targetSdkVersion
+        resValue "string", "build_time", new Date().format("yyyy-MM-dd HH:mm")
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())//路由框架需要添加
+            }
+        }
+//        resConfigs "zh-rCN"//随便过滤一种没有的语言，就会只打默认的语言到APK
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "armeabi-v8a","arm64-v8a"
+        }
+    }
+
+    signingConfigs {
+        release {
+            //签名文件路径
+            storeFile file { "0822.jks" }
+            //签名密码
+            storePassword "gn123456"
+            //别名
+            keyAlias "key"
+            //别名密码
+            keyPassword "gn123456"
+        }
+    }
+
+    buildTypes {
+
+        release {
+            buildConfigField("String", "type", "\"release\"")
+            minifyEnabled true
+            crunchPngs false
+//            debuggable true
+            //Zipalign优化
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+//            manifestPlaceholders = [
+//                    APP_LABEL: "${BuildConfig.app.appName}"
+//            ]
+        }
+
+        uat {
+            buildConfigField("String", "type", "\"uat\"")
+            //混淆开关
+            minifyEnabled false
+//            debuggable true
+            crunchPngs false
+            //Zipalign优化
+            zipAlignEnabled true
+            applicationIdSuffix ".uat"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+//            manifestPlaceholders = [
+//                    APP_LABEL: "${BuildConfig.app.appName}uat"
+//            ]
+            matchingFallbacks = ['debug', 'release']
+        }
+
+        debug {
+            buildConfigField("String", "type", "\"debug\"")
+
+            minifyEnabled false
+            crunchPngs false
+            //Zipalign优化
+            zipAlignEnabled true
+            applicationIdSuffix ".test"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
+//            manifestPlaceholders = [
+//                    APP_LABEL: "${BuildConfig.app.appName}测试"
+//            ]
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    flavorDimensions 'app'
+    productFlavors {
+        /**
+         *  jenkins配置读取
+         */
+        //版本名称，对外
+        def VERSION_NAME_JENKINS = System.getenv("VERSION_NAME")
+        //版本code，对内，版本更新用
+        def VERSION_CODE_JENKINS = System.getenv("VERSION_CODE")
+        //读取jenkins打包类型
+        def buildType = System.getenv("Build_Type")
+        //读取app名字
+        def appName = System.getenv("AppName")
+        //读取app名字
+        def appIcon = System.getenv("AppIcon")
+        //读取oss地址
+        def ossUrl = System.getenv("OssUrl")
+
+        if (VERSION_CODE_JENKINS == null || !VERSION_CODE_JENKINS.isInteger()) {
+            //versionCode必须为整数值，否则认为是无效配置
+            VERSION_CODE_JENKINS = null
+        }
+
+        if (appName == null) {
+            appName = "${BuildConfig.app.appName}"
+        }
+
+        if (appIcon == null) {
+            appIcon = "@mipmap/ic_launcher"
+        }
+
+        appCn {
+            versionCode VERSION_CODE_JENKINS ? VERSION_CODE_JENKINS as int : BuildConfig.app.versionCode
+            versionName VERSION_NAME_JENKINS ? VERSION_NAME_JENKINS : BuildConfig.app.versionName
+            dimension 'app'
+//            applicationIdSuffix ".app1"
+            //            versionNameSuffix "-app1"
+            if (buildType != null) {
+                buildConfigField("String", "type", "\"${buildType}\"")
+            }
+
+            if (ossUrl != null) {
+                buildConfigField("String", "ossUrl", "\"${ossUrl}\"")
+            } else {
+                buildConfigField("String", "ossUrl", "\"\"")
+            }
+
+//            buildConfigField("String", "appName", "\"${appName}\"")
+
+            manifestPlaceholders = [
+                    APP_LABEL: appName,
+                    APP_ICON : appIcon
+            ]
+        }
+    }
+    buildFeatures {
+        viewBinding = true
+    }
+
+//    composeOptions {
+//        kotlinCompilerExtensionVersion compose_version
+//    }
+
+    //统一打包命名
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "im_v${variant.versionName}_${variant.buildType.name}_${releaseTime()}.apk"
+//            outputFileName = "im_release_apk.apk"
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+dependencies {
+
+    implementation AndroidX.core_ktx
+    implementation AndroidX.appcompat
+    implementation AndroidX.constraintlayout
+    implementation AndroidX.extJunit
+    implementation AndroidX.espressoCore
+
+    implementation Material.material
+
+    implementation Depend.kotlinStdlib
+    implementation 'androidx.work:work-runtime-ktx:2.5.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+    testImplementation Depend.junit
+    implementation Depend.circleImageView
+    implementation Depend.pickerView
+    implementation Depend.picker
+    implementation Depend.anko
+
+    //需要每个module都添加
+    implementation project(path: ':base_sdk')
+    implementation project(path: ':image')
+//    implementation project(path: ':emojilibrary')
+
+    //Rxjava
+    implementation Depend.rxandroid
+
+    //腾讯解码库
+    implementation Depend.txVideo
+    implementation Depend.shadowLayout
+
+    //mqtt
+//    implementation Depend.mqtt
+//    implementation Depend.mqtt4android
+
+//    implementation Depend.sonic
+    //带后缀的EditText
+    implementation Depend.companyEdittext
+    //线路检测
+//    implementation Depend.ping
+    //字体大小 https://github.com/liujingxing/fontresize
+    implementation Depend.fontresize
+    //增强版popupWindow
+    implementation Depend.xPopupWindow
+    implementation Depend.websocket
+    // 添加objectbox 查看依赖
+    debugImplementation Depend.debugObjectBrowser
+    releaseImplementation Depend.releaseObjectbrowser
+
+    //播放器
+    implementation Depend.dkplayerJava
+    implementation Depend.dkplayerUI
+    implementation Depend.dkplayerExo
+
+    //work
+    implementation Depend.work
+
+    //loading
+    implementation Depend.loadingView
+
+    //commos
+    implementation Depend.commons
+
+    //flexbox
+    implementation Depend.flexbox
+
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    implementation 'com.airbnb.android:lottie:5.0.3'//json动画
+
+    implementation "com.vanniktech:emoji-ios:0.8.0"
+
+    implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx' // (必选)
+    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.0.0-alpha.1-androidx'
+    // (可选)
+    implementation 'com.github.Justson:Downloader:v5.0.0-androidx' // (可选)
+
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.24'
+
+    implementation 'com.dianping.android.sdk:logan:1.2.4'
+    implementation 'com.github.lihangleo2:ShadowLayout:3.3.3'
+    implementation 'com.jakewharton:process-phoenix:2.1.2'
+
+    //下载查看文件
+//    implementation 'com.github.heynchy:eros-plugin-filecache-manager:0.2.6'
+
+}
+
+apply plugin: 'io.objectbox'
+
+
+//获取编译时间
+static def releaseTime() {
+    return new Date().format("MMddHHmm", TimeZone.getTimeZone("GMT+08:00"))
+}
+
+//生成随机包名
+static def randomPackageName() {
+    Random random = new Random()
+    //每个单位的字母长度
+    int count = 6
+    StringBuffer sb1 = new StringBuffer();
+    for (int i = 0; i < count; i++) {
+        sb1.append((char) (96 + random.nextInt(25) + 1))
+    }
+    sb1.append(random.nextInt(10))
+    sb1.append(".")
+    for (int i = 0; i < count; i++) {
+        sb1.append((char) (96 + random.nextInt(25) + 1))
+    }
+    sb1.append(random.nextInt(10))
+    sb1.append(".")
+    for (int i = 0; i < count; i++) {
+        sb1.append((char) (96 + random.nextInt(25) + 1))
+    }
+    return sb1.toString()
+}

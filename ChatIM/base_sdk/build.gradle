@@ -1,0 +1,157 @@
+import com.ym.plugin.*
+
+android {
+    compileSdkVersion BuildConfig.compileSdkVersion
+    buildToolsVersion BuildConfig.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion BuildConfig.minSdkVersion
+        targetSdkVersion BuildConfig.targetSdkVersion
+
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        //RxHttp需要 https://github.com/liujingxing/okhttp-RxHttp
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        //使用asXxx方法时必须，告知RxHttp你依赖的rxjava版本，可传入rxjava2、rxjava3
+                        rxhttp_rxjava : 'rxjava2',
+                        rxhttp_package: 'rxhttp' //非必须，指定RxHttp类包名
+                ]
+            }
+        }
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())//路由框架需要添加
+            }
+        }
+    }
+
+    buildTypes {
+
+        release {
+            minifyEnabled false
+            buildConfigField("String", "type", "\"release\"")
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        uat {
+            minifyEnabled false
+            buildConfigField("String", "type", "\"uat\"")
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            buildConfigField("String", "type", "\"debug\"")
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding = true
+    }
+    //androidExtensions {
+    //    // 打开实验模式，Kotlin 扩展里的有些功能 (如 LayoutContainer) 目前只支持试用
+    //    experimental = true
+    //    defaultCacheImplementation = "SPARSE_ARRAY" //默认使用的就已经是 HashMap 缓存  also SPARSE_ARRAY, NONE
+    //}
+}
+
+dependencies {
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api project(path: ':module_aar:ucrop')
+    api project(path: ':module_aar:picture_library')
+
+    api AndroidX.core_ktx
+    api AndroidX.appcompat
+    api AndroidX.fragment
+    api AndroidX.fragment_ktx
+//    api AndroidX.constraintlayout
+    api AndroidX.extJunit
+    api AndroidX.espressoCore
+    api Depend.android_startup
+
+    api Material.material
+
+    api Http.okhttp3
+    //RxHttp 网络请求 https://github.com/liujingxing/okhttp-RxHttp
+    api Http.rxhttp
+    kapt Http.rxhttpCompiler
+
+    //图片加载 https://github.com/coil-kt/coil
+    api Coil.coil
+    api Coil.coilGif
+    api Coil.coilVideo
+
+    api Depend.kotlinStdlib
+    testImplementation Depend.junit
+    //数据编解码
+    api Depend.gson
+    //本地事件分发
+    api Depend.liveEventBus
+    // banner
+    api Depend.banner
+    //BaseAdapter
+    api Depend.baseAdapter
+    api Depend.bankjUtilcodex
+    //异步处理方案
+    api Depend.kotlinxCoroutines
+    //RxHttp如果使用 rxjava2   (RxJava2/Rxjava3二选一，使用asXxx方法时必须)
+    api Depend.rxJava
+    api Depend.rxAndroid
+    api Depend.rxlife //管理RxJava2生命周期，页面销毁，关闭请求
+    //Rx 权限管理工具
+    api Depend.rxPermissiona
+    //RxHttp如果使用 协程
+    api Depend.rxlifeCoroutine //管理协程生命周期，页面销毁，关闭请求
+    //ARouter
+    //数据存储 https://github.com/Tencent/MMKV
+    api Depend.tencentMmkv
+    //头条屏幕适配方案
+    api Depend.autosize
+    api Depend.backgroundCore
+    //下拉刷新
+    api Depend.smartRefresh
+    api Depend.smartRefresh_classics
+    //时间选择器
+    api Depend.loopView
+    // 强大、可定制、易扩展的 ViewPager 指示器框架。https://github.com/hackware1993/MagicIndicator
+    api Depend.magicIndicator
+    // 用尽可能少的代码来使用 ViewBinding。https://github.com/DylanCaiCoding/ViewBindingKtx
+    api Ktx.viewbinding
+    api Depend.logger
+    //权限申请
+    api Depend.xxpermissions
+    //手势锁屏
+    api Depend.patternLocker
+    //PopupWindow https://github.com/razerdp/BasePopup
+    api Depend.basePopup
+
+    //手机号判断
+    api Depend.libphonenumber
+    api Depend.zxingLibrary
+
+    //immersionbar
+    implementation Depend.immersionbar
+    implementation Depend.immersionbar_ktx
+
+
+    implementation 'com.qiniu:happy-dns:0.2.13'//http dns
+
+    //图片选择器 https://github.com/LuckSiege/PictureSelector当前库以应用,为lib.jar包,因为改了一个源码类.
+    //处理对媒体类型为application/stream的图片的兼容操作,引入  picture_library 同时需要 引入修改过的ucrop裁剪库
+    //implementation "com.github.LuckSiege.PictureSelector:picture_library:v2.6.0"
+    //图片裁剪   因为 引入picture_library同时引入了修改过的 ucrop所以官方的暂时注释掉
+    //implementation 'com.github.yalantis:ucrop:2.2.6'
+//    api group: 'org.apache.commons', name: 'commons-digester3', version: '3.2'
+}

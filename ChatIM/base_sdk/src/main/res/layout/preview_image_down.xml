@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <com.luck.picture.lib.photoview.PhotoView
+      android:id="@+id/preview_image"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginLeft="2dp"
+      android:layout_marginRight="2dp"
+      />
+
+  <com.luck.picture.lib.widget.longimage.SubsamplingScaleImageView
+      android:id="@+id/longImg"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      />
+
+  <ImageView
+      android:id="@+id/previewDown"
+      android:layout_width="50dp"
+      android:layout_height="50dp"
+      android:layout_gravity="bottom|center_horizontal"
+      android:layout_marginBottom="30dp"
+      android:contentDescription="@null"
+      android:src="@drawable/preview_down"
+      />
+
+  <ImageView
+      android:id="@+id/iv_play"
+      android:layout_width="86dp"
+      android:layout_height="86dp"
+      android:layout_gravity="center"
+      android:contentDescription="@null"
+      android:src="@drawable/play_full"
+      android:visibility="visible"
+      />
+</FrameLayout>

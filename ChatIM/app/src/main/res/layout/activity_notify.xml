@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_main_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/view_toolbar_center" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:background="@color/white"
+            app:tabIndicatorHeight="@dimen/dp_4"
+            app:tabIndicatorFullWidth="@dimen/dp_10"
+            app:tabIndicator="@drawable/ic_notify_hint"
+            app:tabMaxWidth="@dimen/dp_100"
+            app:tabMinWidth="@dimen/dp_70"
+            app:tabSelectedTextColor="@color/color_main"
+            app:tabTextColor="@color/color_989898" />
+
+        <CheckBox
+            android:id="@+id/cbAllSelect"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:background="@drawable/tab_select"
+            android:button="@null"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </FrameLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

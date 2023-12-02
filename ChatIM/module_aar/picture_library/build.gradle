@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('picture_library-2.6.0.aar'))

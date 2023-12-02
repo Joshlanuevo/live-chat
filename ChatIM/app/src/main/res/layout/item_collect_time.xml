@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/dp_5"
+    android:paddingRight="@dimen/dp_5"
+    android:paddingBottom="@dimen/dp_5">
+
+    <View
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="1px"
+        android:visibility="gone"
+        android:background="@color/color_gray_text" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15"
+        android:textColor="#333333"
+        android:background="@drawable/shape_solid_blue_8"
+        android:textSize="11dp"
+        android:text="08:00"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="1px"
+        android:visibility="gone"
+        android:background="@color/color_gray_text" />
+
+</LinearLayout>

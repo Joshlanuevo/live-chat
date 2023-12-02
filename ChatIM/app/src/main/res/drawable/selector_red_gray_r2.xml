@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/shape_d8d8d8_r2" android:state_enabled="false" />
+    <item android:drawable="@drawable/shape_red_r2" />
+</selector>

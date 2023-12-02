@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/view_toolbar" />
+
+
+    <include
+        android:id="@+id/layout_header"
+        layout="@layout/layout_header"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_mine_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
+    <TextView
+        android:id="@+id/tvNickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="name"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/layout_header"
+        app:layout_constraintTop_toTopOf="@id/layout_header" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:text="username"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/layout_header"
+        app:layout_constraintLeft_toRightOf="@id/layout_header" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnAddFriend"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_gradient_red_24"
+        android:text="@string/add_haoyou"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/layout_header" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

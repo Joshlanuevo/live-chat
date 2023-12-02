@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D6E2EE"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/view_toolbar" />
+
+    <ImageView
+        android:id="@+id/ivRightIcon"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="9dp"
+        android:src="@drawable/male_custom"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <TextView
+        android:id="@+id/tvFontRight"
+        android:layout_width="0dp"
+        android:layout_height="38dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_font_set_right"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="5dp"
+        android:text="@string/yulanzitidaxiao"
+        app:layout_constraintRight_toLeftOf="@id/ivRightIcon"
+        app:layout_constraintTop_toTopOf="@id/ivRightIcon" />
+
+    <View
+        android:layout_width="15dp"
+        android:layout_height="25dp"
+        android:background="@drawable/view_right_pop"
+        app:layout_constraintLeft_toRightOf="@id/tvFontRight"
+        app:layout_constraintTop_toTopOf="@id/tvFontRight" />
+
+    <ImageView
+        android:id="@+id/ivLeftIcon"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/female_custom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFontRight" />
+
+    <TextView
+        android:id="@+id/tvFontLeft"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/bg_font_set_left"
+        android:gravity="center|left"
+        android:maxWidth="200dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="5dp"
+        android:text="@string/tuodongxiamian"
+        app:layout_constraintLeft_toRightOf="@id/ivLeftIcon"
+        app:layout_constraintTop_toTopOf="@id/ivLeftIcon" />
+
+    <View
+        android:layout_width="15dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/view_left_pop"
+        app:layout_constraintRight_toLeftOf="@id/tvFontLeft"
+        app:layout_constraintTop_toTopOf="@id/tvFontLeft" />
+
+    <ImageView
+        android:id="@+id/ivLeftIcon2"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/female_custom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFontLeft" />
+
+    <TextView
+        android:id="@+id/tvFontLeft2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/bg_font_set_left"
+        android:gravity="center|left"
+        android:maxWidth="200dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="5dp"
+        android:text="设置后，会改变聊天, 菜 单的字体大小。如果在使 用过程中存在问题或意 见，可反馈给友聊团队"
+        app:layout_constraintLeft_toRightOf="@id/ivLeftIcon2"
+        app:layout_constraintTop_toTopOf="@id/ivLeftIcon2" />
+
+    <View
+        android:layout_width="15dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/view_left_pop"
+        app:layout_constraintRight_toLeftOf="@id/tvFontLeft2"
+        app:layout_constraintTop_toTopOf="@id/tvFontLeft2" />
+
+    <com.ljx.view.FontResizeView
+        android:id="@+id/font_resize_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        app:maxSize="25sp"
+        app:minSize="13sp"
+        app:sliderColor="@android:color/white"
+        app:sliderRadius="12dp"
+        app:standardGrade="2"
+        app:totalGrade="4" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

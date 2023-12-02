@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3f51b5</color>
+    <color name="colorPrimaryDark">#303f9f</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="activity_bg">#dedede</color>
+
+    <color name="color_main">#6C5DD3</color><!--主题色-->
+    <color name="color_gray_text">#808191</color><!--主题灰色-->
+    <color name="color_brown">#431000</color><!--棕色-->
+    <color name="color_main_pre">#6C5DD3</color><!--主题色 点击阴影效果-->
+    <color name="color_main_bg">#F5F5F5</color>
+    <color name="color_divide">#F8F8F8</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_e0e0e0">#e0e0e0</color>
+    <color name="color_eeeeee">#EEEEEE</color>
+    <color name="color_cacaca">#CACACA</color>
+    <color name="color_cccccc">#CCCCCC</color>
+    <color name="color_BABABA">#BABABA</color>
+    <color name="color_AAAAAA">#AAAAAA</color>
+    <color name="color_BFBFBF">#BFBFBF</color>
+    <color name="color_E1E1E1">#E1E1E1</color>
+    <color name="color_989898">#989898</color>
+    <color name="color_999999">#999999</color>
+    <color name="color_9E9E9E">#9E9E9E</color>
+    <color name="color_groupset_line">#F2F2F7</color>
+    <color name="transfer_bind_hint_gray">#A5A9B3</color>
+    <color name="gray_ffe8e8e8">#ffe8e8e8</color>
+    <color name="color_EDEDED">#EDEDED</color>
+    <color name="color_EEFDD9">#EEFDD9</color>
+    <color name="color_D6D6D6">#D6D6D6</color>
+    <color name="color_F8F8F8">#F8F8F8</color>
+    <color name="color_8F8F8F">#8F8F8F</color>
+    <color name="app_yellow">#E6C981</color>
+    <color name="color_red_text">#922C22</color>
+    <color name="gray_99000000">#96000000</color>
+    <color name="white_33_FFF">#55ffffff</color>
+    <color name="black_55_000000">#55000000</color>
+    <color name="red_span">#FF3648</color>
+    <color name="line">#ccc</color>
+    <color name="white">#fff</color>
+    <color name="gray">#D9D9D9</color>
+    <color name="gray10">#EBEFEF</color>
+    <color name="activity_bg_77">#77dedede</color>
+    <color name="activity_bg_ff">#ffdedede</color>
+
+
+    <color name="text_main">#000000</color>
+    <color name="text_second">#666666</color>
+    <color name="text_third">#999999</color>
+    <color name="text_four">#9C9C9C</color>
+
+    <color name="text_red">#6C5DD3</color>
+    <color name="text_error">#C91E22</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="et_main">#333333</color>
+    <color name="et_second">#666666</color>
+    <color name="bg_main">#F9F8FD</color>
+
+    <color name="tv_blue">#408EFF</color>
+    <color name="color_ffc700">#FFC700</color>
+    <color name="text_blue">#037EE5</color>
+    <color name="bg_gray">#ECECEC</color>
+    <color name="bg_gray_2">#F8F8F8</color>
+    <color name="bg_gray_50">#80716F6F</color>
+    <color name="bg_red">#FA5957</color>
+    <color name="bg_green">#E1FEC6</color>
+    <color name="line_gray">#EEEEEE</color>
+    <color name="line_v_gray">#F7F7F8</color>
+    <color name="color_at">#3692F7</color>
+    <color name="color_d7363b">#d7363b</color>
+    <color name="color_822123">#822123</color>
+    <color name="color_11142D">#11142D</color>
+    <color name="bg_blue_80">#805B7FB2</color>
+    <color name="transparent">#00FFFFFF</color>
+
+
+</resources>

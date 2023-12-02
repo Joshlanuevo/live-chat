@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/cbSelect"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:background="@drawable/tab_select"
+        android:button="@null"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:background="@drawable/bg_white_10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivTypeIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:src="@drawable/ic_notify_msg" />
+
+            <TextView
+                android:id="@+id/tvTypeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_6"
+                android:textColor="@color/color_333333"
+                android:textSize="14sp"
+                tools:text="系统通知" />
+
+            <TextView
+                android:id="@+id/tvTypeTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:textColor="@color/color_cccccc"
+                android:textSize="12sp"
+                tools:text="17:53" />
+
+            <View
+                android:id="@+id/viewUnRead"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/bg_notice_unread_point"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/ivDel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                android:padding="@dimen/dp_10"
+                android:src="@drawable/ic_notify_del" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/color_D6D6D6" />
+
+        <TextView
+            android:id="@+id/tvContentTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:textColor="@color/color_333333"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:text="公告标题"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_15"
+            android:textColor="@color/color_8F8F8F"
+            android:visibility="gone"
+            tools:text="【新设备登录验证】：6969， 新设备系统为：iPhone 7-2.7.1.220104。 如您授权新设备登录，请在新设备 输入验证码。验证后，该设备下次登录无需验证。有效 期：15分钟。请勿泄漏！如果不是您本人操作，请检查 您的帐号是否泄漏的可能。"
+            tools:visibility="visible" />
+
+
+        <TextView
+            android:id="@+id/tvLook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:drawablePadding="@dimen/dp_6"
+            android:gravity="right"
+            android:text="@string/xiangqing"
+            android:textColor="@color/color_main"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cFriendInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <include
+                android:id="@+id/layout_header"
+                layout="@layout/layout_header"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_mine_header"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tvNickName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="15dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:singleLine="true"
+                android:text="Abbie Higgins"
+                android:textColor="@color/color_333333"
+                android:textSize="14sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintLeft_toRightOf="@id/layout_header"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/layout_header" />
+
+            <TextView
+                android:id="@+id/tvMsgPre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginRight="15dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/color_8F8F8F"
+                android:textSize="12sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintLeft_toRightOf="@id/layout_header"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvNickName"
+                tools:text="您希望与ta成为好友" />
+
+            <TextView
+                android:id="@+id/tvMsgContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="@dimen/dp_6"
+                android:layout_marginRight="15dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/color_8F8F8F"
+                android:textSize="12sp"
+                android:visibility="gone"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintLeft_toRightOf="@id/layout_header"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvMsgPre"
+                tools:text="此人曾是您的好友：吉利娱乐客服 亚楠"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/vBottom"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="@dimen/dp_10"
+            android:background="@color/color_D6D6D6"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/llVerify"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_55"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tvVerifyContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/niyitongyiduifangdehaoyoushenqing"
+                android:textColor="@color/color_cccccc"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/btnRefuse"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_35"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/dp_10"
+                android:background="@drawable/sel_btn_red_line_90"
+                android:gravity="center"
+                android:text="@string/jujue"
+                android:textColor="@color/color_main"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/btnAgree"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_35"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/dp_10"
+                android:background="@drawable/sel_btn_red_90"
+                android:gravity="center"
+                android:text="@string/tongyi"
+                android:textColor="@color/white"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,8 @@
+include ':module_aar:ucrop'
+include ':module_aar:picture_library'
+includeBuild("../AppPluginIm")
+include ':app'
+include ':base_sdk'
+include ':image'
+//include ':emojilibrary'
+rootProject.name = "GNChat"

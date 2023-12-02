@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:corner_radius="10dp"
+    tools:context="com.ym.chat.dialog.UpdateDialog"
+    tools:ignore="MissingDefaultResource,MissingPrefix"
+    tools:layout_gravity="center_horizontal"
+    tools:layout_marginEnd="38dp"
+    tools:layout_marginStart="38dp"
+    tools:layout_marginTop="38dp">
+
+    <ImageView
+        android:id="@+id/vBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_white_10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="66dp"
+            android:gravity="center"
+            android:text="@string/faxianxinbanben"
+            android:textColor="@color/color_main"
+            android:textSize="18sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/color_main" />
+        <!--提示内容-->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="start"
+            android:text="@string/bencigengxin"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:ignore="HardcodedText"
+            tools:visibility="invisible" />
+
+        <com.ym.chat.widget.MaxHeightNestedScrollView
+            android:id="@+id/nsvContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginEnd="20dp"
+            android:fadeScrollbars="false"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+            android:scrollbarTrackVertical="@drawable/scrollbar_vertical_track"
+            android:scrollbars="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="最新版本：V1.1\n新版本大小：10MB\n更新内容\n测试更新接口"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+        </com.ym.chat.widget.MaxHeightNestedScrollView>
+
+        <!--下载进度ProgressBar-->
+        <LinearLayout
+            android:id="@+id/llProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="horizontal"
+                android:weightSum="100">
+
+                <View
+                    android:id="@+id/vProgress"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="0"
+                    tools:layout_weight="50" />
+
+                <TextView
+                    android:id="@+id/tvProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_main"
+                    android:textSize="14sp"
+                    tools:ignore="SmallSp"
+                    tools:text="50%" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/pbProgress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/shape_notification_gray"
+                android:progress="0"
+                android:progressDrawable="@drawable/progressbar_update"
+                tools:progress="50" />
+        </LinearLayout>
+
+        <!--关闭和升级中的提示-->
+        <TextView
+            android:id="@+id/tvBottom"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:ignore="HardcodedText"
+            tools:text="升级中···"
+            tools:textColor="@color/color_main"
+            tools:visibility="visible" />
+
+        <!--确定-->
+        <TextView
+            android:id="@+id/tvConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="@dimen/dp_10"
+            android:background="@drawable/sel_btn_red_90"
+            android:gravity="center"
+            android:lines="1"
+            android:text="@string/lijigengxin"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
+
+        <!--取消-->
+        <TextView
+            android:id="@+id/tvCancel"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:background="@drawable/sel_btn_red_line_90"
+            android:gravity="center"
+            android:lines="1"
+            android:text="@string/yihouzaishuo"
+            android:textColor="@color/color_main"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivTop"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_hint_update"
+        tools:ignore="MissingConstraints" />
+
+</FrameLayout>

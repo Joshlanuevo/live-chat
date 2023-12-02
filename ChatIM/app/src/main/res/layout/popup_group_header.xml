@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="2dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dp_6">
+
+        <LinearLayout
+            android:layout_width="@dimen/dp_146"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_14"
+            android:paddingRight="@dimen/dp_14"
+            android:orientation="vertical"
+            android:gravity="center_vertical|left"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_5">
+
+            <TextView
+                android:id="@+id/tvSetAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+
+                android:drawablePadding="@dimen/dp_6"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_setting_admin"
+                android:text="@string/jingshengweiguanliyuan"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/vSetAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:visibility="gone"
+                android:background="@color/color_eeeeee" />
+
+            <TextView
+                android:id="@+id/tvSetMute"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:drawablePadding="@dimen/dp_6"
+                android:paddingLeft="@dimen/dp_2"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_setting_mute"
+                android:text="@string/jinyan"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_eeeeee" />
+
+            <TextView
+                android:id="@+id/tvRemoveMember"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:drawablePadding="@dimen/dp_6"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/ic_setting_remove"
+                android:text="@string/congqunzhongyichu"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

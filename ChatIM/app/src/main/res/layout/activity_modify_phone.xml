@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/bg_main">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/view_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/layoutPhoneTip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_round_8"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_30"
+        android:paddingBottom="@dimen/dp_30"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/img_phone" />
+
+        <TextView
+            android:id="@+id/tvPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="133****4568"
+            android:textColor="@color/text_main"
+            android:textSize="@dimen/dp_16" />
+
+        <TextView
+            android:id="@+id/tvPhoneBind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/ninyibangdingshoujihao"
+            android:textColor="@color/text_third"
+            android:textSize="@dimen/dp_14" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_white_round_8"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/layoutPhoneTip">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10">
+
+            <EditText
+                android:id="@+id/etPwd"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="@string/qingshurunindemima"
+                android:inputType="textPassword"
+                android:textColor="@color/text_main"
+                android:textColorHint="@color/text_third"
+                android:textSize="@dimen/dp_14"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/pwdState"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/pwdState"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:padding="@dimen/dp_5"
+                android:button="@drawable/eye_selector"
+                android:src="@drawable/ic_pwd_close"
+                app:layout_constraintBottom_toBottomOf="@id/etPwd"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/etPwd" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0_5"
+                android:background="@color/line_gray"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tvPwdError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_15"
+            android:text="@string/mimacuowu"
+            android:textColor="@color/text_error"
+            android:textSize="@dimen/dp_12"
+            android:visibility="gone" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tvCountryCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_5"
+                android:text="+86"
+                android:textColor="@color/text_third"
+                android:textSize="@dimen/dp_14"
+                app:layout_constraintBottom_toBottomOf="@+id/etPhone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/etPhone" />
+
+            <View
+                android:id="@+id/linePhone"
+                android:layout_width="@dimen/dp_1"
+                android:layout_height="@dimen/dp_18"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@color/line_v_gray"
+                app:layout_constraintBottom_toBottomOf="@id/etPhone"
+                app:layout_constraintLeft_toRightOf="@id/tvCountryCode"
+                app:layout_constraintRight_toLeftOf="@+id/etPhone"
+                app:layout_constraintTop_toTopOf="@id/etPhone" />
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:background="@null"
+                android:hint="@string/qinggenggainindeshoujihao"
+                android:inputType="phone"
+                android:textColor="@color/text_main"
+                android:textColorHint="@color/text_third"
+                android:textSize="@dimen/dp_14"
+                app:layout_constraintLeft_toRightOf="@+id/linePhone"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_0_5"
+                android:background="@color/line_gray"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tvPhoneError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_15"
+            android:text="@string/shoujihaocuowu"
+            android:textColor="@color/text_error"
+            android:textSize="@dimen/dp_12"
+            android:visibility="gone" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10">
+
+            <EditText
+                android:id="@+id/etCode"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_44"
+                android:background="@null"
+                android:hint="@string/qingshuruyanzhengma"
+                android:inputType="number"
+                android:textColor="@color/text_main"
+                android:textColorHint="@color/text_third"
+                android:textSize="@dimen/dp_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/tvCode"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.ym.chat.widget.view.CountDownView
+                android:id="@+id/tvCode"
+                android:layout_width="@dimen/dp_84"
+                android:layout_height="@dimen/dp_30"
+                android:background="@drawable/shape_stroke_red_50"
+                app:contentColor="@color/text_red"
+                app:contentSize="@dimen/dp_14"
+                app:contentText="@string/huoquyanzhengma"
+                app:duration="60000"
+                app:interval="1000"
+                app:layout_constraintBottom_toBottomOf="@+id/etCode"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/etCode" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btnCommit"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:background="@drawable/shape_gradient_red_24"
+        android:text="@string/tijiao"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
