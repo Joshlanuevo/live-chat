@@ -5,6 +5,7 @@ import com.ym.base.widget.adapter.BaseBinderAdapterPro
 import com.ym.base.widget.adapter.BaseItemBinderPro
 import com.ym.chat.item.*
 import com.ym.chat.utils.MsgType.MESSAGETYPE_AT
+import com.ym.chat.utils.MsgType.MESSAGETYPE_CONTACT
 import com.ym.chat.utils.MsgType.MESSAGETYPE_FILE
 import com.ym.chat.utils.MsgType.MESSAGETYPE_NOTICE
 import com.ym.chat.utils.MsgType.MESSAGETYPE_PICTURE
@@ -39,6 +40,7 @@ data class ChatMessageBean(
     var fromName: String = "",//发送人名字
     var msgType: String = "",
     var serverReceiveTime: String = "",
+    var fromHead: String = "",//发送人头像
     //对方ID
     var to: String = "",
     //修改消息id
@@ -82,6 +84,9 @@ data class ChatMessageBean(
 
     @Transient
     var isSel: Boolean = false
+
+    @Transient
+    var replayParentMsg: ChatMessageBean? = null
 
     @Transient
     override var clazz: Class<out BaseItemBinderPro<*, *>>? = null
@@ -155,6 +160,14 @@ data class ChatMessageBean(
                 MESSAGETYPE_UNREAD -> {
                     //消息未读
                     return ChatUnReadItem::class.java
+                }
+                MESSAGETYPE_CONTACT -> {
+                    //名片消息
+                    return if (dir == 0) {
+                        ChatContactCardLeft::class.java
+                    } else {
+                        ChatContactCardRight::class.java
+                    }
                 }
                 else -> {
                     //未知消息

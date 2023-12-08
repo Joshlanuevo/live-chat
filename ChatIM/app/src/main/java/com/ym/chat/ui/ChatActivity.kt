@@ -139,6 +139,8 @@ class ChatActivity : LoadingActivity(),
         const val FRIEND_id_LIST = "friend_id_list"
         const val FRIEND_NAME_LIST = "friend_name_list"
         const val GET_HISTORY_PAGESIZE = 1000
+        const val TONAME = "toName"
+        const val TOHEADER = "toHeader"
 
         val owerAndManagerList = mutableListOf<String>()//群管理员或群主数据
         val groupMemberList = mutableListOf<GroupMemberBean>()//所有群成员
@@ -162,6 +164,25 @@ class ChatActivity : LoadingActivity(),
             intent.putExtra(SEARCH_CONTENT_ID, searchContentId)
             intent.putExtra(FRIEND_id_LIST, friendIds)
             intent.putExtra(FRIEND_NAME_LIST, friendNames)
+            context.startActivity(intent)
+        }
+
+        /**
+         * 开启聊天页面
+         */
+        fun start(
+            context: Context,
+            chatId: String,
+            chatType: Int,
+            chatName: String,
+            chatHeader: String
+        ) {
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtra(CHAT_TYPE, chatType)
+            intent.putExtra(CHAT_ID, chatId)
+            intent.putExtra(TONAME, chatName)
+            intent.putExtra(TOHEADER, chatHeader)
+            intent.putExtra(SEND_MSG_TYPE, 0)
             context.startActivity(intent)
         }
     }
@@ -533,6 +554,51 @@ class ChatActivity : LoadingActivity(),
             addItemBinderMany(ChatVideoRight(onChatItemListener, onPlayClickListener = {
                 ChatUtils.playVideo(this@ChatActivity, it)
             }))
+
+            //名片消息
+            addItemBinderMany(ChatContactCardLeft(onChatItemListener) { contactBean, _ ->
+                clickContactCard(contactBean)
+            })
+            addItemBinderMany(ChatContactCardRight(onChatItemListener) { contactBean, _ ->
+                clickContactCard(contactBean)
+            })
+        }
+    }
+
+    /**
+     * 点击分享名片
+     */
+    private fun clickContactCard(contactBean: ContactCardMsgBean) {
+        try {
+            val localData = ChatDao.getFriendDb().getFriendById(contactBean.shareMemberId)
+            if (localData != null) {
+                //本地数据库有
+                start(
+                    this,
+                    contactBean.shareMemberId,
+                    0,
+                    chatName = contactBean.shareMemberName,
+                    chatHeader = contactBean.shareMemberHeadUrl
+                )
+            } else {
+                //本地数据库没有
+                val intent = Intent(this, FriendInfoActivity::class.java)
+                intent.putExtra(ContactActivity.IN_TYPE, 3)
+                intent.putExtra("isMakeDate", true)
+                val friend = FriendListBean(
+                    -1,
+                    name = contactBean.shareMemberName,
+                ).apply {
+                    this.headUrl = contactBean.shareMemberHeadUrl
+                }
+                friend.id = contactBean.shareMemberId
+                friend.friendMemberId = contactBean.shareMemberId
+                startActivity(
+                    intent.putExtra(ChatActivity.CHAT_INFO, friend)
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -618,6 +684,9 @@ class ChatActivity : LoadingActivity(),
         }
     }
 
+    private var toName: String = ""
+    private var toHeadler: String = ""
+
     override fun requestData() {
         //获取表情数据
         mEmojViewModel.getEmojList()
@@ -627,6 +696,8 @@ class ChatActivity : LoadingActivity(),
         intent?.let { intent ->
             mChatType = intent.getIntExtra(CHAT_TYPE, -1)
             sendMsgType = intent.getIntExtra(SEND_MSG_TYPE, 0)
+            toName = intent.getStringExtra(TONAME) ?: ""
+            toHeadler = intent.getStringExtra(TOHEADER) ?: ""
             mTargetId = intent.getStringExtra(CHAT_ID).toString()
             //清空通知栏，该聊天数据
             NotificationUtils.clearNotification(mTargetId)

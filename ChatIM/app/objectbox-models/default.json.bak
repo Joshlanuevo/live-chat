@@ -1012,13 +1012,6 @@
           "type": 9
         },
         {
-          "id": "6:4054698330159919096",
-          "name": "createTime",
-          "indexId": "7:3339494277939923362",
-          "type": 6,
-          "flags": 8
-        },
-        {
           "id": "7:8393815119028090874",
           "name": "from",
           "type": 9
@@ -1370,9 +1363,12 @@
   "retiredEntityUids": [],
   "retiredIndexUids": [
     5033410579020148865,
-    127306720402504326
+    127306720402504326,
+    3339494277939923362
   ],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    4054698330159919096
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

@@ -1,7 +1,10 @@
 package com.ym.chat.utils
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.FragmentManager
 import coil.load
 import com.ym.base.ext.logD
@@ -167,4 +170,23 @@ object Utils {
         }
     }
 
+
+    fun getFirstNameDrawable(context: Context, name:String): Drawable {
+        // 可添加需展示的文字
+        var nameFirst = if (name.isNullOrBlank()) {
+            ""
+        } else {
+            name.substring(0, 1).uppercase()
+        }
+        var bitmapList = mutableListOf<Any>()
+        bitmapList.add(nameFirst)
+        return name.let {
+            AvatarUtil.getBuilder(context)!!
+                .setList(bitmapList)
+                .setRoundAngel(360)
+                .setBackgroundColor(it)
+                .create()
+                .toDrawable(context.resources)
+        }
+    }
 }

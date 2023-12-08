@@ -73,6 +73,8 @@ object MsgType {
     //未读消息开始（自定义消息类型）
     const val MESSAGETYPE_UNREAD = "messagetypeUnread"
 
+    //名片消息
+    const val MESSAGETYPE_CONTACT = "ShareContact"
 
     //通知类型（自定义消息类型）
     const val MESSAGETYPE_NOTICE = "MESSAGETYPE_NOTICE"

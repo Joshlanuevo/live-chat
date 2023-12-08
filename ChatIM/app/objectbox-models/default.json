@@ -149,7 +149,7 @@
     },
     {
       "id": "2:58950731670075635",
-      "lastPropertyId": "24:942916880813640567",
+      "lastPropertyId": "25:5045705860789641842",
       "name": "ChatMessageBean",
       "properties": [
         {
@@ -278,6 +278,11 @@
           "indexId": "10:5652274680622923961",
           "type": 9,
           "flags": 2080
+        },
+        {
+          "id": "25:5045705860789641842",
+          "name": "fromHead",
+          "type": 9
         }
       ],
       "relations": []
