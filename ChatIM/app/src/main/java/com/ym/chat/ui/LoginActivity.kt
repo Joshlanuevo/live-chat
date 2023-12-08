@@ -318,10 +318,12 @@ class LoginActivity : LoadingActivity() {
         edit.setSelection(edit.text.length)
     }
     //</editor-fold>
-
+    override fun onResume() {
+        super.onResume()
+        WebsocketServiceManager.closeConnect(this)
+    }
     override fun requestData() {
         //登陆失效之后，只是断开ws连接，并不会关闭服务
-        WebsocketServiceManager.closeConnect(this)
     }
 
     override fun observeCallBack() {

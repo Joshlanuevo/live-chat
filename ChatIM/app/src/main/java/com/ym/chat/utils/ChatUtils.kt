@@ -1111,29 +1111,36 @@ object ChatUtils {
         chatMsg: ChatMessageBean,
         isSelfMsg: Boolean = false
     ) {
-        //处理免打扰
         if (!isSelfMsg) {
-            if (chatMsg.chatType == ChatType.CHAT_TYPE_GROUP) {
-                val noticeState = ChatDao.getGroupDb()
-                    .isMessageNotice(chatMsg.groupId)
-                if (!noticeState) {
-                    //没有设置免打扰，需要播放声音
-                    if (AppUtils.isAppForeground() && ImCache.isUpdateNotifyMsg) {
-                        Mp3Player.playMusic()
-                    }
-                    NotificationUtils.showNotification(Utils.getApp(), chatMsg)
-                }
-            } else if (chatMsg.chatType == ChatType.CHAT_TYPE_FRIEND) {
-                if (ChatDao.getFriendDb().isMessageNotice(chatMsg.from)) {
-                    //没有设置免打扰，需要播放声音
-                    if (AppUtils.isAppForeground() && ImCache.isUpdateNotifyMsg) {
-                        Mp3Player.playMusic()
-                    }
-                    NotificationUtils.showNotification(Utils.getApp(), chatMsg)
-                }
+
+            if (chatMsg.chatType == ChatType.CHAT_TYPE_GROUP || chatMsg.chatType == ChatType.CHAT_TYPE_FRIEND) {
+                Mp3Player.playMusic()
+                NotificationUtils.showNotification(Utils.getApp(), chatMsg)
             } else {
                 Mp3Player.playMusic()
             }
+
+//            if (chatMsg.chatType == ChatType.CHAT_TYPE_GROUP) {
+//                val noticeState = ChatDao.getGroupDb()
+//                    .isMessageNotice(chatMsg.groupId)
+//                if (!noticeState) {
+//                    //没有设置免打扰，需要播放声音
+//                    if (AppUtils.isAppForeground() && ImCache.isUpdateNotifyMsg) {
+//                        Mp3Player.playMusic()
+//                    }
+//                    NotificationUtils.showNotification(Utils.getApp(), chatMsg)
+//                }
+//            } else if (chatMsg.chatType == ChatType.CHAT_TYPE_FRIEND) {
+//                if (ChatDao.getFriendDb().isMessageNotice(chatMsg.from)) {
+//                    //没有设置免打扰，需要播放声音
+//                    if (AppUtils.isAppForeground() && ImCache.isUpdateNotifyMsg) {
+//                        Mp3Player.playMusic()
+//                    }
+//                    NotificationUtils.showNotification(Utils.getApp(), chatMsg)
+//                }
+//            } else {
+//                Mp3Player.playMusic()
+//            }
         }
     }
 
