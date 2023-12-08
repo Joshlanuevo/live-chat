@@ -191,7 +191,7 @@
         android:layout_height="24dp"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="15dp"
-        android:src="@drawable/ic_pwd_open"
+        android:src="@drawable/ic_pwd_close"
         app:layout_constraintBottom_toBottomOf="@id/etPwd"
         app:layout_constraintRight_toRightOf="@id/etPwd"
         app:layout_constraintTop_toTopOf="@id/etPwd" />

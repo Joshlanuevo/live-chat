@@ -28,9 +28,11 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
     private val bindView: FragmentMineBinding by binding()
     private var user: LoginData? = null
 
-    override fun initView() {
-
+    override fun onResume() {
+        super.onResume()
         updateUI()
+    }
+    override fun initView() {
 
         if (MMKVUtils.isAdmin()) {
             bindView.llGroupSend.visible()
@@ -80,12 +82,17 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
 //                username = user?.code
 //            }
             bindView.tvJxh.text = "${getText(R.string.zhanghao)}:${user?.showUserName()}"
-            bindView.layoutHeader.ivHeader.loadImg(userInfo)
-            Utils.showDaShenImageView(
-                bindView.layoutHeader.ivHeaderMark,
-                userInfo.displayHead == "Y",
-                userInfo.levelHeadUrl
-            )
+            bindView.layoutHeader.apply {
+                setRoundRadius(200f)
+                setChatId(user?.id?:"")
+                setChatName(user?.name?:"")
+            }.showUrl(user?.headUrl)
+//            bindView.layoutHeader.ivHeader.loadImg(userInfo)
+//            Utils.showDaShenImageView(
+//                bindView.layoutHeader.ivHeaderMark,
+//                userInfo.displayHead == "Y",
+//                userInfo.levelHeadUrl
+//            )
             setGender()
         }
     }
@@ -126,13 +133,13 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
             bindView.tvNickName.text = user?.name
             setGender()
 
-            bindView.layoutHeader.ivHeader.loadImg(user)
+//            bindView.layoutHeader.ivHeader.loadImg(user)
             MMKVUtils.putUser(user)//保存到本地
         }
         /*接收修改头像 广播*/
         LiveEventBus.get(EventKeys.EDIT_USER_HEAD, String::class.java).observe(this) {
             user?.headUrl = it
-            bindView.layoutHeader.ivHeader.loadImg(user)
+//            bindView.layoutHeader.ivHeader.loadImg(user)
             MMKVUtils.putUser(user)//保存到本地
         }
 
@@ -143,7 +150,7 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
             bindView.tvJxh.text = "友聊号:${user?.showUserName()}"
             setGender()
 
-            bindView.layoutHeader.ivHeader.loadImg(user)
+//            bindView.layoutHeader.ivHeader.loadImg(user)
         }
     }
 }

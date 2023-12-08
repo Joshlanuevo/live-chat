@@ -53,12 +53,12 @@
         <ImageView
             android:id="@+id/pwdState"
             android:layout_width="24dp"
-            android:layout_marginRight="5dp"
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
+            android:layout_marginRight="5dp"
             android:button="@drawable/eye_selector"
-            android:src="@drawable/ic_pwd_open" />
+            android:src="@drawable/ic_pwd_close" />
     </RelativeLayout>
 
     <RelativeLayout

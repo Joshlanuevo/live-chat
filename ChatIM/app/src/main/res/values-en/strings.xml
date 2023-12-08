@@ -610,5 +610,6 @@
     <string name="中文">Chinese</string>
     <string name="英文">English</string>
     <string name="更换语言">Change language</string>
+    <string name="您创建了群组">You created a group</string>
     <string name="更换语言需要重启App才能生效">Changing the language requires restarting the app to take effect. Are you sure you want to change it?</string>
 </resources>

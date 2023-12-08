@@ -232,7 +232,6 @@ class LoginActivity : LoadingActivity() {
             }
         }
 
-        ImCache.KillOutType = "KickOut";
         if (!TextUtils.isEmpty(ImCache.KillOutType)) {
             HintDialog(
                 getString(R.string.通知),

@@ -6,6 +6,7 @@ import android.util.Log
 import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.Utils
+import com.google.common.reflect.TypeToken
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.ym.base.constant.EventKeys
 import com.ym.base.constant.EventKeys.UPDATE_NOTIFY
@@ -17,6 +18,8 @@ import com.ym.chat.R
 import com.ym.chat.app.BaseApp
 import com.ym.chat.bean.ChatMessageBean
 import com.ym.chat.bean.ConversationBean
+import com.ym.chat.bean.FriendListBean
+import com.ym.chat.bean.GroupActionBean
 import com.ym.chat.bean.GroupMemberBean
 import com.ym.chat.db.ChatDao
 import com.ym.chat.rxhttp.ChatRepository
@@ -25,6 +28,7 @@ import com.ym.chat.rxhttp.UserRepository
 import com.ym.chat.utils.*
 import com.ym.chat.utils.CommandType.DELETE_NOTIFY_MSG
 import com.ym.chat.utils.StringExt.decodeContent
+import com.ym.chat.viewmodel.FriendViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -129,6 +133,199 @@ class ChatWebSocketClient(
                     onReceiverHeart?.invoke()
                 }
 
+                CommandType.NOTIFICATION_EDIT_FRIEND_INFO -> {
+                    //更新了好友信息
+                    try {
+                        val jsonData = jsonObject.optJSONObject("data")
+                        val friendMemberId = jsonData.optString("friendMemberId")
+                        if (ImCache.isUpdateNotifyMsg)
+                            FriendViewModel().getFriendList(true, friendMemberId)
+                    } catch (e: Exception) {
+                    }
+                }
+                CommandType.DELETE_MSG -> {
+                    //远程销毁单条消息
+                    val jsonData = jsonObject.optJSONObject("data")
+                    val id = jsonData.optString("id")
+                    ChatDao.getChatMsgDb().delMessageByServiceId(id)
+
+                    LiveEventBus.get(EventKeys.DEL_MSG_ONE, String::class.java)
+                        .post(id)
+                }
+                CommandType.FRIEND_DATA -> {
+                    try {
+                        //好友数据和群数据
+                        val code = jsonObject.optInt("code")
+                        val data = jsonObject.optJSONObject("data")
+                        //好友数据
+                        val friends = data.optJSONArray("friends")
+                        if (friends != null && friends.length() > 0) {
+                            for (index in 0 until friends.length()) {
+                                val tempObjec = friends.optJSONObject(index)
+                                //好友分组ID
+                                val groupId = tempObjec.optString("groupId")
+                                //好友分组名称
+                                val name = tempObjec.optString("name")
+                                val usersStr = tempObjec.optString("users")
+                                val type =
+                                    object :
+                                        TypeToken<MutableList<ChatMessageBean>>() {}.type
+                                val friendList =
+                                    GsonUtils.fromJson<MutableList<FriendListBean>>(
+                                        usersStr,
+                                        type
+                                    )
+                            }
+                        }
+                        //群数据
+                        val groups = data.optJSONArray("groups")
+                        if (groups != null && groups.length() > 0) {
+                            for (index in 0 until groups.length()) {
+                                val tempObjec = groups.optJSONObject(index)
+                                //群头像
+                                val avatar = tempObjec.optString("avatar")
+                                //群ID
+                                val groupId = tempObjec.optString("groupId")
+                                //群名称
+                                val name = tempObjec.optString("name")
+                                //群信息数据
+                                val extras = tempObjec.optString("extras")
+                                //群成员
+                                val usersStr = tempObjec.optString("users")
+                                val type =
+                                    object :
+                                        TypeToken<MutableList<ChatMessageBean>>() {}.type
+                                val friendList =
+                                    GsonUtils.fromJson<MutableList<FriendListBean>>(
+                                        usersStr,
+                                        type
+                                    )
+                            }
+                        }
+                    } catch (e: Exception) {
+                        "数据解析异常=${jsonObject.toString()}".logE()
+                    }
+                }
+                CommandType.GROUP_ADD_MEMBER -> {
+
+                    //群成员被邀请加入群组
+                    val data = jsonObject.optJSONObject("data")
+                    val msgCreateTime = jsonObject.optLong("createTime")
+                    val id = jsonObject.optString("id")
+                    val groupIdStr = data.optString("groupId")
+                    val name = data.optString("operatorName")//操作人
+                    val operatorId = data.optString("operatorId")//操作人ID
+                    val memberName = data.optString("name")//被移除人名字
+                    val userId = data.optString("memberId")//被移除人id
+
+                    ChatDao.getConversationDb().saveGroupConversation(
+                        groupIdStr,
+                        "",
+                        MsgType.MESSAGETYPE_TEXT
+                    )
+
+                    //生成提示语
+                    val content =
+                        if (userId == MMKVUtils.getUser()?.id) {
+                            //被邀请人是自己
+                            if (ImCache.isUpdateNotifyMsg)
+                                ChatDao.syncFriendAndGroupToLocal(
+                                    isSyncFriend = false,
+                                    isSyncGroup = true
+                                )
+
+                            //生成会话
+                            ChatDao.getConversationDb().saveGroupConversation(
+                                groupIdStr,
+                                "您被${name}邀请入群",
+                                MsgType.MESSAGETYPE_TEXT
+                            )
+
+                            "您被${name}邀请入群"
+                        } else if (operatorId == MMKVUtils.getUser()?.id) {
+                            //我邀请了别人
+                            "您邀请了${memberName}入群"
+                        } else {
+                            //非自己，吃瓜群众看到的提示
+                            "${name}邀请${memberName}入群"
+                        }
+//                            createGroupNotice(groupIdStr, content, id, msgCreateTime)
+
+                    //添加群成员
+                    LiveEventBus.get(EventKeys.GROUP_ADD_MEMBER, String::class.java)
+                        .post(message)
+                }
+                CommandType.DELETE_GROUP -> {
+                    //后台解散一个群
+                    try {
+                        val jsonData = jsonObject.optJSONObject("data")
+                        val groupId = jsonData.optString("groupId")
+//                        //删除本地所有聊天数据
+//                        ChatDao.getChatMsgDb().delMsgListByGroupId(groupId)
+                        //删除本地会话数据
+                        ChatDao.getConversationDb().delConverByTargtId(groupId)
+                        //发广播更新群列表
+                        LiveEventBus.get(EventKeys.DELETE_GROUP, String::class.java)
+                            .post(groupId)
+                        //发广播到聊天页面
+                        LiveEventBus.get(EventKeys.SYSTEM_DEL_GROUP, String::class.java)
+                            .post(groupId)
+                    } catch (e: Exception) {
+                    }
+                }
+
+                CommandType.DEL_ALL_MSG -> {
+                    //远程销毁所有消息（好友）
+                    val jsonData = jsonObject.optJSONObject("data")
+                    val chatType = jsonData.optString("chatType")
+                    if (chatType == ChatType.CHAT_TYPE_FRIEND) {
+                        val from = jsonData.optString("from")
+                        val to = jsonData.optString("to")
+
+                        var delTarget = ""
+                        if (from == MMKVUtils.getUser()?.id) {
+                            //消息是自己发送给自己的
+                            delTarget = to
+                        } else {
+                            delTarget = from
+                        }
+                        //删除本地所有聊天数据
+                        ChatDao.getChatMsgDb().delMsgListByFriendId(delTarget)
+                        //更新本地会话数据
+                        ChatDao.getConversationDb()
+                            .updateMsgByTargtId(
+                                delTarget,
+                                ChatUtils.getString(R.string.yuanchengxiaoxiyibeixiaohui)
+                            )
+
+                        LiveEventBus.get(EventKeys.DEL_MSG_ALL, String::class.java)
+                            .post(delTarget)
+                    }
+                }
+                CommandType.DEL_ALL_MSG_GROUP -> {
+                    //远程销毁所有消息（群）
+                    try {
+                        val jsonData = jsonObject.optJSONObject("data")
+                        val chatType = jsonData.optString("chatType")
+                        if (chatType == ChatType.CHAT_TYPE_GROUP) {
+                            val groupId = jsonData.optString("groupId")
+                            //删除本地所有聊天数据
+                            ChatDao.getChatMsgDb().delMsgListByGroupId(groupId)
+                            //更新本地会话数据
+                            ChatDao.getConversationDb()
+                                .updateMsgByTargtId(
+                                    groupId,
+                                    ChatUtils.getString(R.string.yuanchengxiaoxiyibeixiaohui)
+                                )
+
+                            LiveEventBus.get(EventKeys.DEL_MSG_ALL, String::class.java)
+                                .post(groupId)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
                 CommandType.OTHER_LOGIN -> {
                     //KickOut: '您的账号已在别处登录'  Disable: '您已被后台管理员封禁'
                     try {
@@ -140,6 +337,119 @@ class ChatWebSocketClient(
                         LiveEventBus.get(EventKeys.LOGIN_OR_OUT, Boolean::class.java).post(false)
                     } catch (e: Exception) {
 
+                    }
+                }
+                CommandType.DEL_FRIEND -> {
+                    try {
+                        val jsonData = jsonObject.optJSONObject("data")
+                        var memberId = jsonData.optString("memberId")//操作者id
+                        val friendMemberId =
+                            jsonData.optString("friendMemberId")//别删除者Id
+                        if (MMKVUtils.getUser()?.id == memberId) {
+                            memberId = friendMemberId
+                        }
+                        if (ImCache.isUpdateNotifyMsg)
+                            ChatDao.syncFriendAndGroupToLocal(
+                                isSyncFriend = true,
+                                isSyncGroup = false
+                            )
+                        //清除会话历史记录
+                        ChatDao.getChatMsgDb().delMsgListByFriendId(memberId)
+                        //清除主页新消息窗口
+                        ChatDao.getConversationDb().delConverByTargtId(memberId)
+                        LiveEventBus.get(
+                            EventKeys.DEL_FRIEND_ACTION,
+                            String::class.java
+                        ).post(memberId)
+                    } catch (e: Exception) {
+                        "数据解析异常=${jsonObject.toString()}".logE()
+                    }
+                }
+                CommandType.DELETE_GROUP_NOTIFY_MSG -> {
+                    //多端同步删除群申请通知消息
+                    try {
+                        val messageIdList = jsonObject.optJSONArray("data")
+                        if (messageIdList != null && messageIdList.length() > 0) {
+                            for (index in 0 until messageIdList.length()) {
+                                var notifyId = messageIdList[index]
+                                if (notifyId is String)
+                                    ChatDao.getNotifyDb().delNotifyMsgById(notifyId)
+                            }
+                            //发广播通知主页更新
+                            LiveEventBus.get(
+                                EventKeys.DELETE_NOTIFY_MSG,
+                                String::class.java
+                            ).post("")
+                        }
+                    } catch (e: Exception) {
+                    }
+                }
+
+                CommandType.EDIT_USER_NAME_AND_HEADER -> {
+                    //多端同步个人信息 头像 名字改变
+                    ChatUtils.getUserInfo(true)
+                }
+                CommandType.GROUP_ACTION -> {
+                    //群操作事件
+                    val data = jsonObject.optString("data")
+                    val createTime = jsonObject.optLong("createTime")
+                    val id = jsonObject.optString("id")
+                    try {
+                        val groupAction =
+                            GsonUtils.fromJson<GroupActionBean>(
+                                data,
+                                GroupActionBean::class.java
+                            )
+                        //处理数据库更新
+                        ChatUtils.processGroupEvent(groupAction, id, createTime)
+
+                        LiveEventBus.get(
+                            EventKeys.GROUP_ACTION, GroupActionBean::class.java
+                        ).post(groupAction)
+                    } catch (e: Exception) {
+                        "数据解析异常=${jsonObject.toString()}".logE()
+                    }
+                }
+                CommandType.NEWFRIEND_ADDME, CommandType.ADD_FRIEND -> {
+                    //有人添加我为好友刷新本地好友数据
+                    ChatDao.syncFriendAndGroupToLocal(
+                        isSyncFriend = true,
+                        isSyncGroup = false,
+                        isEventUpdateConver = ImCache.isUpdateNotifyMsg
+                    )
+                    try {
+                        val jsonData = jsonObject.optJSONObject("data")
+                        var memberId = jsonData.optString("memberId")//操作者id
+                        var friendMemberId = jsonData.optString("friendMemberId")//被添加者id
+                        if (memberId == MMKVUtils.getUser()?.id) {
+                            //操作者是自己
+                            var name =
+                                if (!jsonData.isNull("friendMemberName")) jsonData.optString(
+                                    "friendMemberName"
+                                ) else "Ta"
+                            ChatDao.getConversationDb().saveFriendConversation(
+                                friendMemberId,
+                                String.format(ChatUtils.getString(R.string.成为好友), name),
+                                MsgType.MESSAGETYPE_TEXT
+                            )
+                        } else {
+                            //操作者是别人
+                            var name =
+                                if (!jsonData.isNull("memberName")) jsonData.optString("memberName") else "Ta"
+                            ChatDao.getConversationDb().saveFriendConversation(
+                                memberId,
+                                String.format(ChatUtils.getString(R.string.成为好友), name),
+                                MsgType.MESSAGETYPE_TEXT
+                            )
+                            //存储好友系统通知
+                            ChatDao.getConversationDb()
+                                .updateNotifyLastMsg(
+                                    msgType = 0,
+                                    content = ChatUtils.getString(R.string.好友申请),
+                                    msgTime = System.currentTimeMillis()
+                                )
+                        }
+                    } catch (e: Exception) {
                     }
                 }
 
@@ -331,7 +641,66 @@ class ChatWebSocketClient(
                         ChatUtils.saveMsg(chatMsg)
                     }
                 }
+                CommandType.MSG_EDIT -> {
+                    //聊天消息
+                    val data = jsonObject.optString("data")
+                    val chatMsg = GsonUtils.fromJson(data, ChatMessageBean::class.java)
+                    if (!chatMsg.parentMessageId.isNullOrEmpty()) {
+                        ChatDao.getChatMsgDb()
+                            .queryMsgByIdBeforeDate(chatMsg.parentMessageId)
+                            .let {
+                                if (it != null) {
+                                    it.content = chatMsg.content
+                                    it.editId = chatMsg.id
+                                    it.msgType = chatMsg.msgType
+                                    it.operationType = chatMsg.operationType
+                                    ChatUtils.saveEditMsg(
+                                        it,
+                                        chatMsg.from == MMKVUtils.getUser()?.id
+                                    )
+                                }
+                            }
+                    }
+                }
+                CommandType.JOIN_GROUP -> {
+                    //新建入群
+                    if (ImCache.isUpdateNotifyMsg)
+                        ChatDao.syncFriendAndGroupToLocal(
+                            isSyncFriend = false,
+                            isSyncGroup = true,
+                            isEventUpdateConver = true
+                        )
+                    val jsonData = jsonObject.optJSONObject("data")
+                    val createTime = jsonObject.optLong("createTime")
+                    val id = jsonObject.optString("id")
+                    val createTime11 = jsonData.optLong("createTime")
+                    val groupIdStr = jsonData.optString("groupId")
+                    val userId = jsonData.optString("memberId")
+                    val nick = jsonData.optString("name")
+                    var groupName = ""
+                    if (!jsonData.isNull("groupName"))
+                        groupName = jsonData.optString("groupName")
 
+                    "-----${createTime}---${createTime11}-----\n${jsonData.toString()}".logE()
+                    //生成提示语
+                    if (userId != MMKVUtils.getUser()?.id) {
+                        //非自己
+                        //生成会话列表数据
+                        ChatDao.getConversationDb().saveGroupConversation(
+                            groupIdStr,
+                            "${nick}创建「${groupName}」群",
+                            MsgType.MESSAGETYPE_TEXT
+                        )
+//                                createGroupNotice(groupIdStr, "您被${nick}邀请入群", id, createTime)
+                    } else {
+                        var groupInfo = ChatDao.getGroupDb().getGroupInfoById(groupIdStr)
+                        if (groupInfo != null) {
+                            //说明这个群是移动端操作的，不需要处理
+                        } else {
+                            //说明这个群是pc操作的
+                        }
+                    }
+                }
                 CommandType.TOP_MSG -> {
                     //置顶消息
                     try {
@@ -494,6 +863,7 @@ class ChatWebSocketClient(
                             val lastMessageTime = array.optLong("lastMessageTime")
                             val unreadCount = array.optInt("unreadCount", -1)
                             val type = array.optString("type")
+                            val name = array.optString("name")
                             val friendMemberId = array.optString("friendMemberId")
                             val signType = array.optString("signType", "read")
                             var messageNotice = array.optString("messageNotice", "y")

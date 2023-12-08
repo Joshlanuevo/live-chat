@@ -160,6 +160,7 @@ class ConversationDb {
         serviceMsgCount: Int = -1,
         isMute: Boolean? = null,
         isRead: Boolean = true,
+        name:String = ""
     ) {
         ChatDao.mBoxStore.boxFor(ConversationBean::class.java).run {
             val targetConver = query().filter { it.chatId == targetId }.build().find()
@@ -205,6 +206,7 @@ class ConversationDb {
                     chatId = targetId
                     type = 0
                     lastMsg = lastMsgStr
+                    this.name = name
                     if (serviceMsgCount >= 0) {
                         msgCount = serviceMsgCount
                     } else {

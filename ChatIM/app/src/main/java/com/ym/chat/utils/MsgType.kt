@@ -156,7 +156,7 @@ object CommandType {
 
     //删除好友
     const val DEL_FRIEND = 25
-
+    const val ADD_FRIEND = 26
     //群操作事件
     const val GROUP_ACTION = 23
 

@@ -37,9 +37,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include
+        <com.ym.chat.widget.AvatarImageView
             android:id="@+id/layout_header"
-            layout="@layout/layout_header"
             android:layout_width="86dp"
             android:layout_height="86dp"
             android:layout_marginLeft="16dp"

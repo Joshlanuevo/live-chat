@@ -47,7 +47,7 @@ class PersonalInfoActivity : LoadingActivity() {
         bindView.ivBack.click {
             finish()
         }
-        bindView.layoutHeader.ivHeader.click {
+        bindView.layoutHeader.click {
             SelectPhotoPopWindow(this)
                 .apply {
                     onItemClickListener = { data, position, view ->
@@ -110,7 +110,11 @@ class PersonalInfoActivity : LoadingActivity() {
     private fun setUserInfoView() {
         user = MMKVUtils.getUser()
         user?.apply {
-            bindView.layoutHeader.ivHeader.loadImg(user)
+            bindView.layoutHeader.apply {
+                setRoundRadius(200f)
+                setChatId(user?.id?:"")
+                setChatName(user?.name?:"")
+            }.showUrl(user?.headUrl)
             bindView.tvNickName.text = this?.name
             var username = this.username
             if (username.isEmpty()) {
@@ -120,9 +124,9 @@ class PersonalInfoActivity : LoadingActivity() {
             bindView.tvPhone.text = this?.mobile
             setGender()
 
-            Utils.showDaShenImageView(
-                bindView.layoutHeader.ivHeaderMark, this?.displayHead == "Y", this?.levelHeadUrl
-            )
+//            Utils.showDaShenImageView(
+//                bindView.layoutHeader.ivHeaderMark, this?.displayHead == "Y", this?.levelHeadUrl
+//            )
         }
     }
 
@@ -201,7 +205,11 @@ class PersonalInfoActivity : LoadingActivity() {
             bindView.tvNickName.text = user?.name
             //增加性别
             setGender()
-            bindView.layoutHeader.ivHeader.loadImg(user)
+            bindView.layoutHeader.apply {
+                setRoundRadius(200f)
+                setChatId(user?.id?:"")
+                setChatName(user?.name?:"")
+            }.showUrl(user?.headUrl)
         }
 
         /*接收ws修改个人信息同步 广播*/
@@ -210,7 +218,11 @@ class PersonalInfoActivity : LoadingActivity() {
             bindView.tvNickName.text = user?.name
             setGender()
 
-            bindView.layoutHeader.ivHeader.loadImg(user)
+            bindView.layoutHeader.apply {
+                setRoundRadius(200f)
+                setChatId(user?.id?:"")
+                setChatName(user?.name?:"")
+            }.showUrl(user?.headUrl)
         }
     }
 
@@ -222,7 +234,11 @@ class PersonalInfoActivity : LoadingActivity() {
         //1、上传图片
         ChatViewModel().uploadFile(localPath, "Picture", progress = {}, success = { result ->
             headUrl = result.data.filePath
-            bindView.layoutHeader.ivHeader.load(headUrl)
+            bindView.layoutHeader.apply {
+                setRoundRadius(200f)
+                setChatId(user?.id?:"")
+                setChatName(user?.name?:"")
+            }.showUrl(user?.headUrl)
             //提交自己头像url 到User
             mViewModel.editUserInfo(headUrl = headUrl)
         }, error = {

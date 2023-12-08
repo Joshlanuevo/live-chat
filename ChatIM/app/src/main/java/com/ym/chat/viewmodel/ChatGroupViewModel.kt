@@ -7,12 +7,14 @@ import com.ym.base.constant.EventKeys
 import com.ym.base.ext.toast
 import com.ym.base.mvvm.BaseViewModel
 import com.ym.base.util.save.MMKVUtils
+import com.ym.chat.R
 import com.ym.chat.bean.*
 import com.ym.chat.db.ChatDao
 import com.ym.chat.enum.AskStatus
 import com.ym.chat.enum.GroupMemberType
 import com.ym.chat.rxhttp.GroupRepository
 import com.ym.chat.utils.ChatType
+import com.ym.chat.utils.ChatUtils
 import com.ym.chat.utils.MsgType
 
 /**
@@ -56,11 +58,11 @@ class ChatGroupViewModel : BaseViewModel() {
                 }
 
                 //生成会话列表数据
-//                ChatDao.getConversationDb().saveGroupConversation(
-//                    result.data.id,
-//                    "您创建了群组",
-//                    MsgType.MESSAGETYPE_TEXT
-//                )
+                ChatDao.getConversationDb().saveGroupConversation(
+                    result.data.id,
+                    ChatUtils.getString(R.string.您创建了群组),
+                    MsgType.MESSAGETYPE_TEXT
+                )
 
                 createGroupLiveData.value = LoadState.Success(result)
             } else {

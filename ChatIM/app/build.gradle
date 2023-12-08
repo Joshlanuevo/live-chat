@@ -200,7 +200,7 @@ dependencies {
     implementation Depend.rxandroid
 
     //腾讯解码库
-    implementation Depend.txVideo
+//    implementation Depend.txVideo
     implementation Depend.shadowLayout
 
     //mqtt
