@@ -279,6 +279,7 @@
     <string name="m_yuyin">[语音]</string>
     <string name="m_tupian">[图片]</string>
     <string name="m_wenjian">[文件]</string>
+    <string name="m_mingpian">[名片]</string>
     <string name="quxiaozhiding">取消置顶</string>
     <string name="quxiaojinyin">取消静音</string>
     <string name="tupian">图片</string>

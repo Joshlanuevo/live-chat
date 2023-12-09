@@ -279,6 +279,7 @@
     <string name="m_yuyin">[Voice Message]</string>
     <string name="m_tupian">[Picture]</string>
     <string name="m_wenjian">[File]</string>
+    <string name="m_mingpian">[Contact Card]</string>
     <string name="quxiaozhiding">Cancel Pin</string>
     <string name="quxiaojinyin">Cancel Mute</string>
     <string name="tupian">Picture</string>

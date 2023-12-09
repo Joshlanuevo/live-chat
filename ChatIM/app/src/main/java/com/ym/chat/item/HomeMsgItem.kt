@@ -336,6 +336,9 @@ class HomeMsgItem(
             MsgType.MESSAGETYPE_FILE -> {
                 textView.text = ActivityUtils.getTopActivity().getString(R.string.m_wenjian)
             }
+            MsgType.MESSAGETYPE_CONTACT -> {
+                textView.text = ActivityUtils.getTopActivity().getString(R.string.m_mingpian)
+            }
             else -> {
                 textView.text = conver.lastMsg
             }
