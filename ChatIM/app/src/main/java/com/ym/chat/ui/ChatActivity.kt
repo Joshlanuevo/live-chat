@@ -2758,7 +2758,15 @@ class ChatActivity : LoadingActivity(),
         }
     }
 
-
+    private var isNeedRequestData = false
+    override fun onResume() {
+        super.onResume()
+        if (!isNeedRequestData) {
+            isNeedRequestData = true
+        } else {
+            requestData()
+        }
+    }
     override fun onRestart() {
         super.onRestart()
         mAdapter?.notifyDataSetChanged()
