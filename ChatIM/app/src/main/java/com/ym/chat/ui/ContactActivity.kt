@@ -91,7 +91,6 @@ class ContactActivity : LoadingActivity() {
                     intent.putExtra(GROUP_ID, groupId)
                     intent.putExtra(MEMBERTYPE, memberType)
                 }
-
                 3 -> {
                     intent.putExtra(GROUP_ID, groupId)
                     intent.putExtra(MEMBERTYPE, memberType)
@@ -102,6 +101,8 @@ class ContactActivity : LoadingActivity() {
     }
 
     override fun initView() {
+        getIntentData()
+
         bindView.toolbar.run {
             viewBack.click {
                 finish()
@@ -114,9 +115,25 @@ class ContactActivity : LoadingActivity() {
 
         bindView.tvComplete.click {
             when (inType) {
-                0 -> showInputDialog()//创建群主，dialog
-                1 -> startChatActivity()//去ChatActivity发消息
-                2 -> inviteAddGroupMember(memberType)//调用添加好友接口
+                0 -> {
+                    val selectData = mAdapter.data.filter { it is FriendListBean && it.isSelect }
+                    if (selectData.size > 100) {
+                        "选择的人数不能大于100".toast()
+                    } else {
+                        showInputDialog()//创建群主，dialog
+                    }
+                }
+                1 -> {
+                    startChatActivity()//去ChatActivity发消息
+                }
+                2 -> {
+                    val selectData = mAdapter.data.filter { it is FriendListBean && it.isSelect }
+                    if (selectData.size > 100) {
+                        "选择的人数不能大于100".toast()
+                    } else {
+                        inviteAddGroupMember(memberType)//调用添加好友接口
+                    }
+                }
             }
         }
 
@@ -130,7 +147,7 @@ class ContactActivity : LoadingActivity() {
             override fun onMoveUp() = bindView.tvSelectBar.invisible()
         })
 
-        mAdapter.addItemBinder(FriendContactItem(onCheckListener = { p, b ->
+        mAdapter.addItemBinder(FriendContactItem(inputType = inType, onCheckListener = { p, b ->
             selectFriendChanged(p, b)
         }, onClickListener = { p, b ->
             if (inType == 3) {
@@ -151,18 +168,12 @@ class ContactActivity : LoadingActivity() {
                         var title = ""
                         var content = ""
                         var isDeleteAdmin = false
-                        if (memberBean?.role?.lowercase() == "normal") {
-                            title = getString(R.string.设置管理员)
-                            content = String.format(
-                                getString(R.string.设置管理员提示),
-                                memberBean.nickname
-                            )
+                        if (memberBean.role.lowercase() == "normal") {
+                            title = "设置管理员"
+                            content = "您确定要设置 ${memberBean?.nickname} 为管理员吗？ "
                         } else {
-                            title = getString(R.string.取消管理员)
-                            content = String.format(
-                                getString(R.string.取消管理员提示),
-                                memberBean.nickname
-                            )
+                            title = "取消管理员"
+                            content = "您确定要取消 ${memberBean?.nickname} 的管理员吗?"
                             isDeleteAdmin = true
                         }
                         HintDialog(
@@ -186,17 +197,15 @@ class ContactActivity : LoadingActivity() {
                             isShowHeader = true, isTitleTxt = true
                         ).show(supportFragmentManager, "HintDialog")
                     }
-
                     1 -> {//设置/取消禁言
                         var title = ""
                         var content = ""
                         if (memberBean?.allowSpeak == "N") {
-                            title = getString(R.string.解除禁言)
-                            content =
-                                String.format(getString(R.string.解除禁言提示), memberBean.nickname)
+                            title = "解除禁言"
+                            content = "您确定要解除 ${memberBean?.nickname} 禁言吗？ "
                         } else {
-                            title = getString(R.string.设置禁言)
-                            content = String.format(getString(R.string.设置禁言提示), memberBean.nickname)
+                            title = "设置禁言"
+                            content = "您确定要对 ${memberBean?.nickname} 设置禁言吗?"
                         }
                         HintDialog(
                             title,
@@ -218,11 +227,10 @@ class ContactActivity : LoadingActivity() {
                             isShowHeader = true, isTitleTxt = true
                         ).show(supportFragmentManager, "HintDialog")
                     }
-
                     2 -> {//移除成员
                         HintDialog(
-                            getString(R.string.zhuyi),
-                            String.format(getString(R.string.移出群组提示),memberBean.nickname),
+                            "注意",
+                            "是否将${memberBean.nickname}移出群组？",
                             object : ConfirmDialogCallback {
                                 override fun onItemClick() {
                                     memberBean.id?.let { it1 ->
@@ -380,17 +388,27 @@ class ContactActivity : LoadingActivity() {
 
     private fun setAllSelectState() {
         if (isAllSelect) {
-            bindView.toolbar.tvSubtitle.text = getString(R.string.quxiao)
+            bindView.toolbar.tvSubtitle.text = "取消"
             bindView.tvComplete.isEnabled = true
             friendLists.forEachIndexed { index, friend ->
                 friend.isSelect = true
             }
             setDataHandle(friendLists, friendAllLists)
         } else {
-            bindView.toolbar.tvSubtitle.text = getString(R.string.全选)
+            bindView.toolbar.tvSubtitle.text = "全选"
             bindView.tvComplete.isEnabled = false
-            friendLists.forEachIndexed { index, friend ->
-                friend.isSelect = false
+            if (inType == 0 || inType == 2) {
+                friendLists.forEachIndexed { index, friend ->
+                    friend.isSelect = false
+                }
+            } else {
+                friendLists.forEachIndexed { index, friend ->
+                    if (index > 99) {
+                        friend.isSelect = false
+                    } else {
+                        friend.isSelect = false
+                    }
+                }
             }
             setDataHandle(friendLists, friendAllLists)
         }
@@ -398,39 +416,38 @@ class ContactActivity : LoadingActivity() {
 
     //<editor-fold defaultstate="collapsed" desc="跟数据类型显示界面">
     override fun requestData() {
-        intent?.let { intent ->
-            inType = intent.getIntExtra(IN_TYPE, 0)
-            when (inType) {
-                0 -> {
-                    //0。创建群主
-                    bindView.toolbar.tvSubtitle.text = getString(R.string.全选)
-                    showCreateGroupAndSendGroupMsg()
-                }
-
-                1 -> {
-                    //1。群发消息选择好友
-                    bindView.toolbar.tvSubtitle.text = getString(R.string.全选)
-                    showCreateGroupAndSendGroupMsg()
-                }
-
-                2 -> {
-                    //2.群添加群成员
-                    showAddGroupMember()
-                }
-
-                3 -> {
-                    //3。查看群所有成员
-                    groupId = intent.getStringExtra(GROUP_ID).toString()
-                    memberType = intent.getIntExtra(MEMBERTYPE, 0)
-                    bindView.toolbar.tvTitle.text = getString(R.string.全部群成员)
-                    bindView.toolbar.tvSubtitle.gone()
-                    bindView.flComplete.gone()
-                    showLookGroupMember()
-                }
+        when (inType) {
+            0 -> {
+                //0。创建群主
+                bindView.toolbar.tvSubtitle.text = "全选"
+                showCreateGroupAndSendGroupMsg()
+            }
+            1 -> {
+                //1。群发消息选择好友
+                bindView.toolbar.tvSubtitle.text = "全选"
+                showCreateGroupAndSendGroupMsg()
+            }
+            2 -> {
+                //2.群添加群成员
+                showAddGroupMember()
+            }
+            3 -> {
+                //3。查看群所有成员
+                groupId = intent.getStringExtra(GROUP_ID).toString()
+                memberType = intent.getIntExtra(MEMBERTYPE, 0)
+                bindView.toolbar.tvTitle.text = "全部群成员"
+                bindView.toolbar.tvSubtitle.gone()
+                bindView.flComplete.gone()
+                showLookGroupMember()
             }
         }
     }
 
+    private fun getIntentData(){
+        intent?.let { intent ->
+            inType = intent.getIntExtra(IN_TYPE, 0)
+        }
+    }
     /**
      * 查看群所有成员
      * 显示view
@@ -507,8 +524,8 @@ class ContactActivity : LoadingActivity() {
         }
         memberLists.addAll(friendMembers)
 
-        bindView.toolbar.tvTitle.text = getString(R.string.选择好友)
-        bindView.toolbar.tvSubtitle.text = getString(R.string.全选)
+        bindView.toolbar.tvTitle.text = "选择好友"
+        bindView.toolbar.tvSubtitle.text = "全选"
 //                    mViewModel.getFriendList()
         friendLists.clear()
         var friends = ChatDao.getFriendDb().getFriendList()
@@ -537,7 +554,7 @@ class ContactActivity : LoadingActivity() {
      * 显示界面
      */
     private fun showCreateGroupAndSendGroupMsg() {
-        bindView.toolbar.tvTitle.text = getString(R.string.选择好友)
+        bindView.toolbar.tvTitle.text = "选择好友"
         var friends = ChatDao.getFriendDb().getFriendList()
 //                    mViewModel.getFriendList()
         friendLists.clear()
@@ -583,7 +600,6 @@ class ContactActivity : LoadingActivity() {
                 is BaseViewModel.LoadState.Loading -> {
                     showLoading()
                 }
-
                 is BaseViewModel.LoadState.Success -> {
                     friendLists.clear()
                     if (inType == 2) {
@@ -613,13 +629,12 @@ class ContactActivity : LoadingActivity() {
 
                     hideLoading()
                 }
-
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()
                     if (!TextUtils.isEmpty(result.exc?.message)) {
                         result.exc?.message.toast()
                     } else {
-                        getString(R.string.获取数据失败).toast()
+                        "获取数据失败".toast()
                     }
                 }
             }
@@ -631,27 +646,33 @@ class ContactActivity : LoadingActivity() {
                 is BaseViewModel.LoadState.Loading -> {
                     showLoading()
                 }
-
                 is BaseViewModel.LoadState.Success -> {
                     //创建群组成功
                     hideLoading()
                     //保存到本地
                     ChatDao.getGroupDb().saveGroup(result.data?.data)
                     //跳转到聊天界面
-                    result.data?.data?.id?.let { ChatActivity.start(this, it, 1) }
+                    result.data?.data?.id?.let {
+                        ChatActivity.start(
+                            this,
+                            it,
+                            1,
+                            chatName = result.data?.data?.name ?: "",
+                            chatHeader = result.data?.data?.headUrl ?: ""
+                        )
+                    }
 
                     //发送创建群广播
                     LiveEventBus.get(EventKeys.ADD_FRIEND, Boolean::class.java)
                         .post(true)//发广播给主页列表页面 更新界面
                     this.finish()
                 }
-
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()
                     if (!TextUtils.isEmpty(result.exc?.message)) {
                         result.exc?.message.toast()
                     } else {
-                        getString(R.string.创建群组失败).toast()
+                        "创建群组失败".toast()
                     }
                 }
             }
@@ -663,7 +684,6 @@ class ContactActivity : LoadingActivity() {
                 is BaseViewModel.LoadState.Loading -> {
                     showLoading()
                 }
-
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
 //                    "邀请群成员成功".toast()
@@ -671,13 +691,12 @@ class ContactActivity : LoadingActivity() {
                         .post(true)//发关闭给群设置界面更新数据
                     this.finish()
                 }
-
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()
                     if (!TextUtils.isEmpty(result.exc?.message)) {
                         result.exc?.message.toast()
                     } else {
-                        getString(R.string.邀请失败).toast()
+                        "邀请失败".toast()
                     }
                 }
             }
@@ -690,10 +709,9 @@ class ContactActivity : LoadingActivity() {
                 is BaseViewModel.LoadState.Loading -> {
                     showLoading()
                 }
-
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
-                    if (isDelAdmin) getString(R.string.取消管理员成功).toast() else getString(R.string.设置管理员成功).toast()
+                    if (isDelAdmin) "取消管理员成功".toast() else "设置管理员成功".toast()
                     friendLists?.forEach { f ->
                         if (f.id == setAndDelAdminId) {
                             f.role = if (isDelAdmin) "normal" else "admin"
@@ -707,7 +725,6 @@ class ContactActivity : LoadingActivity() {
                     LiveEventBus.get(EventKeys.ADD_GROUP_MEMBER, Boolean::class.java)
                         .post(true)
                 }
-
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()
                     if (!TextUtils.isEmpty(result.exc?.message)) {
@@ -723,7 +740,6 @@ class ContactActivity : LoadingActivity() {
                 is BaseViewModel.LoadState.Loading -> {
                     showLoading()
                 }
-
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
 
@@ -737,7 +753,6 @@ class ContactActivity : LoadingActivity() {
 
                     setViewShow()
                 }
-
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()
                     if (!TextUtils.isEmpty(result.exc?.message)) {
@@ -754,7 +769,6 @@ class ContactActivity : LoadingActivity() {
                 is BaseViewModel.LoadState.Loading -> {
                     showLoading()
                 }
-
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
                     //刷新数据操作
@@ -770,7 +784,6 @@ class ContactActivity : LoadingActivity() {
                         }
                     }
                 }
-
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()
                     if (!TextUtils.isEmpty(result.exc?.message)) {
@@ -854,7 +867,7 @@ class ContactActivity : LoadingActivity() {
                     )
                 ) {
                     //如果是群主
-                    listData.add(setTxtTitle(getString(R.string.群主)))
+                    listData.add(setTxtTitle("群主"))
                     it.showLine = false
                     listData.add(it)
                 }
@@ -867,7 +880,7 @@ class ContactActivity : LoadingActivity() {
                 ) {
                     //如果是管理员
                     if (!isAdmin) {
-                        listData.add(setTxtTitle(getString(R.string.管理员)))
+                        listData.add(setTxtTitle("管理员"))
                         isAdmin = true
                     }
                     it.showLine = true
@@ -934,7 +947,7 @@ class ContactActivity : LoadingActivity() {
     private fun setEmptyView() {
         mEmptyBind?.let { vb ->
             if (inType == 2) {
-                vb.tvEmpty.text = getString(R.string.没有能入群的好友喔)
+                vb.tvEmpty.text = "没有能入群的好友喔"
             }
             mAdapter.setEmptyView(vb.root)
         }

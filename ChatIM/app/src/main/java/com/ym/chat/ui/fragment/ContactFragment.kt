@@ -2,10 +2,11 @@ package com.ym.chat.ui.fragment
 
 import android.content.Intent
 import android.view.Gravity
+import coil.load
+import coil.transform.RoundedCornersTransformation
 import com.dylanc.viewbinding.binding
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.ym.base.constant.EventKeys
-import com.ym.base.ext.logE
 import com.ym.base.widget.ext.click
 import com.ym.chat.R
 import com.ym.chat.adapter.FriendAdapter
@@ -13,7 +14,6 @@ import com.ym.chat.bean.FriendListBean
 import com.ym.chat.bean.GroupActionBean
 import com.ym.chat.bean.GroupInfoBean
 import com.ym.chat.databinding.FragmentContactBinding
-import com.ym.chat.databinding.ViewHeaderFriendBinding
 import com.ym.chat.db.ChatDao
 import com.ym.chat.item.FriendGroupItem
 import com.ym.chat.item.FriendUserItem
@@ -21,6 +21,7 @@ import com.ym.chat.popup.HomeAddPopupWindow
 import com.ym.chat.ui.ChatActivity
 import com.ym.chat.ui.SearchFriendActivity
 import com.ym.chat.utils.ImCache
+import com.ym.chat.utils.PlatformUtils
 import com.ym.chat.viewmodel.FriendViewModel
 
 /**
@@ -39,12 +40,24 @@ class ContactFragment : LoadingFragment(R.layout.fragment_contact) {
 //            //添加好友
 //            startActivity(Intent(activity, SearchFriendActivity::class.java))
 //        }
+        bindView.ivLogo.load(R.mipmap.ic_launcher)
         mAdapter.addFullSpanNodeProvider(FriendGroupItem())
         mAdapter.addNodeProvider(FriendUserItem(onItemClickListener = {
             if (it is FriendListBean) {
-                activity?.let { it1 -> ChatActivity.start(it1, it.id, 0) }
+
+                activity?.let { it1 ->
+                    ChatActivity.start(it1, it.id, 0, chatName = it.name, chatHeader = it.headUrl)
+                }
             } else if (it is GroupInfoBean) {
-                activity?.let { it1 -> ChatActivity.start(it1, it.id, 1) }
+                activity?.let { it1 ->
+                    ChatActivity.start(
+                        it1,
+                        it.id,
+                        1,
+                        chatName = it.name,
+                        chatHeader = it.headUrl
+                    )
+                }
             }
         }))
         bindView.listFriend.adapter = mAdapter
@@ -129,14 +142,15 @@ class ContactFragment : LoadingFragment(R.layout.fragment_contact) {
         }
 
         /**收到群设置 相关参数 的推送消息 广播*/
-        LiveEventBus.get(EventKeys.GROUP_ACTION, GroupActionBean::class.java).observe(this) { groupAction ->
-            //刷新数据操作，自己被设置或取消管理员，本地数据库已更新
-            if (ImCache.isUpdateNotifyMsg)
-                ChatDao.syncFriendAndGroupToLocal(
-                    isSyncFriend = false
-                ) {
-                    mViewModel.getList()
-                }
-        }
+        LiveEventBus.get(EventKeys.GROUP_ACTION, GroupActionBean::class.java)
+            .observe(this) { groupAction ->
+                //刷新数据操作，自己被设置或取消管理员，本地数据库已更新
+                if (ImCache.isUpdateNotifyMsg)
+                    ChatDao.syncFriendAndGroupToLocal(
+                        isSyncFriend = false
+                    ) {
+                        mViewModel.getList()
+                    }
+            }
     }
 }

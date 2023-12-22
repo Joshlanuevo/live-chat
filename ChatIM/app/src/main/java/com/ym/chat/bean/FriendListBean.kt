@@ -1,6 +1,7 @@
 package com.ym.chat.bean
 
 import com.chad.library.adapter.base.entity.node.BaseNode
+import com.ym.chat.rxhttp.ApiUrl
 import com.ym.chat.utils.PatternUtils
 import com.ym.chat.utils.PinyinUtils
 import com.ym.chat.utils.TimeUtils
@@ -28,7 +29,6 @@ data class FriendListBean(
     var code: String = "",
     var address: String = "",
     var gender: String = "",
-    var headUrl: String = "",
     var mobile: String = "",
     var name: String = "",
     var sign: String = "",
@@ -52,11 +52,24 @@ data class FriendListBean(
     var role: String = ""//这个字段是查看群成员列表 查看资料 上 使用
 ) : Serializable, BaseNode() {
 
+    var headUrl: String = ""
+        get() {
+            try {
+                val host = ApiUrl.baseApiUrl
+                val lastIndex1 = field.lastIndexOf("/")
+                val lastIndex2 = field.lastIndexOf("/", lastIndex1 - 1)
+                val fileName = field.substring(lastIndex2)
+                return host + ApiUrl.suffix + fileName
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return field
+            }
+        }
     var id: String = ""
-    get() = friendMemberId
+        get() = friendMemberId
 
     override val childNode: MutableList<BaseNode>?
-    get() = null
+        get() = null
 
     @Transient
     var isSelect = false //是否选择了好友
@@ -66,16 +79,16 @@ data class FriendListBean(
 
     @Transient
     var firstChar: String = ""
-    get() {
-        val char = PinyinUtils.getPinyinFirstLetter(name)?.uppercase() ?: "#"
-        return if (PatternUtils.isEnglish(char)) char else "#"
-    }
+        get() {
+            val char = PinyinUtils.getPinyinFirstLetter(name)?.uppercase() ?: "#"
+            return if (PatternUtils.isEnglish(char)) char else "#"
+        }
 
     @Transient
     var fullChar: String = ""
-    get() {
-        return PinyinUtils.ccs2Pinyin(name)?.uppercase() ?: "#"
-    }
+        get() {
+            return PinyinUtils.ccs2Pinyin(name)?.uppercase() ?: "#"
+        }
 
     @Transient
     var showLine = true
@@ -90,21 +103,21 @@ data class FriendListBean(
 
     @Transient
     var nickname: String = ""
-    get() {
-        return if (remark != null && remark.isNotEmpty()) {
-            remark
-        } else {
-            if (name != null && name.isNotEmpty()) {
-                name
+        get() {
+            return if (remark != null && remark.isNotEmpty()) {
+                remark
             } else {
-                username
+                if (name != null && name.isNotEmpty()) {
+                    name
+                } else {
+                    username
+                }
             }
         }
-    }
 
     @Transient
     var createTimestamp: Long = 0
-    get() {
-        return TimeUtils.getCollectDateTimestamp(createTime)
-    }
+        get() {
+            return TimeUtils.getCollectDateTimestamp(createTime)
+        }
 }

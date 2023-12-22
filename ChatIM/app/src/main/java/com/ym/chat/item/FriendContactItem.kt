@@ -4,8 +4,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.blankj.utilcode.util.SPUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.chad.library.adapter.base.binder.QuickViewBindingItemBinder
+import com.ym.base.constant.EventKeys
 import com.ym.base.ext.logE
 import com.ym.base.util.save.MMKVUtils
 import com.ym.base.widget.ext.click
@@ -24,6 +26,7 @@ import java.util.*
 
 
 class FriendContactItem(
+    private var inputType: Int = 0,
     private val onCheckListener: ((position: Int, bean: FriendListBean) -> Unit)? = null,//选择框
     private val onClickListener: ((position: Int, bean: FriendListBean) -> Unit)? = null,//点击头像
     private val onLongClickListener: ((type: Int, position: Int, bean: FriendListBean) -> Unit)? = null//长按弹框设置
@@ -40,12 +43,22 @@ class FriendContactItem(
     //<editor-fold defaultstate="collapsed" desc="数据绑定">
     override fun convert(holder: BinderVBHolder<ItemFriendBinding>, data: FriendListBean) {
         holder.viewBinding.let { vb ->
-            vb.layoutHeader.ivHeader.loadImg(data)
+            vb.layoutHeader.ivHeader.loadImg(data, holder.viewBinding.layoutHeader.tvHeader)
 //            Utils.showDaShenImageView(
 //                vb.layoutHeader.ivHeaderMark, data?.displayHead == "Y", data?.levelHeadUrl
 //            )
-            Utils.showDaShenImageView(vb.layoutHeader.ivHeaderMark,data)
-            vb.tvName.text = data.nickname
+            Utils.showDaShenImageView(vb.layoutHeader.ivHeaderMark, data)
+            val showGroupMember = SPUtils.getInstance().getBoolean(EventKeys.HIDE_MEMBER, true)
+            if (inputType == 3) {
+                if (MMKVUtils.isAdmin() || showGroupMember) {
+                    vb.tvName.text = data.nickname
+                } else {
+                    vb.tvName.text = "******"
+                }
+            } else {
+                vb.tvName.text = data.nickname
+            }
+
             if (data.isShowCheck) {
                 vb.cbSelect.visible()
                 vb.cbSelect.isChecked = data.isSelect
@@ -58,17 +71,19 @@ class FriendContactItem(
             }
             if (data.showLine) vb.vLine.visible() else vb.vLine.gone()
             vb.layoutHeader.ivHeader.click {
-                onClickListener?.invoke(holder.adapterPosition, data) }
+                onClickListener?.invoke(holder.adapterPosition, data)
+            }
             vb.tvName.click {
                 vb.cbSelect.isChecked = !vb.cbSelect.isChecked
                 data.isSelect = !data.isSelect
-                onClickListener?.invoke(holder.adapterPosition, data) }
+                onClickListener?.invoke(holder.adapterPosition, data)
+            }
             vb.tvName.setOnLongClickListener {
                 if (data.id != MMKVUtils.getUser()?.id) {
                     var roleType = ChatDao.getGroupDb().getGroupInfoById(data.groupId)?.roleType
                     when (roleType?.lowercase()) {
                         "Owner".lowercase() -> {//我是群主
-                            showPopup(it, data, true,holder.adapterPosition)
+                            showPopup(it, data, true, holder.adapterPosition)
                         }
                         "admin".lowercase() -> {//我是管理员
                             when (data.role.lowercase()) {
@@ -78,7 +93,7 @@ class FriendContactItem(
                                         )
                                     ) {
                                         //只能踢人和禁言
-                                        showPopup(it, data, false,holder.adapterPosition)
+                                        showPopup(it, data, false, holder.adapterPosition)
                                     }
                                 }
                             }
@@ -92,7 +107,7 @@ class FriendContactItem(
                     var roleType = ChatDao.getGroupDb().getGroupInfoById(data.groupId)?.roleType
                     when (roleType?.lowercase()) {
                         "Owner".lowercase() -> {//我是群主
-                            showPopup(it, data, true,holder.adapterPosition)
+                            showPopup(it, data, true, holder.adapterPosition)
                         }
                         "admin".lowercase() -> {//我是管理员
                             when (data.role.lowercase()) {
@@ -102,7 +117,7 @@ class FriendContactItem(
                                         )
                                     ) {
                                         //只能踢人和禁言
-                                        showPopup(it, data, false,holder.adapterPosition)
+                                        showPopup(it, data, false, holder.adapterPosition)
                                     }
                                 }
                             }

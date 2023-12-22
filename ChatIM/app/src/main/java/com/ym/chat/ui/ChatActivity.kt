@@ -867,17 +867,21 @@ class ChatActivity : LoadingActivity(),
     }
 
     private fun showNoticeDialog() {
-        if (!TextUtils.isEmpty(groupInfo?.notice)) {
-            val dialogBinding = DialogNoticeBinding.inflate(layoutInflater)
-            val dialog = AlertDialog.Builder(this).setView(dialogBinding.root).create()
-            dialog.show()
-            //给AlertDialog设置4个圆角
-            dialog.window?.let { window ->
-                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            }
-            dialogBinding.tvContent.text = groupInfo?.notice
-            dialogBinding.btnClick.click {
-                dialog.dismiss()
+        var isShow = SPUtils.getInstance().getBoolean("group"+getChartId())
+        if(!isShow){
+            if (!TextUtils.isEmpty(groupInfo?.notice)) {
+                val dialogBinding = DialogNoticeBinding.inflate(layoutInflater)
+                val dialog = AlertDialog.Builder(this).setView(dialogBinding.root).create()
+                dialog.show()
+                //给AlertDialog设置4个圆角
+                dialog.window?.let { window ->
+                    window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                }
+                dialogBinding.tvContent.text = groupInfo?.notice
+                dialogBinding.btnClick.click {
+                    dialog.dismiss()
+                    SPUtils.getInstance().put("group"+getChartId(),true)
+                }
             }
         }
     }

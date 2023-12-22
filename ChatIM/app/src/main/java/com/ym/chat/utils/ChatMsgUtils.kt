@@ -30,7 +30,6 @@ object ChatMsgUtils {
 
     fun groupMemberCopyFriendListBean(groupMember: GroupMemberBean): FriendListBean {
         return FriendListBean(
-            headUrl = groupMember.headUrl ?: "",
             name = groupMember.name ?: "",
             mobile = groupMember.mobile ?: "",
             username = groupMember.username ?: "",
@@ -42,7 +41,9 @@ object ChatMsgUtils {
             groupId = groupMember.groupId ?:"",
             memberId = groupMember.memberId ?:"",
             role = groupMember.role ?:""
-        )
+        ).apply {
+            headUrl = groupMember.headUrl ?: ""
+        }
     }
 
     fun chatMessageBeanCopyRecordBean(data: ChatMessageBean): RecordBean {

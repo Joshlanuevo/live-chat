@@ -1,19 +1,19 @@
 package com.ym.chat.item
 
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.chad.library.adapter.base.entity.node.BaseNode
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import com.ym.chat.ext.roundLoad
 import com.ym.base.widget.adapter.QuickNodeProviderVB
 import com.ym.base.widget.ext.click
 import com.ym.base.widget.ext.gone
-import com.ym.base.widget.ext.pressEffectBgColor
 import com.ym.base.widget.ext.visible
 import com.ym.chat.R
 import com.ym.chat.bean.FriendListBean
 import com.ym.chat.bean.GroupInfoBean
 import com.ym.chat.databinding.ItemFriendUserBinding
+import com.ym.chat.ext.loadHeader
 import com.ym.chat.ext.loadImg
 import com.ym.chat.utils.Utils
 
@@ -43,7 +43,7 @@ class FriendUserItem(private val onItemClickListener: ((any: Any) -> Unit)? = nu
         view.ivSystemNotify.gone()
         when (item) {
             is FriendListBean -> {
-                view.layoutHeader.ivHeader.loadImg(item)
+                view.layoutHeader.ivHeader.loadImg(item,view.layoutHeader.tvHeader)
                 view.tvName.text = item.nickname
                 if(item.memberLevelCode == "System"){
                     view.ivSystemNotify.visible()
@@ -54,12 +54,7 @@ class FriendUserItem(private val onItemClickListener: ((any: Any) -> Unit)? = nu
                 )
             }
             is GroupInfoBean -> {
-                view.layoutHeader.ivHeader.loadImg(
-                    item.headUrl,
-                    item.name,
-                    R.drawable.ic_mine_header_group,
-                    true
-                )
+                view.layoutHeader.ivHeader.loadHeader(item.id,item.name,item.headUrl,view.layoutHeader.tvHeader)
                 view.tvName.text = item.name
                 view.root.click { onItemClickListener?.invoke(item) }
             }

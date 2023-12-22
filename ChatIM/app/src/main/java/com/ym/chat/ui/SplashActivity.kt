@@ -55,12 +55,7 @@ class SplashActivity : BaseActivity() {
         bindView.tvAppName.text = getString(R.string.app_name)
 
         //显示启动页
-        if (PlatformUtils.getSplashImage() != -1) {
-            bindView.ivSplash.load(PlatformUtils.getSplashImage())
-        } else {
-            bindView.ivLogo.visible()
-            bindView.tvAppName.visible()
-        }
+        bindView.ivSplash.load(PlatformUtils.getSplashImage())
 
     }
     //</editor-fold>

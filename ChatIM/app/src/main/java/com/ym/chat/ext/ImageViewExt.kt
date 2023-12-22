@@ -1,21 +1,27 @@
 package com.ym.chat.ext
 
+import android.text.TextUtils
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.graphics.drawable.toDrawable
 import coil.clear
 import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
+import coil.transform.RoundedCornersTransformation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
 import com.ym.base.util.save.LoginData
+import com.ym.base.widget.ext.gone
+import com.ym.base.widget.ext.visible
 import com.ym.chat.R
 import com.ym.chat.bean.FriendInfoBean
 import com.ym.chat.bean.FriendListBean
 import com.ym.chat.bean.GroupMemberBean
 import com.ym.chat.db.ChatDao
 import com.ym.chat.utils.AvatarUtil
+import com.ym.chat.utils.PlatformUtils
 
 
 /**
@@ -125,6 +131,82 @@ fun ImageView.loadImg(
 
 fun ImageView.loadImg(headImgStr: String?, name: String?, username: String?) {
     loadImg(headImgStr, "", name, username)
+}
+
+fun ImageView.loadHeader(id: String, name: String, url: String, tv: TextView,radius: Float=100F) {
+    if (TextUtils.isEmpty(url) || !url.startsWith("http")) {
+        try {
+            val lastStr = id.substring(id.length - 1, id.length)
+            this.load(getImgRes(lastStr)) {
+                transformations(RoundedCornersTransformation(radius))//显示圆形图片
+            }
+            if (!TextUtils.isEmpty(name)) {
+                tv.visible()
+                tv.text = name.substring(0, 1).uppercase()
+            } else {
+                tv.text = ""
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    } else {
+        tv.gone()
+        this.load(url) {
+            transformations(RoundedCornersTransformation(100f))//显示圆形图片
+            listener(onStart = {
+//                load(R.drawable.ic_mine_header)
+            }, onError = { r, e ->
+                try {
+                    val lastStr = id.substring(id.length - 1, id.length)
+                    load(getImgRes(lastStr)) {
+                        transformations(RoundedCornersTransformation(100f))//显示圆形图片
+                    }
+                    if (!TextUtils.isEmpty(name)) {
+                        tv.visible()
+                        tv.text = name.substring(0, 1).uppercase()
+                    } else {
+                        tv.text = ""
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+            })
+        }
+    }
+}
+
+private fun getImgRes(lastStr: String): Int {
+    return when (lastStr) {
+        "0" -> R.drawable.shape_img_1
+        "1" -> R.drawable.shape_img_2
+        "2" -> R.drawable.shape_img_3
+        "3" -> R.drawable.shape_img_4
+        "4" -> R.drawable.shape_img_5
+        "5" -> R.drawable.shape_img_6
+        "6" -> R.drawable.shape_img_7
+        "7" -> R.drawable.shape_img_8
+        "8" -> R.drawable.shape_img_9
+        "9" -> R.drawable.shape_img_10
+        else -> R.drawable.shape_img_1
+    }
+}
+
+fun ImageView.loadImg(user: FriendListBean?, tv: TextView?) {
+    if (user?.memberLevelCode == "System") {
+        load(R.mipmap.ic_launcher) {
+            transformations(RoundedCornersTransformation(100f))//显示圆形图片
+        }
+    } else {
+        val name = if (!TextUtils.isEmpty(user?.remark)) {
+            user?.remark
+        } else {
+            user?.name
+        }
+//        loadImg(user?.headUrl, user?.remark, user?.name, user?.username)
+        tv?.let {
+            loadHeader(user?.id ?: "", name ?: "", user?.headUrl ?: "", tv)
+        }
+    }
 }
 
 /**

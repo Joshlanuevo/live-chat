@@ -15,8 +15,9 @@
         android:paddingRight="20dp">
 
         <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:id="@+id/ivLogo"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/ic_msg_left" />
 
         <TextView
@@ -24,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="@string/haoyou"
+            android:text="好友"
             android:textColor="@color/color_11142D"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -62,7 +63,7 @@
                 android:background="@drawable/bg_et_login"
                 android:gravity="center_vertical"
                 android:paddingLeft="30dp"
-                android:text="@string/sousuoxiaoxihuoyonghu"
+                android:text="搜索消息或用户"
                 android:textColor="#999999"
                 android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="parent"
