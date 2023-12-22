@@ -70,6 +70,15 @@ object GroupRepository : BaseRepository() {
             .await()
     }
 
+    //查询群组信息
+    suspend fun getGroupInfoByGroupId(groupId: String): BaseBean<GroupInfoBean> {
+        return RxHttp.get(ApiUrl.Chat.getGroupInfoByGroupId)
+            .add("groupId",groupId)
+            .addAllHeader(getBaseHeaders())
+            .setCacheMode(CacheMode.ONLY_NETWORK)
+            .toOtherJson<BaseBean<GroupInfoBean>>()
+            .await()
+    }
 
     //同意和拒绝入群申请
     suspend fun modifyGroup(groupId: String, memberId: String, status: AskStatus): SimpleBean {

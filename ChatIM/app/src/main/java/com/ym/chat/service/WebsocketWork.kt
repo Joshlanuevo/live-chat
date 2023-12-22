@@ -83,6 +83,12 @@ class WebsocketWork(val context: Context, val parameters: WorkerParameters) :
             )
         }
 
+        fun addSessionInfo(params: MutableMap<String, String>) {
+            GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT) {
+                ChatRepository.sessionInfoAdd(params)
+            }
+        }
+
 
         /**
          * 发送消息

@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.Utils
+import com.jeremyliao.liveeventbus.LiveEventBus
+import com.ym.base.constant.EventKeys
 import com.ym.base.ext.logE
 import com.ym.base.ext.toast
 import com.ym.base.mvvm.BaseViewModel
@@ -25,9 +27,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import org.json.JSONObject
 import rxhttp.RxHttp
 import rxhttp.toFlow
+import rxhttp.wrapper.cahce.CacheMode
 import rxhttp.wrapper.entity.Progress
 import rxhttp.wrapper.utils.GsonUtil
 import java.io.File
@@ -41,6 +45,9 @@ class ChatViewModel : BaseViewModel() {
     //收藏
     val collectResult = MutableLiveData<LoadState<BaseBean<RecordBean>>>()
 
+    //@消息列表
+    val atMessageList = MutableLiveData<MutableList<AtMessageInfoBean>>()
+
     //聊天记录表
     private val msgDb = ChatDao.getChatMsgDb()
 
@@ -52,6 +59,11 @@ class ChatViewModel : BaseViewModel() {
 
     //上拉或者下拉加载更多数据
     val loadMoreMsgList = MutableLiveData<MutableList<ChatMessageBean>>()
+
+    val replayMsgList = MutableLiveData<MutableList<ChatMessageBean>>()
+
+    //跳转到指定位置消息
+    val jumpIndexMsgList = MutableLiveData<MutableList<ChatMessageBean>>()
 
     //群成员数据
     val groupMemberList = MutableLiveData<MutableList<GroupMemberBean>>()
@@ -74,6 +86,9 @@ class ChatViewModel : BaseViewModel() {
     //未读消息开始处
     val firstUnReadMsg = MutableLiveData<Int>()
 
+    //群组信息
+    val getGroupInfo = MutableLiveData<LoadState<GroupInfoBean>>()
+
 
     var friendIds = "" //群发消息 群发成员id 字符串
     var friendNames = ""//群发消息 群发成员name 字符串
@@ -91,6 +106,56 @@ class ChatViewModel : BaseViewModel() {
     }
 
     /**
+     * 根据id获取消息数据
+     */
+    fun getMsgByIds(msgIds: MutableList<String>) {
+        requestLifeLaunch({
+            if (msgIds.isNotEmpty()) {
+                //查询回复消息
+                try {
+                    val reResult = ChatRepository.getMessageByIds(msgIds)
+                    val reJSONObject = JSONObject(reResult)
+                    val resCode = reJSONObject.optInt("code")
+                    if (resCode == 200) {
+                        val resRecords = reJSONObject.optJSONArray("data")
+                        val list = mutableListOf<ChatMessageBean>()
+                        if (resRecords != null && resRecords.length() > 0) {
+                            for (index in 0 until resRecords.length()) {
+                                val repRecord = resRecords.optJSONObject(index)
+                                val content = repRecord.optString("content")
+                                var resDecodMsg = content.decodeContent()
+                                val innerObj = JSONObject(resDecodMsg)
+                                val resData = innerObj.optString("data");
+                                val chatMsg =
+                                    GsonUtils.fromJson(resData, ChatMessageBean::class.java)
+                                list.add(chatMsg)
+                                replayMsgList.value = list
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    replayMsgList.value = mutableListOf()
+                }
+            }
+        }, {
+            it.printStackTrace()
+            replayMsgList.value = mutableListOf()
+        })
+    }
+
+    //查询群组信息
+    fun getGroupInfoByGroupId(groupId: String) {
+        requestLifeLaunch({
+            val result = GroupRepository.getGroupInfoByGroupId(groupId)
+            getGroupInfo.value = LoadState.Success(result.data)
+        }, {
+            getGroupInfo.value = LoadState.Fail()
+            it.printStackTrace()
+        })
+    }
+
+    /**se
      * 加载更多数据
      */
     fun getLoadMoreMsg(
@@ -117,15 +182,47 @@ class ChatViewModel : BaseViewModel() {
         })
     }
 
+    /**se
+     * 跳转到指定消息
+     */
+    fun jumpIndexMsg(
+        chatType: String,
+        messageId: String = "",
+        targetId: String = ""
+    ) {
+        requestLifeLaunch({
+            if (chatType == ChatType.CHAT_TYPE_FRIEND) {
+                val msgResult = ChatRepository.getHisMsg(messageId, "reply", 1, targetId, "")
+                val jsonObject = JSONObject(msgResult)
+                val result = handleMsg(jsonObject, "reply", hasSaveDb = false)
+                jumpIndexMsgList.value = result
+            } else if (chatType == ChatType.CHAT_TYPE_GROUP) {
+                val msgResult = ChatRepository.getHisMsg(messageId, "reply", 1, "", targetId)
+                val jsonObject = JSONObject(msgResult)
+                val result = handleMsg(jsonObject, "reply", hasSaveDb = false)
+                jumpIndexMsgList.value = result
+            }
+        }, {
+            it.printStackTrace()
+            loadMoreMsgList.value = mutableListOf()
+        })
+    }
+
     /**
      * 处理消息
      */
-    private fun handleMsg(jsonObject: JSONObject, queryType: String): MutableList<ChatMessageBean> {
+    suspend private fun handleMsg(
+        jsonObject: JSONObject,
+        queryType: String,
+        hasSaveDb: Boolean = true,
+        localMsg: MutableList<ChatMessageBean> = mutableListOf()
+    ): MutableList<ChatMessageBean> {
         val code = jsonObject.optInt("code")
         if (code == 200) {
             val dataObject = jsonObject.optJSONObject("data")
             val records = dataObject.optJSONArray("records")
             val list = mutableListOf<ChatMessageBean>()
+            val msgIds = mutableListOf<String>()
             if (records != null && records.length() > 0) {
                 for (index in 0 until records.length()) {
                     val record = records.optJSONObject(index)
@@ -148,27 +245,22 @@ class ChatViewModel : BaseViewModel() {
                                     chatMsg.sendState = 1
                                 }
                                 chatMsg.msgReadState = if (readFlag.lowercase() == "read") 1 else 0
-                                list.add(chatMsg)
-                                //保存数据到本地
-                                msgDb.saveChatMsg(chatMsg)
-                            }
 
-                            CommandType.MSG_EDIT -> {
-                                //聊天消息
-                                val data = jsonObject.optString("data")
-                                val chatMsg = GsonUtils.fromJson(data, ChatMessageBean::class.java)
-                                if (!chatMsg.parentMessageId.isNullOrEmpty()) {
-                                    ChatDao.getChatMsgDb()
-                                        .queryMsgByIdBeforeDate(chatMsg.parentMessageId)
-                                        .let {
-                                            if (it != null) {
-                                                it.content = chatMsg.content
-                                                it.editId = chatMsg.id
-                                                it.msgType = chatMsg.msgType
-                                                it.operationType = chatMsg.operationType
-                                                list.add(it)
-                                            }
-                                        }
+                                if (!TextUtils.isEmpty(chatMsg.parentMessageId)) {
+                                    msgIds.add(chatMsg.parentMessageId)
+                                }
+                                //文字消息，过滤掉敏感词
+                                if (chatMsg.msgType == MsgType.MESSAGETYPE_TEXT || chatMsg.msgType == MsgType.MESSAGETYPE_AT) {
+                                    if (!MMKVUtils.isAdmin() && ChatUtils.msgContentHasKeyWork(
+                                            chatMsg.content
+                                        )
+                                    ) {
+                                        "过滤敏感词消息:${chatMsg}".logE()
+                                    } else {
+                                        list.add(chatMsg)
+                                    }
+                                } else {
+                                    list.add(chatMsg)
                                 }
                             }
                         }
@@ -177,7 +269,39 @@ class ChatViewModel : BaseViewModel() {
                         e.printStackTrace()
                     }
                 }
+
+                list.addAll(localMsg)
                 list.sortBy { it.createTime }
+
+                if (msgIds.isNotEmpty()) {
+                    //查询回复消息
+                    try {
+                        val reResult = ChatRepository.getMessageByIds(msgIds)
+                        val reJSONObject = JSONObject(reResult)
+                        val resCode = reJSONObject.optInt("code")
+                        if (resCode == 200) {
+                            val resRecords = reJSONObject.optJSONArray("data")
+                            if (resRecords != null && resRecords.length() > 0) {
+                                for (index in 0 until resRecords.length()) {
+                                    val repRecord = resRecords.optJSONObject(index)
+                                    val content = repRecord.optString("content")
+                                    var resDecodMsg = content.decodeContent()
+                                    val innerObj = JSONObject(resDecodMsg)
+                                    val resData = innerObj.optString("data");
+                                    val chatMsg =
+                                        GsonUtils.fromJson(resData, ChatMessageBean::class.java)
+                                    list.forEach {
+                                        if (it.parentMessageId == chatMsg.id) {
+                                            it.replayParentMsg = chatMsg
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
             return list
         } else {
@@ -196,56 +320,29 @@ class ChatViewModel : BaseViewModel() {
                     /**
                      * 单聊
                      */
-
-                    //查询服务端数据
-                    val lastMsg =
-                        ChatDao.getChatMsgDb().getMsgListByTargetPage(targetId, page.toLong(), 1)
-                    var lastMsgId = ""
-                    if (lastMsg.size > 0) {
-                        lastMsgId = lastMsg[0].id
-                    }
-                    val msgResult = ChatRepository.getHisMsg(lastMsgId, "Down", 1, targetId, "")
+                    val msgResult = ChatRepository.getHisMsg("", "Down", 1, targetId, "")
                     val jsonObject = JSONObject(msgResult)
-                    handleMsg(jsonObject, "Down")
+                    val list = handleMsg(
+                        jsonObject,
+                        "Down",
+//                        localMsg = ChatDao.getChatMsgDb().getMsgListByTargetFail(targetId)
+                    )
 
-                    withContext(Dispatchers.IO) {
-//                        ChatDao.getChatMsgDb().getMsgListByTarget(targetId)
-                        ChatDao.getChatMsgDb().getMsgListByTargetPage(targetId, page.toLong())
-                    }.let {
-                        msgList.value = generateDateHeaders(it)
-                    }
+                    msgList.value = generateDateHeaders(list)
                 }
                 1 -> {
                     /**
                      * 群聊
                      */
-
-                    val start = System.currentTimeMillis()
-
-                    val lastMsg =
-                        ChatDao.getChatMsgDb().getMsgListByGroupIdPage(targetId, page.toLong(), 1)
-                    var lastMsgId = ""
-                    if (lastMsg.size > 0) {
-                        lastMsgId = lastMsg[0].id
-                    }
-
                     //查询服务端数据
-                    val msgResult = ChatRepository.getHisMsg(lastMsgId, "Down", 1, "", targetId)
+                    val msgResult = ChatRepository.getHisMsg("", "Down", 1, "", targetId)
                     val jsonObject = JSONObject(msgResult)
-                    handleMsg(jsonObject, "Down")
-
-                    withContext(Dispatchers.IO) {
-//                        ChatDao.getChatMsgDb().getMsgListByGroupId(targetId)
-                        ChatDao.getChatMsgDb().getMsgListByGroupIdPage(targetId, page.toLong())
-                    }.let {
-                        val end1 = System.currentTimeMillis()
-                        val totalTime1 = end1 - start
-                        Log.d("获取消息", "回调前，耗时==$totalTime1,数量：${it.size}")
-                        msgList.value = it
-                        val end = System.currentTimeMillis()
-                        val totalTime = end - start
-                        Log.d("获取消息", "耗时==$totalTime,数量：${it.size}")
-                    }
+                    val list = handleMsg(
+                        jsonObject,
+                        "Down",
+//                        localMsg = ChatDao.getChatMsgDb().getMsgListByGroupIdFail(targetId)
+                    )
+                    msgList.value = generateDateHeaders(list)
                 }
                 else -> {
                     //群发消息，不做处理
@@ -253,6 +350,47 @@ class ChatViewModel : BaseViewModel() {
             }
         }, {
             it.printStackTrace()
+            //获取失败，加载本地数据
+            if (chatType == 0) {
+                //单聊
+                msgList.value = generateDateHeaders(
+                    ChatDao.getChatMsgDb().getMsgListByTargetPage(targetId, page.toLong())
+                )
+            } else if (chatType == 1) {
+                //群聊
+                msgList.value = generateDateHeaders(
+                    ChatDao.getChatMsgDb().getMsgListByGroupIdPage(targetId, page.toLong())
+                )
+            } else {
+                msgList.value = mutableListOf()
+            }
+        })
+    }
+
+    /**
+     * 获取@消息
+     */
+    fun getAtMsg(chatId: String) {
+        requestLifeLaunch({
+            val tempResult = ChatRepository.getAtMsgList(chatId)
+            if (tempResult.code == SUCCESS) {
+                atMessageList.value = tempResult.data ?: mutableListOf()
+            } else {
+                atMessageList.value = mutableListOf()
+            }
+        }, onError = { e ->
+            e.printStackTrace()
+        })
+    }
+
+    /**
+     * 上报已读@消息
+     */
+    fun upReadAtMsg(msgIds: MutableList<String>) {
+        requestLifeLaunch({
+            val tempResult = ChatRepository.ackAtMessage(msgIds)
+        }, { e ->
+            e.printStackTrace()
         })
     }
 
@@ -293,10 +431,10 @@ class ChatViewModel : BaseViewModel() {
         for (i in 0 until msgList.size) {
             val msg = msgList[i]
 
-            if (isMaskUnRead) {
-                //记录未读消息位置
-                maskUnRead(msg, i, tempMsgList)
-            }
+//            if (isMaskUnRead) {
+//                //记录未读消息位置
+//                maskUnRead(msg, i, tempMsgList)
+//            }
 
             //添加回原来的消息
             tempMsgList.add(processSendTimeOut(msg))
@@ -318,6 +456,28 @@ class ChatViewModel : BaseViewModel() {
 
                 createDateMsg(nextMsg, msg)?.let {
                     tempMsgList.add(it)
+                }
+            }
+
+            //处理多条转发消息，拆分显示
+            if (msg.operationType == "Forward") {
+                //移除原有消息体
+                tempMsgList.remove(msg)
+                val str = msg.content
+                val array = JSONArray(str)
+                if (array != null && array.length() > 0) {
+                    for (index in 0 until array.length()) {
+                        val str = array.getString(index)
+                        val msgObj = JSONObject(str)
+                        val type = msgObj.optString("msgType")
+                        val tempMsg = msg.copy()
+                        tempMsg.msgType = type
+                        tempMsg.content = str
+                        if (msg.from == MMKVUtils.getUser()?.id) {
+                            tempMsg.dir = 1
+                        }
+                        tempMsgList.add(tempMsg)
+                    }
                 }
             }
         }
@@ -473,7 +633,9 @@ class ChatViewModel : BaseViewModel() {
         }
 
         //拼装图片消息
-        val imgContent = GsonUtil.toJson(ImageBean(with, height, url))
+        val imgContent = GsonUtil.toJson(ImageBean(with, height).apply {
+            this.url = url
+        })
 
         //消息保存到数据库，并且回调给聊天页面显示
         val chatMsg = copyToChatMsgBean(params).apply {
@@ -516,6 +678,29 @@ class ChatViewModel : BaseViewModel() {
     }
 
     /**
+     * 发送问候语
+     */
+    fun sendHello(str: String = "我们已经是好友了，赶快聊天吧!", toId: String) {
+        //生成发送消息的Bean对象
+        val params = createSendParams(str, toId, ChatType.CHAT_TYPE_FRIEND).apply {
+            msgType = MsgType.MESSAGETYPE_TEXT
+        }
+
+        //发送消息
+        WebsocketWork.WS.sendMsg(GsonUtil.toJson(params))
+    }
+
+    /**
+     * 发送问候语
+     */
+    fun addSessionInfo(targetId: String) {
+        val params = mutableMapOf<String, String>()
+        params.put("type", "Friend")
+        params.put("friendMemberId", targetId)
+        WebsocketWork.WS.addSessionInfo(params)
+    }
+
+    /**
      * 发送消息
      * content:消息内容
      * toFromId：对方id，如果chatTyoe为群，则为群组ID
@@ -525,24 +710,6 @@ class ChatViewModel : BaseViewModel() {
     fun sendMsg(str: String, toId: String, type: String, parentMsgId: String = "") {
 
         var contentStr = str
-        //敏感词过滤
-        keyWordResult.value?.let {
-            if (!TextUtils.isEmpty(it.content)) {
-                val array = it.content.split(",")
-                array.forEach { key ->
-                    if (contentStr.contains(key)) {
-//                        "内容包含敏感词，请重新输入".toast()
-//                        return
-                            val sbHide = StringBuffer()
-                            for (i in key.indices) {
-                                sbHide.append("*")
-                            }
-                            contentStr = contentStr.replace(key, sbHide.toString())
-                    }
-                }
-            }
-        }
-
         //生成发送消息的Bean对象
         val params = createSendParams(contentStr, toId, type).apply {
             msgType = if (contentStr.isAtMsg()) {
@@ -686,6 +853,7 @@ class ChatViewModel : BaseViewModel() {
 
         if (type != ChatType.CHAT_TYPE_GROUP_SEND) {
             //普通发消息，通过work完成文件上传，消息发送
+            ChatUtils.sendTxtMsgTime = System.currentTimeMillis()
             WebsocketServiceManager.sendMediaMsg(imgPath, toId, type, "Picture", w, h, parentMsgId)
         } else {
             val params = createSendParams(imgPath, toId, type).apply {
@@ -694,7 +862,9 @@ class ChatViewModel : BaseViewModel() {
 
             val chatMsg = copyToChatMsgBean(params).apply {
                 //保存本地路径
-                content = GsonUtil.toJson(ImageBean(w, h, imgPath))
+                content = GsonUtil.toJson(ImageBean(w, h).apply {
+                    url = imgPath
+                })
             }
 
             //1、上传图片
@@ -705,7 +875,9 @@ class ChatViewModel : BaseViewModel() {
                 chatMsg.isUpload = true
 
                 //拼装图片消息
-                val imgContent = GsonUtil.toJson(ImageBean(w, h, result.data.filePath))
+                val imgContent = GsonUtil.toJson(ImageBean(w, h).apply {
+                    url = result.data.filePath
+                })
                 params.content = imgContent
                 chatMsg.content = imgContent
 
@@ -746,7 +918,10 @@ class ChatViewModel : BaseViewModel() {
 
                 //拼装图片消息
                 val audioContent =
-                    GsonUtil.toJson(VideoMsgBean(result.data.filePath, result.data.thumbnail))
+                    GsonUtil.toJson(VideoMsgBean().apply {
+                        this.url = result.data.filePath
+                        this.coverUrl = result.data.thumbnail
+                    })
                 params.content = audioContent
                 chatMsg.content = audioContent
 
@@ -843,6 +1018,7 @@ class ChatViewModel : BaseViewModel() {
             //上传图片,并发送
             requestLifeLaunch({
                 RxHttp.postForm(ApiUrl.Chat.uploadFile)
+                    .setCacheMode(CacheMode.ONLY_NETWORK)
                     .add("fileType", fileType)
                     .addFile("file", File(path))
                     .toFlow<UploadResultBean> {
@@ -1087,26 +1263,6 @@ class ChatViewModel : BaseViewModel() {
         newChatMsg.servicePath = chatMsg.servicePath
         newChatMsg.isUpload = chatMsg.isUpload
         return newChatMsg
-    }
-
-    /**
-     * 建立一个队列处理 存储本地消息
-     */
-    private val queueUtils: QueueUtil = QueueUtil {
-        when (it) {
-            is ChatMessageBean -> {
-                try {
-                    msgDb.saveChatMsg(it)
-                    conversationBd.saveFriendConversation(
-                        it.to,
-                        it.content,
-                        it.msgType
-                    )
-                } catch (e: Exception) {
-
-                }
-            }
-        }
     }
 
     /**

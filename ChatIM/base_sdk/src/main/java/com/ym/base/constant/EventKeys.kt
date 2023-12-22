@@ -9,10 +9,16 @@ object EventKeys {
 
     //更新用户姓名
     const val EDIT_USER_NAME = "edit_user_name"
+    const val MSG_KEYWORD = "msgKeyword"
 
     //更新用户信息
     const val EDIT_USER = "edit_user"
-
+    const val UPDATE_CONVER_END = "UPDATE_CONVER_END"
+    //是否显示成员名
+    const val HIDE_MEMBER = "hideMember"
+    //编辑消息更新
+    const val EDIT_UPDATE = "editUpdate"
+    const val CONNECT = "connect"
     //更新用户头像
     const val EDIT_USER_HEAD = "edit_user_head"
 

@@ -64,6 +64,9 @@ data class ConversationBean(
     //草稿内容
     var draftContent: String = "",
 
+    //是否有@我的消息
+    var hasAtMsg: Boolean = false,
+
     //现在是否处于长按状态
     @Transient
     var isLongDown: Boolean = false

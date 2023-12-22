@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import rxhttp.RxHttp
 import rxhttp.toFlow
+import rxhttp.wrapper.cahce.CacheMode
 import rxhttp.wrapper.entity.Progress
 import rxhttp.wrapper.utils.GsonUtil
 import java.io.File
@@ -262,6 +263,7 @@ class SendMediaWork(
         val chatMsg = copyToChatMsgBean(params).apply {
             sendState = 0
             localPath = localPathStr ?: ""
+            uuid = params.uuid
             if (!TextUtils.isEmpty(parenMsgId)) {
                 parentMessageId = parenMsgId ?: ""
                 operationType = MsgType.MESSAGETYPE_REPLY
@@ -271,56 +273,95 @@ class SendMediaWork(
                 GsonUtil.toJson(AudioMsgBean(width, localPathStr ?: ""))
             } else if (msgType == MsgType.MESSAGETYPE_PICTURE) {
                 //图片消息
-                GsonUtil.toJson(ImageBean(width, height, localPathStr ?: ""))
+                GsonUtil.toJson(ImageBean(width, height).apply {
+                    url = localPathStr ?: ""
+                })
             } else if (msgType == MsgType.MESSAGETYPE_VIDEO) {
                 //视频消息
-                GsonUtil.toJson(VideoMsgBean(localPath ?: "", localPathStr ?: "", width, height))
+                GsonUtil.toJson(VideoMsgBean(width, height).apply {
+                    this.url = localPath ?: ""
+                    this.coverUrl = localPathStr ?: ""
+                })
             } else if (msgType == MsgType.MESSAGETYPE_FILE) {
                 val index = localPath.lastIndexOf("/")
                 val indexPoint = localPath.lastIndexOf(".")
                 val name = localPath.substring(index + 1, localPath.length)
                 val suffix = localPath.substring(indexPoint + 1, localPath.length)
-                GsonUtil.toJson(FileMsgBean(suffix, localPath, name, fileSize ?: ""))
+                GsonUtil.toJson(FileMsgBean(suffix, name, fileSize ?: "").apply {
+                    url = localPath
+                })
             } else {
                 ""
             }
         }
-        //保存到数据库，并且预显示
-        val tempMsg = ChatDao.getChatMsgDb().saveChatMsg(chatMsg)
-        //发送Event，预显示文件
-        LiveEventBus.get(EventKeys.EVENT_SEND_MSG, ChatMessageBean::class.java).post(chatMsg)
+        try {
+            //发送Event，预显示文件
+            LiveEventBus.get(EventKeys.EVENT_SEND_MSG, ChatMessageBean::class.java).post(chatMsg)
 
-        val cacheUrl = ACache.get(Utils.getApp()).getAsString(MD5.MD516(localPathStr))
-        if (!TextUtils.isEmpty(cacheUrl)) {
-            //有缓存，直接取缓存使用
-            val result = GsonUtil.fromJson<UploadResultBean>(cacheUrl, UploadResultBean::class.java)
-            when (fileType) {
-                "Video" -> {
-                    //视频消息
-                    sendVideoMsg(result, width, height, params, tempMsg, parenMsgId)
+            //保存到数据库
+            val tempMsg = ChatDao.getChatMsgDb().saveChatMsg(chatMsg)
+
+            val cacheUrl = ACache.get(Utils.getApp()).getAsString(MD5.MD516(localPathStr))
+            if (!TextUtils.isEmpty(cacheUrl)) {
+                //有缓存，直接取缓存使用
+                val result =
+                    GsonUtil.fromJson<UploadResultBean>(cacheUrl, UploadResultBean::class.java)
+                when (fileType) {
+                    "Video" -> {
+                        //视频消息
+                        sendVideoMsg(result, width, height, params, tempMsg, parenMsgId)
+                    }
+                    "Picture" -> {
+                        //图片消息
+                        sendImageMsg(result, width, height, params, tempMsg, parenMsgId)
+                    }
+                    "Audio" -> {
+                        //音频消息
+                        sendAudioMsg(result, params, tempMsg, width, parenMsgId)
+                    }
+                    "File" -> {
+                        //文件消息
+                        sendFileMsg(result, fileSize ?: "", params, chatMsg, parenMsgId)
+                    }
                 }
-                "Picture" -> {
-                    //图片消息
-                    sendImageMsg(result, width, height, params, tempMsg, parenMsgId)
-                }
-                "Audio" -> {
-                    //音频消息
-                    sendAudioMsg(result, params, tempMsg, width, parenMsgId)
-                }
-                "File" -> {
-                    //文件消息
-                    sendFileMsg(result, fileSize ?: "", params, chatMsg, parenMsgId)
-                }
-            }
-        } else {
-            uploadFile(localPathStr ?: "", fileType ?: "", {
-                //通知页面更新上传进度
-                chatMsg.fileUploadProgress = it.progress
-                LiveEventBus.get(EventKeys.EVENT_UPLOAD_PROGRESS, ChatMessageBean::class.java)
-                    .post(chatMsg)
-            }, { result ->
-                if (result?.data == null) {
-                    //上传文件与实际不匹配，上传失败
+            } else {
+                uploadFile(localPathStr ?: "", fileType ?: "", {
+                    //通知页面更新上传进度
+                    chatMsg.fileUploadProgress = it.progress
+                    LiveEventBus.get(EventKeys.EVENT_UPLOAD_PROGRESS, ChatMessageBean::class.java)
+                        .post(chatMsg)
+                }, { result ->
+                    if (result?.data == null) {
+                        //上传文件与实际不匹配，上传失败
+                        //消息发送状态置为发送失败
+                        ChatDao.getChatMsgDb().updateMsgSendState(
+                            2,
+                            chatMsg.to,
+                            chatMsg.from,
+                            chatMsg.createTime
+                        )
+                    } else {
+                        when (fileType) {
+                            "Video" -> {
+                                //视频消息
+                                sendVideoMsg(result, width, height, params, chatMsg, parenMsgId)
+                            }
+                            "Picture" -> {
+                                //图片消息
+                                sendImageMsg(result, width, height, params, chatMsg, parenMsgId)
+                            }
+                            "Audio" -> {
+                                //音频消息
+                                sendAudioMsg(result, params, chatMsg, width, parenMsgId)
+                            }
+                            "File" -> {
+                                //文件消息
+                                sendFileMsg(result, fileSize ?: "", params, chatMsg, parenMsgId)
+                            }
+                        }
+                    }
+                }, {
+                    //上传失败
                     //消息发送状态置为发送失败
                     ChatDao.getChatMsgDb().updateMsgSendState(
                         2,
@@ -328,36 +369,10 @@ class SendMediaWork(
                         chatMsg.from,
                         chatMsg.createTime
                     )
-                } else {
-                    when (fileType) {
-                        "Video" -> {
-                            //视频消息
-                            sendVideoMsg(result, width, height, params, chatMsg, parenMsgId)
-                        }
-                        "Picture" -> {
-                            //图片消息
-                            sendImageMsg(result, width, height, params, chatMsg, parenMsgId)
-                        }
-                        "Audio" -> {
-                            //音频消息
-                            sendAudioMsg(result, params, chatMsg, width, parenMsgId)
-                        }
-                        "File" -> {
-                            //文件消息
-                            sendFileMsg(result, fileSize ?: "", params, chatMsg, parenMsgId)
-                        }
-                    }
-                }
-            }, {
-                //上传失败
-                //消息发送状态置为发送失败
-                ChatDao.getChatMsgDb().updateMsgSendState(
-                    2,
-                    chatMsg.to,
-                    chatMsg.from,
-                    chatMsg.createTime
-                )
-            })
+                })
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -397,7 +412,9 @@ class SendMediaWork(
         chatMsg.isUpload = true
 
         //拼装图片消息
-        val imgContent = GsonUtil.toJson(ImageBean(width, height, result.data.filePath))
+        val imgContent = GsonUtil.toJson(ImageBean(width, height).apply {
+            url = result.data.filePath
+        })
         params.content = imgContent
         chatMsg.content = imgContent
 
@@ -426,7 +443,7 @@ class SendMediaWork(
 
         //页面显示
 //        sendMsgResult.value = chatMsg
-        "--发送图片消息==${GsonUtil.toJson(params)}".logD()
+//        "--发送图片消息==${GsonUtil.toJson(params)}".logD()
         //2、发送消息
         WebsocketWork.WS.sendMsg(
             GsonUtil.toJson(params), success = { msgId ->
@@ -500,11 +517,12 @@ class SendMediaWork(
     ) {
         //拼装图片消息
         val videoBean = VideoMsgBean(
-            result.data.filePath,
-            result.data.thumbnail,
             width,
             height
-        )
+        ).apply {
+            this.url = result.data.filePath
+            this.coverUrl = result.data.thumbnail
+        }
 
         val audioContent = GsonUtil.toJson(videoBean)
         params.content = audioContent
@@ -528,7 +546,7 @@ class SendMediaWork(
                 chatMsg.msgType
             )
         }
-         "--发送视频消息==${GsonUtil.toJson(params)}".logD()
+        "--发送视频消息==${GsonUtil.toJson(params)}".logD()
         //正式发送消息
         WebsocketWork.WS.sendMsg(
             GsonUtil.toJson(params), success = {
@@ -549,10 +567,11 @@ class SendMediaWork(
         //拼装图片消息
         val fileMsg = FileMsgBean(
             result.data.fileSuffix,
-            result.data.filePath,
             result.data.fileName,
             size
-        )
+        ).apply {
+            this.url = result.data.filePath
+        }
 
         val fileContent = GsonUtil.toJson(fileMsg)
         params.content = fileContent
@@ -605,6 +624,7 @@ class SendMediaWork(
         GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT) {
             try {
                 RxHttp.postForm(ApiUrl.Chat.uploadFile)
+                    .setCacheMode(CacheMode.ONLY_NETWORK)
                     .readTimeout(2 * 60 * 1000)
                     .writeTimeout(2 * 60 * 1000)
                     .connectTimeout(2 * 60 * 1000)

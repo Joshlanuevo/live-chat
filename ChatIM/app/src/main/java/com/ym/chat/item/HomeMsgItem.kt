@@ -9,18 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import coil.load
-import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.SizeUtils
-import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.binder.QuickViewBindingItemBinder
-import com.ym.base.ext.logD
-import com.ym.base.ext.logE
 import com.ym.base.ext.xmlToColor
-import com.ym.base.util.save.MMKVUtils
 import com.ym.base.widget.ext.click
 import com.ym.base.widget.ext.gone
 import com.ym.base.widget.ext.visible
@@ -28,18 +21,17 @@ import com.ym.chat.R
 import com.ym.chat.bean.ConversationBean
 import com.ym.chat.databinding.ItemHomeMsgBinding
 import com.ym.chat.db.ChatDao
-import com.ym.chat.ext.loadImg
 import com.ym.chat.utils.MsgType
 import com.ym.chat.utils.PopUtils
 import com.ym.chat.utils.TimeUtils
-import com.ym.chat.utils.Utils
 import com.ym.chat.widget.ateditview.AtUserHelper
 import com.ym.chat.widget.ateditview.AtUserLinkOnClickListener
+import org.json.JSONArray
+import org.json.JSONObject
 import razerdp.basepopup.BasePopupWindow
 import razerdp.basepopup.QuickPopupBuilder
 import razerdp.basepopup.QuickPopupConfig
 import razerdp.widget.QuickPopup
-import java.util.*
 
 /**
  * @version V1.0
@@ -77,241 +69,285 @@ class HomeMsgItem(
 
     override fun convert(holder: BinderVBHolder<ItemHomeMsgBinding>, data: ConversationBean) {
 
+        //公共部分显示
+        showPublic(data, holder.viewBinding)
+
+        when (data.type) {
+            2 -> {
+                //系统会话
+                showSystem(data, holder.viewBinding)
+            }
+            0 -> {
+                //单聊会话
+                showFriend(data, holder.viewBinding)
+            }
+            1 -> {
+                //群会话显示
+                showGroup(data, holder.viewBinding)
+            }
+        }
+    }
+
+    private fun showPublic(data: ConversationBean, viewBinding: ItemHomeMsgBinding) {
+
+        //显示最后一次消息时间
         if (data.lastTime > 0) {
-            holder.viewBinding.tvTime.text = TimeUtils.formatTime(data.lastTime)
+            viewBinding.tvTime.text = TimeUtils.formatTime(data.lastTime)
         } else {
-            holder.viewBinding.tvTime.text = ""
+            viewBinding.tvTime.text = ""
         }
         //消息未读数量(系统通知特殊处理)
         if (isConverList) {
             if (data.msgCount > 0 && data.type != 2) {
-                holder.viewBinding.tvMsgCount.visible()
-                holder.viewBinding.tvMsgCount.text = if (data.msgCount > 99) {
+                viewBinding.tvMsgCount.visible()
+                viewBinding.tvMsgCount.text = if (data.msgCount > 99) {
                     "99+"
                 } else {
                     "${data.msgCount}"
                 }
             } else {
-                holder.viewBinding.ivRead.gone()
-                holder.viewBinding.tvMsgCount.gone()
+                viewBinding.ivRead.gone()
+                viewBinding.tvMsgCount.gone()
                 if (!data.isRead) {
-                    holder.viewBinding.tvMsgCount.text = ""
-                    holder.viewBinding.tvMsgCount.visible()
+                    viewBinding.tvMsgCount.text = ""
+                    viewBinding.tvMsgCount.visible()
                 }
             }
         }
 
-        //显示已读未读图标
-//        if (data.type != 2) {
-//            holder.viewBinding.ivRead.visible()
-//            if (data.msgCount > 0) {
-//                holder.viewBinding.ivRead.setImageResource(R.drawable.ic_c_unread)
-//            } else {
-//                holder.viewBinding.ivRead.setImageResource(R.drawable.ic_c_read)
-//            }
-//        } else {
-//            holder.viewBinding.ivRead.gone()
-//        }
-
-        //防止复用
-        holder.viewBinding.ivSilence.gone()
-        holder.viewBinding.tvDraft.gone()
-        holder.viewBinding.ivEdit.gone()
-        holder.viewBinding.ivGroupIcon.gone()
-        holder.viewBinding.swipeMenu.isLeftSwipe = true
-        holder.viewBinding.tvMsgPre.text = ""
-        holder.viewBinding.tvNickName.text = ""
-//        Glide.with(holder.viewBinding.root).load(R.drawable.msg_collect)
-//            .into(holder.viewBinding.layoutHeader.ivHeader)
-//        holder.viewBinding.layoutHeader.ivHeader.load(R.drawable.)
-        holder.viewBinding.layoutHeader.ivHeaderMark.gone()
-        holder.viewBinding.ivSystemNotify.gone()
-//        holder.viewBinding.ivRead.gone()
+        //长按选中显示
         if (data.isLongDown) {
-            holder.viewBinding.ivGroupIcon.setImageResource(R.drawable.ic_group_icon_white)
-            holder.viewBinding.tvNickName.setTextColor(context.getColor(R.color.white))
-            holder.viewBinding.tvMsgPre.setTextColor(context.getColor(R.color.white))
-            holder.viewBinding.tvTime.setTextColor(context.getColor(R.color.white))
-            holder.viewBinding.chatItem.setBackgroundColor(R.color.color_main_pre.xmlToColor())
+            viewBinding.ivGroupIcon.setImageResource(R.drawable.ic_group_icon_white)
+            viewBinding.tvNickName.setTextColor(context.getColor(R.color.white))
+            viewBinding.tvMsgPre.setTextColor(context.getColor(R.color.white))
+            viewBinding.tvTime.setTextColor(context.getColor(R.color.white))
+            viewBinding.chatItem.setBackgroundColor(R.color.color_main_pre.xmlToColor())
             if (data.isTop) {
-                holder.viewBinding.viewTop.visible()
-                holder.viewBinding.ivTop.visible()
+                viewBinding.viewTop.visible()
+                viewBinding.ivTop.visible()
             } else {
-                holder.viewBinding.viewTop.gone()
-                holder.viewBinding.ivTop.gone()
+                viewBinding.viewTop.gone()
+                viewBinding.ivTop.gone()
             }
         } else {
-            holder.viewBinding.ivGroupIcon.setImageResource(R.drawable.ic_group_icon_black)
-            holder.viewBinding.tvNickName.setTextColor(context.getColor(R.color.color_333333))
-            holder.viewBinding.tvMsgPre.setTextColor(context.getColor(R.color.color_AAAAAA))
-            holder.viewBinding.tvTime.setTextColor(context.getColor(R.color.color_AAAAAA))
+            viewBinding.ivGroupIcon.setImageResource(R.drawable.ic_group_icon_black)
+            viewBinding.tvNickName.setTextColor(context.getColor(R.color.color_333333))
+            viewBinding.tvMsgPre.setTextColor(context.getColor(R.color.color_AAAAAA))
+            viewBinding.tvTime.setTextColor(context.getColor(R.color.color_AAAAAA))
             if (isConverList) {
                 if (data.isTop) {
-                    holder.viewBinding.chatItem.setBackgroundColor(R.color.activity_bg_77.xmlToColor())
-                    holder.viewBinding.viewTop.visible()
-                    holder.viewBinding.ivTop.visible()
+                    viewBinding.chatItem.setBackgroundColor(R.color.activity_bg_77.xmlToColor())
+                    viewBinding.viewTop.visible()
+                    viewBinding.ivTop.visible()
                 } else {
-                    holder.viewBinding.chatItem.setBackgroundColor(R.color.white.xmlToColor())
-                    holder.viewBinding.viewTop.gone()
-                    holder.viewBinding.ivTop.gone()
+                    viewBinding.chatItem.setBackgroundColor(R.color.white.xmlToColor())
+                    viewBinding.viewTop.gone()
+                    viewBinding.ivTop.gone()
                 }
             }
         }
+    }
 
-        when (data.type) {
-            2 -> {
-                holder.viewBinding.ivSilence.gone()
-                holder.viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_red_10dp)
-                //系统会话
-                holder.viewBinding.tvFrom.gone()
-                if (data.sysType == 1) {
-                    //我的收藏
-                    holder.viewBinding.tvNickName.text = context.getString(R.string.wodeshoucang)
-//                    holder.viewBinding.tvMsgPre.text = data.lastMsg
-                    showLastMsg(holder.viewBinding.tvMsgPre, data)
-                    holder.viewBinding.layoutHeader.ivHeader.load(R.drawable.msg_collect)
-//                    holder.viewBinding.tvDelChat.gone()
-                    showCollectLastMsg(holder.viewBinding.tvMsgPre, data)
-                } else if (data.sysType == 2) {
-                    //系统通知
-                    holder.viewBinding.tvNickName.text = context.getString(R.string.xitongtongzhi)
-                    holder.viewBinding.tvMsgPre.text = data.lastMsg
-                    holder.viewBinding.layoutHeader.ivHeader.load(R.drawable.ic_notify)
-                    holder.viewBinding.tvMsgPre.text = data.lastMsg
+    private fun showSystem(data: ConversationBean, viewBinding: ItemHomeMsgBinding) {
+        viewBinding.ivSilence.gone()
+        viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_red_10dp)
+        //系统会话
+        viewBinding.tvFrom.gone()
+        if (data.sysType == 1) {
+            //我的收藏
+            viewBinding.tvNickName.text = context.getString(R.string.wodeshoucang)
+            showLastMsg(viewBinding.tvMsgPre, data)
+            viewBinding.tvHeader.gone()
+            viewBinding.redPoint.gone()
+            viewBinding.layoutHeader.apply {
+                setRoundRadius(100F)
+            }.showImageRes(R.drawable.msg_collect)
+            showCollectLastMsg(viewBinding.tvMsgPre, data)
+        } else if (data.sysType == 2) {
+            //系统通知
+            viewBinding.tvNickName.text = context.getString(R.string.xitongtongzhi)
+            viewBinding.tvMsgPre.text = data.lastMsg
+            viewBinding.tvMsgCount.gone()
+            viewBinding.tvHeader.gone()
+            viewBinding.layoutHeader.apply {
+                setRoundRadius(100F)
+            }.showImageRes(R.drawable.ic_notify)
+            viewBinding.tvMsgPre.text = data.lastMsg
 
-                    //未读消息
-                    val count = ChatDao.getNotifyDb().getUnReadMsgCount()
-                    if (count > 0) {
-                        holder.viewBinding.tvMsgCount.visible()
-                        holder.viewBinding.tvMsgCount.text = if (count > 99) {
-                            "99+"
-                        } else {
-                            "$count"
-                        }
-                    } else {
-                        holder.viewBinding.tvMsgCount.gone()
-                    }
-                }
+            //未读消息
+            val count = ChatDao.getNotifyDb().getUnReadMsgCount()
+            if (count > 0) {
+                viewBinding.redPoint.visible()
+            } else {
+                viewBinding.redPoint.gone()
             }
-            0 -> {
-                //单聊
-                if (!TextUtils.isEmpty(data.draftContent)) {
-                    holder.viewBinding.tvDraft.visible()
-                    holder.viewBinding.ivEdit.visible()
-                    holder.viewBinding.tvMsgPre.text = data.draftContent
-                } else {
-                    holder.viewBinding.tvDraft.gone()
-                    showLastMsg(holder.viewBinding.tvMsgPre, data)
-                }
-                holder.viewBinding.tvFrom.gone()
-                if (isConverList) {
-                    if (data.isMute) {
-                        //开启了免打扰
-                        holder.viewBinding.ivSilence.visible()
-                        holder.viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_gray_10dp)
-                    } else {
-                        //关闭了免打扰
-                        holder.viewBinding.ivSilence.gone()
-                        holder.viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_red_10dp)
-                    }
-                }
-                val friendInfo = ChatDao.getFriendDb().getFriendById(data.chatId)
-                if (friendInfo != null) {
-                    holder.viewBinding.tvNickName.text = friendInfo.nickname
-                    if (friendInfo.memberLevelCode == "System") {
-                        holder.viewBinding.ivSystemNotify.visible()
-                    }
-                    holder.viewBinding.layoutHeader.ivHeader.loadImg(friendInfo)
-                    Utils.showDaShenImageView(
-                        holder.viewBinding.layoutHeader.ivHeaderMark,
-                        friendInfo.displayHead == "Y",
-                        friendInfo.levelHeadUrl
-                    )
-                } else {
-                    holder.viewBinding.ivSilence.gone()
-                    holder.viewBinding.tvNickName.text = ""
-                    holder.viewBinding.layoutHeader.ivHeader.load(R.drawable.ic_mine_header)
-                }
+        }
+    }
+
+    private fun showFriend(data: ConversationBean, viewBinding: ItemHomeMsgBinding) {
+        viewBinding.tvFrom.gone()
+        viewBinding.ivGroupIcon.gone()
+
+        //显示草稿
+        if (!TextUtils.isEmpty(data.draftContent)) {
+            viewBinding.tvDraft.visible()
+            viewBinding.ivEdit.visible()
+            viewBinding.tvMsgPre.text = data.draftContent
+        } else {
+            viewBinding.tvDraft.gone()
+            showLastMsg(viewBinding.tvMsgPre, data)
+        }
+
+        //免打扰设置
+        if (isConverList) {
+            if (data.isMute) {
+                //开启了免打扰
+                viewBinding.ivSilence.visible()
+                viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_gray_10dp)
+            } else {
+                //关闭了免打扰
+                viewBinding.ivSilence.gone()
+                viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_red_10dp)
             }
-            1 -> {
-                holder.viewBinding.ivGroupIcon.visible()
+        }
 
-                //群聊
-                val groupInfo = ChatDao.getGroupDb().getGroupInfoById(data.chatId)
-                if (groupInfo != null) {
-                    holder.viewBinding.tvNickName.text = groupInfo.name
-                    holder.viewBinding.layoutHeader.ivHeader.loadImg(
-                        groupInfo.headUrl, groupInfo.name, R.drawable.ic_mine_header_group, true
-                    )
-                } else {
-                    holder.viewBinding.tvNickName.text = ""
-                    holder.viewBinding.layoutHeader.ivHeader.load(R.drawable.ic_mine_header_group)
+        //显示头像
+        viewBinding.layoutHeader.apply {
+            setRoundRadius(100F)
+            setChatId(data.chatId)
+            setChatName(data.name)
+        }.showUrl(data.img)
 
-//                    //重新获取一遍群组数据
-//                    ChatDao.syncFriendAndGroupToLocal(false, true)
+        if (TextUtils.isEmpty(data.name)) {
+            val friendInfo = ChatDao.getFriendDb().getFriendById(data.chatId)
+            if (friendInfo != null) {
+                viewBinding.tvNickName.text = friendInfo.nickname
+                if (friendInfo.memberLevelCode == "System") {
+                    viewBinding.ivSystemNotify.visible()
                 }
+                //显示头像
+                viewBinding.layoutHeader.apply {
+                    setRoundRadius(100F)
+                    setChatId(friendInfo.friendMemberId)
+                    setChatName(friendInfo.name)
+                }.showUrl(data.img)
+            }
+        } else {
+            viewBinding.tvNickName.text = data.name
+            viewBinding.layoutHeader.apply {
+                setRoundRadius(100F)
+                setChatId(data.chatId)
+                setChatName(data.name)
+            }.showUrl(data.img)
+        }
+    }
 
-                if (isConverList) {
-                    if (data.isMute) {
-                        //开启了免打扰
-                        holder.viewBinding.ivSilence.visible()
-                        holder.viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_gray_10dp)
-                    } else {
-                        //开启了通知提示
-                        holder.viewBinding.ivSilence.gone()
-                        holder.viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_red_10dp)
-                    }
-                }
+    private fun showGroup(data: ConversationBean, viewBinding: ItemHomeMsgBinding) {
+        viewBinding.ivGroupIcon.visible()
 
-                if (!TextUtils.isEmpty(data.draftContent)) {
-                    holder.viewBinding.tvDraft.visible()
-                    holder.viewBinding.ivEdit.visible()
-                    holder.viewBinding.tvFrom.gone()
-                    holder.viewBinding.tvMsgPre.text = data.draftContent
-                } else {
-                    if (!TextUtils.isEmpty(data.fromId)) {
-                        try {
-                            val member =
-                                ChatDao.getGroupDb().getMemberInGroup(data.fromId, data.chatId)
+        //免打扰设置
+        if (isConverList) {
+            if (data.isMute) {
+                //开启了免打扰
+                viewBinding.ivSilence.visible()
+                viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_gray_10dp)
+            } else {
+                //开启了通知提示
+                viewBinding.ivSilence.gone()
+                viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_red_10dp)
+            }
+        }
+
+        //显示名称
+        if (!TextUtils.isEmpty(data.name)) {
+            viewBinding.tvNickName.text = data.name
+        } else {
+            val groupInfo = ChatDao.getGroupDb().getGroupInfoById(data.chatId)
+            if (groupInfo != null) {
+                viewBinding.tvNickName.text = groupInfo.name
+            } else {
+                viewBinding.tvNickName.text = "群 ${data.chatId}"
+            }
+        }
+
+        //显示头像
+        viewBinding.layoutHeader.apply {
+            setRoundRadius(100F)
+            setChatId(data.chatId)
+            setChatName(data.name)
+        }.showUrl(data.img)
+
+        if (!TextUtils.isEmpty(data.draftContent)) {
+            viewBinding.tvDraft.visible()
+            viewBinding.ivEdit.visible()
+            viewBinding.tvFrom.gone()
+            viewBinding.tvMsgPre.text = data.draftContent
+        } else {
+            if (!TextUtils.isEmpty(data.fromId)) {
+                try {
+                    val member =
+                        ChatDao.getGroupDb().getMemberInGroup(data.fromId, data.chatId)
 //                            "------------from=${data.fromId}----groupId=${data.chatId}---${member?.nickname}".logE()
-                            if (member != null) {
-                                holder.viewBinding.tvFrom.visible()
-                                holder.viewBinding.tvFrom.text = "${member.nickname}:"
-                            } else {
+                    if (member != null) {
+                        viewBinding.tvFrom.visible()
+                        viewBinding.tvFrom.text = "${member.nickname}:"
+                    } else {
 //                            //获取该群的成员数据
 //                            ChatDao.getGroupMemberList(data.chatId)
-                                holder.viewBinding.tvFrom.text = ""
-                            }
-                        } catch (e: Exception) {
-                        }
-                    } else {
-                        holder.viewBinding.tvFrom.gone()
-                        holder.viewBinding.tvFrom.text = ""
+                        viewBinding.tvFrom.text = ""
                     }
-                    showLastMsg(holder.viewBinding.tvMsgPre, data)
+                } catch (e: Exception) {
                 }
-
+            } else {
+                viewBinding.tvFrom.gone()
+                viewBinding.tvFrom.text = ""
             }
-            else -> {
-                holder.viewBinding.ivSilence.gone()
-                holder.viewBinding.tvFrom.gone()
-                holder.viewBinding.tvMsgPre.text = ""
-                holder.viewBinding.tvNickName.text = context.getString(R.string.weizhi)
-                holder.viewBinding.layoutHeader.ivHeader.load(R.drawable.ic_mine_header)
-            }
+            showLastMsg(viewBinding.tvMsgPre, data)
         }
+
+//        //@消息显示
+//        ImCache.atConverMsgList.forEach { atMessageInfoBean ->
+//            if (atMessageInfoBean.sessionId == data.chatId) {
+//                viewBinding.ivAtTag.visible()
+//                return
+//            }
+//        }
+
     }
 
     /**
      * 显示最后一条消息预览
      */
     private fun showLastMsg(textView: TextView, conver: ConversationBean) {
-        when (conver.lastMsgType) {
+        if (conver.lastMsg.startsWith("[") && conver.lastMsg.endsWith("]")) {
+            //转发的消息
+            val jsonArray = JSONArray(conver.lastMsg)
+            var msgType = ""
+            var content = ""
+            if (jsonArray.length() > 1) {
+                val jsobj = jsonArray.getJSONObject(jsonArray.length() - 1)
+                msgType = jsobj.optString("msgType")
+                content = jsobj.optString("content")
+            } else {
+                if (jsonArray.length() > 0) {
+                    val jsobj = jsonArray.getJSONObject(0)
+                    msgType = jsobj.optString("msgType")
+                    content = jsobj.optString("content")
+                }
+            }
+            textView.text = getShowLastMsg(msgType, content)
+        } else {
+            textView.text = getShowLastMsg(conver.lastMsgType, conver.lastMsg)
+        }
+    }
+
+    private fun getShowLastMsg(msgType: String, lastMsgContent: String): CharSequence {
+        return when (msgType) {
             MsgType.MESSAGETYPE_TEXT -> {
-                textView.text = conver.lastMsg
+                lastMsgContent
             }
             MsgType.MESSAGETYPE_AT -> {
-                textView.text = AtUserHelper.parseAtUserLinkJx(conver.lastMsg,
+                AtUserHelper.parseAtUserLinkJx(lastMsgContent,
                     ContextCompat.getColor(context, R.color.color_at), object :
                         AtUserLinkOnClickListener {
                         override fun ulrLinkClick(str: String?) {
@@ -325,22 +361,24 @@ class HomeMsgItem(
                     })
             }
             MsgType.MESSAGETYPE_VIDEO -> {
-                textView.text = ActivityUtils.getTopActivity().getString(R.string.m_shipin)
+                "[视频]"
             }
             MsgType.MESSAGETYPE_VOICE -> {
-                textView.text =ActivityUtils.getTopActivity().getString(R.string.m_yuyin)
+                "[语音]"
             }
             MsgType.MESSAGETYPE_PICTURE -> {
-                textView.text = ActivityUtils.getTopActivity().getString(R.string.m_tupian)
+                "[图片]"
             }
             MsgType.MESSAGETYPE_FILE -> {
-                textView.text = ActivityUtils.getTopActivity().getString(R.string.m_wenjian)
+                "[文件]"
             }
             MsgType.MESSAGETYPE_CONTACT -> {
-                textView.text = ActivityUtils.getTopActivity().getString(R.string.m_mingpian)
+                val jsonObject = JSONObject(lastMsgContent)
+                val shareMemberName = jsonObject.optString("shareMemberName")
+                "推荐了用户${shareMemberName}"
             }
             else -> {
-                textView.text = conver.lastMsg
+                lastMsgContent
             }
         }
     }
@@ -354,16 +392,16 @@ class HomeMsgItem(
                 textView.text = conver.lastMsg
             }
             MsgType.MESSAGETYPE_VIDEO.uppercase() -> {
-                textView.text = ActivityUtils.getTopActivity().getString(R.string.shoucangleyiduanshipin)
+                textView.text = "我收藏了一段视频"
             }
             MsgType.MESSAGETYPE_VOICE.uppercase() -> {
-                textView.text = ActivityUtils.getTopActivity().getString(R.string.shoucangleyiduanyuyin)
+                textView.text = "我收藏了一段语音"
             }
             MsgType.MESSAGETYPE_PICTURE.uppercase() -> {
-                textView.text = ActivityUtils.getTopActivity().getString(R.string.shoucangleyiduantupian)
+                textView.text = "我收藏了一张图片"
             }
             MsgType.MESSAGETYPE_FILE.uppercase() -> {
-                textView.text = ActivityUtils.getTopActivity().getString(R.string.shoucangleyiduantupian)
+                textView.text = "我收藏了一个文件"
             }
         }
     }
@@ -491,43 +529,13 @@ class HomeMsgItem(
             mPopUpWindow?.dismiss()
         }
         if (data.isTop) {
-            tvZd?.text = ActivityUtils.getTopActivity().getString(R.string.quxiaozhiding)
+            tvZd?.text = "取消置顶"
             ivZd?.setImageResource(R.drawable.ic_msg_zd_1)
         }
         var isMessageNotice = data.isMute
         if (isMessageNotice) {
-            tvNotNotify?.text = ActivityUtils.getTopActivity().getString(R.string.quxiaojinyin)
+            tvNotNotify?.text = "取消静音"
             ivJy?.setImageResource(R.drawable.ic_msg_jy_1)
         }
-//        vNotRead?.visible()
-//        llNotRead?.visible()
-//        if (data.msgCount > 0) {
-//            tvNotRead?.text = "标记已读"
-//        } else {
-//            if (data.isRead) {
-//                tvNotRead?.text = "标记未读"
-//                ivReadTg?.setImageResource(R.drawable.ic_msg_yd)
-//            } else
-//                tvNotRead?.text = "标记已读"
-//        }
-
-        llDelMsg?.visible()
-        vDelMsg?.visible()
-
-//        if (data.type == 0) {
-//            //私聊消息
-//            if (MMKVUtils.isAdmin()) {
-//                llDelMsg?.visible()
-//                vDelMsg?.visible()
-//            }
-//        } else {
-//            //群聊消息
-//            if (ChatDao.getGroupDb().getGroupRoleInfoById(data.chatId)
-//                    ?.lowercase() != "Normal".lowercase()
-//            ) {
-//                llDelMsg?.visible()
-//                vDelMsg?.visible()
-//            }
-//        }
     }
 }

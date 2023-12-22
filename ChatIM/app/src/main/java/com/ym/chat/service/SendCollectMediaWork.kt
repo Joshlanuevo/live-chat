@@ -136,7 +136,12 @@ class SendCollectMediaWork(
                     }
                     "File" -> {
                         //文件消息
-                        sendFileMsg(result, params, collectMsg, FileUtils.getSize(collectMsg.localPath ?: ""))
+                        sendFileMsg(
+                            result,
+                            params,
+                            collectMsg,
+                            FileUtils.getSize(collectMsg.localPath ?: "")
+                        )
                     }
                 }
             }
@@ -174,10 +179,15 @@ class SendCollectMediaWork(
                     GsonUtil.toJson(AudioMsgBean(width, localPathStr ?: ""))
                 } else if (type == MsgType.MESSAGETYPE_PICTURE) {
                     //图片消息
-                    GsonUtil.toJson(ImageBean(width, height, localPathStr ?: ""))
+                    GsonUtil.toJson(ImageBean(width, height).apply {
+                        url = localPathStr ?: ""
+                    })
                 } else if (type == MsgType.MESSAGETYPE_VIDEO) {
                     //视频消息
-                    GsonUtil.toJson(VideoMsgBean(localPath ?: "", localPathStr ?: "",width,height))
+                    GsonUtil.toJson(VideoMsgBean(width, height).apply {
+                        this.url = localPath ?: ""
+                        coverUrl = localPathStr ?: ""
+                    })
                 } else if (type == MsgType.MESSAGETYPE_FILE) {
                     //文件消息
                     if (localPath != null && localPath?.isNotEmpty() == true) {
@@ -189,10 +199,11 @@ class SendCollectMediaWork(
                         GsonUtil.toJson(suffix?.let {
                             FileMsgBean(
                                 it,
-                                localPath!!,
                                 name ?: "",
                                 FileUtils.getSize(localPath) ?: ""
-                            )
+                            ).apply {
+                                url = localPath!!
+                            }
                         })
                     } else {
                         ""
@@ -300,10 +311,11 @@ class SendCollectMediaWork(
             val fileContent = GsonUtil.toJson(
                 FileMsgBean(
                     result.data.fileSuffix,
-                    result.data.filePath,
                     result.data.fileName,
                     fileSize
-                )
+                ).apply {
+                    url = result.data.filePath
+                }
             )
             params.content = fileContent
             collectMsg.content = fileContent
@@ -324,7 +336,9 @@ class SendCollectMediaWork(
         collectMsg.isUpload = true
 
         //拼装图片消息
-        val imgContent = GsonUtil.toJson(ImageBean(width, height, result.data.filePath))
+        val imgContent = GsonUtil.toJson(ImageBean(width, height).apply {
+            url = result.data.filePath
+        })
         params.content = imgContent
         collectMsg.content = imgContent
 
@@ -360,11 +374,12 @@ class SendCollectMediaWork(
     ) {
         //拼装视频消息
         val videoBean = VideoMsgBean(
-            result.data.filePath,
-            result.data.thumbnail,
             width,
             height
-        )
+        ).apply {
+            url = result.data.filePath
+            coverUrl = result.data.thumbnail
+        }
 
         val audioContent = GsonUtil.toJson(videoBean)
         collectMsg.content = audioContent

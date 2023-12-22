@@ -3,6 +3,7 @@ package com.ym.chat.db
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.util.Log
+import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.Utils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.ym.base.constant.EventKeys
@@ -13,14 +14,19 @@ import com.ym.base.mvvm.BaseViewModel
 import com.ym.base.util.save.MMKVUtils
 import com.ym.chat.bean.*
 import com.ym.chat.rxhttp.ApiUrl
+import com.ym.chat.rxhttp.ChatRepository
 import com.ym.chat.rxhttp.FriendRepository
 import com.ym.chat.rxhttp.GroupRepository
+import com.ym.chat.utils.ChatType
+import com.ym.chat.utils.ChatUtils
 import com.ym.chat.utils.ImCache
 import com.ym.chat.utils.LogHelp
+import com.ym.chat.utils.StringExt.decodeContent
 import io.objectbox.BoxStore
 import io.objectbox.android.AndroidObjectBrowser
 import io.objectbox.annotation.Index
 import kotlinx.coroutines.*
+import org.json.JSONObject
 
 /**
  * 数据库操作类
@@ -351,6 +357,144 @@ object ChatDao {
                 LogHelp.d("数据同步", "已完成")
             }
             e.printStackTrace()
+        }
+    }
+
+    /**
+     * 获取会话列表
+     */
+    fun getConverList() {
+//        LiveEventBus.get(EventKeys.UPDATE_CONVER_START).post(null)
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val sessionList = ChatRepository.getSessionList()
+                val jsonObject = JSONObject(sessionList)
+                val code = jsonObject.optInt("code")
+                if (code == 200) {
+                    val dataArray = jsonObject.optJSONArray("data")
+                    val serviceChatId = mutableListOf<String>()
+                    val localConverList = ChatDao.getConversationDb().getConversationListNotSystem()
+                    if (dataArray != null && dataArray.length() > 0) {
+                        for (i in 0 until dataArray.length()) {
+                            val array = dataArray.optJSONObject(i)
+                            var topMessage = array.optString("topMessage")
+                            val topMessageTime = array.optLong("topMessageTime")
+                            val lastMessageTime = array.optLong("lastMessageTime")
+                            val unreadCount = array.optInt("unreadCount", -1)
+                            val type = array.optString("type")
+                            val friendMemberId = array.optString("friendMemberId")
+                            val signType = array.optString("signType", "read")
+                            var messageNotice = array.optString("messageNotice", "y")
+                            val groupId = array.optString("groupId")
+                            val lastMessageContent = array.optString("lastMessageContent")
+                            val serViceName = array.optString("name")
+                            val headUrl = array.optString("headUrl")
+
+                            if (TextUtils.isEmpty(topMessage)) {
+                                //防止后端返回其他不规范数据
+                                topMessage = "N"
+                            }
+                            if (TextUtils.isEmpty(messageNotice)) {
+                                messageNotice = "N"
+                            }
+
+                            //解析最后一条消息
+                            var lastMsgContent = ""
+                            var lastMsgType = ""
+                            try {
+                                var decodeStr = lastMessageContent.decodeContent()
+                                if (!TextUtils.isEmpty(decodeStr)) {
+                                    val jsonObject = JSONObject(decodeStr)
+                                    val comd = jsonObject.optInt("command")
+                                    if (comd == 11) {
+                                        val data = jsonObject.optString("data")
+                                        val lastMsg = GsonUtils.fromJson<ChatMessageBean>(
+                                            data,
+                                            ChatMessageBean::class.java
+                                        )
+                                        if (ChatUtils.msgContentHasKeyWork(lastMsg.content)) {
+                                            lastMsgContent = ""
+                                        } else {
+                                            lastMsgContent = lastMsg.content
+                                        }
+                                        lastMsgType = lastMsg.msgType
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.d("ChatWebSocketClient", "${lastMessageContent}解析异常")
+                                e.printStackTrace()
+                            }
+
+                            if (type == ChatType.CHAT_TYPE_FRIEND) {
+                                //好友
+                                serviceChatId.add(friendMemberId)
+                                ChatDao.getConversationDb()
+                                    .saveFriendConversation(
+                                        friendMemberId,
+                                        lastMsgContent,
+                                        lastMsgType,
+                                        msgTime = lastMessageTime,
+                                        isTop = (topMessage.lowercase()) == "y",
+                                        serviceMsgCount = unreadCount,
+                                        isMute = (messageNotice.lowercase()) == "n",
+                                        isRead = (signType.lowercase()) == "read",
+                                        nameStr = serViceName,
+                                        imgStr = headUrl, isUpdateUI = false
+                                    )
+                            } else {
+                                //群聊
+                                serviceChatId.add(groupId)
+                                ChatDao.getConversationDb()
+                                    .saveGroupConversation(
+                                        groupId,
+                                        lastMsgContent,
+                                        lastMsgType,
+                                        msgTime = lastMessageTime,
+                                        isTop = (topMessage.lowercase()) == "y",
+                                        serviceMsgCount = unreadCount,
+                                        isMute = (messageNotice.lowercase()) == "n",
+                                        isRead = (signType.lowercase()) == "read",
+                                        nameStr = serViceName,
+                                        imgStr = headUrl, isUpdateUI = false
+                                    )
+                            }
+                        }
+                    }
+
+                    val delData =
+                        localConverList.filterNot { f -> serviceChatId.any { a -> a == f.chatId } }
+
+                    //删除会话
+                    if (delData.size > 0) {
+                        delData.forEach {
+                            ChatDao.getConversationDb().delConverByTargtId(it.chatId)
+                        }
+                    }
+
+                    getAtIds()
+                }
+            } catch (e: Exception) {
+                LiveEventBus.get(EventKeys.UPDATE_CONVER_END).post(null)
+                e.printStackTrace()
+            }
+        }
+    }
+
+    /**
+     * 获取@数据
+     */
+    fun getAtIds() {
+        GlobalScope.launch(Dispatchers.IO) {
+            //@消息数据
+            try {
+                val tempResult = ChatRepository.getAtMsgList()
+                ImCache.atConverMsgList.clear()
+                ImCache.atConverMsgList.addAll(tempResult.data)
+                LiveEventBus.get(EventKeys.UPDATE_CONVER_END).post(null)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                LiveEventBus.get(EventKeys.UPDATE_CONVER_END).post(null)
+            }
         }
     }
 }

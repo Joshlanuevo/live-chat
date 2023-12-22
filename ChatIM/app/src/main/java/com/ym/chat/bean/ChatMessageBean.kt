@@ -1,9 +1,11 @@
 package com.ym.chat.bean
 
+import android.text.TextUtils
 import com.blankj.utilcode.util.GsonUtils
 import com.ym.base.widget.adapter.BaseBinderAdapterPro
 import com.ym.base.widget.adapter.BaseItemBinderPro
 import com.ym.chat.item.*
+import com.ym.chat.rxhttp.ApiUrl
 import com.ym.chat.utils.MsgType.MESSAGETYPE_AT
 import com.ym.chat.utils.MsgType.MESSAGETYPE_CONTACT
 import com.ym.chat.utils.MsgType.MESSAGETYPE_FILE
@@ -18,6 +20,7 @@ import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Index
 import io.objectbox.annotation.Unique
+import org.json.JSONObject
 
 /**
  * 聊天记录
@@ -30,17 +33,18 @@ data class ChatMessageBean(
     var chatType: String = "",
     var cmd: Int = 0,
     var content: String = "",
-    @Index
-    var createTime: Long = 0,
     var from: String = "",
+    var groupName: String = "",
     var groupId: String = "",
     @Index
     @Unique
     var id: String = "",
     var fromName: String = "",//发送人名字
+    var fromHead: String = "",//发送人头像
+    var toName: String = "",//接收人名字
+    var toHead: String = "",//接收人头像
     var msgType: String = "",
     var serverReceiveTime: String = "",
-    var fromHead: String = "",//发送人头像
     //对方ID
     var to: String = "",
     //修改消息id
@@ -51,6 +55,16 @@ data class ChatMessageBean(
     var editId: String = ""
 
 ) : BaseBinderAdapterPro.Types {
+
+    @Index
+    var createTime: Long = 0
+        get() {
+            if (TextUtils.isEmpty(serverReceiveTime)) {
+                return field
+            } else {
+                return serverReceiveTime.toLong()
+            }
+        }
 
     //本地地址，媒体消息，未发送显示
     var localPath: String = ""
@@ -157,10 +171,6 @@ data class ChatMessageBean(
                         ChatTextRight::class.java
                     }
                 }
-                MESSAGETYPE_UNREAD -> {
-                    //消息未读
-                    return ChatUnReadItem::class.java
-                }
                 MESSAGETYPE_CONTACT -> {
                     //名片消息
                     return if (dir == 0) {
@@ -169,12 +179,16 @@ data class ChatMessageBean(
                         ChatContactCardRight::class.java
                     }
                 }
+                MESSAGETYPE_UNREAD -> {
+                    //消息未读
+                    return ChatUnReadItem::class.java
+                }
                 else -> {
                     //未知消息
                     return if (dir == 0) {
                         ChatUndefinedLeft::class.java
                     } else {
-                        ChatUndefinedRight::class.java
+                        ChatUndefinedLeft::class.java
                     }
                 }
             }
@@ -185,7 +199,24 @@ data class ChatMessageBean(
         get() {
             if (field.isNullOrBlank()) {
                 try {
-                    field = GsonUtils.fromJson(content ?: "{}", AudioMsgBean::class.java).url
+                    val tempMsgBean = if (operationType == "Forward") {
+                        val c = JSONObject(content).optString("content")
+                        GsonUtils.fromJson(c ?: "{}", AudioMsgBean::class.java)
+                    } else {
+                        GsonUtils.fromJson(content ?: "{}", AudioMsgBean::class.java)
+                    }
+
+                    val tempUrl = tempMsgBean.url
+                    return if (tempUrl.startsWith("http")) {
+                        val host = ApiUrl.baseApiUrl
+                        val lastIndex1 = tempUrl.lastIndexOf("/")
+                        val lastIndex2 = tempUrl.lastIndexOf("/", lastIndex1 - 1)
+                        val fileName = tempUrl.substring(lastIndex2)
+                        host + ApiUrl.suffix + fileName
+                    } else {
+                        tempUrl
+                    }
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

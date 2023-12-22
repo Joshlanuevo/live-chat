@@ -26,7 +26,9 @@ open class ApiUrl {
 
     companion object {
 
-        val currentType = HOST_TYPE.DEV
+        val currentType = HOST_TYPE.RELEASE
+
+        val suffix = "image"
 
 
         //获取oss配置路径
@@ -34,22 +36,22 @@ open class ApiUrl {
 
         /**
          * ws地址
+         * 生产的默认配置从jenkins读取
          */
         var wsUrl = when (currentType) {
-            HOST_TYPE.DEV -> "wss://chatlc101.devtest88.com/message-ws"
-            HOST_TYPE.TEST ->"wss://chatlc101.devtest88.com/message-ws"
-            HOST_TYPE.UAT -> "wss://chatlc101.devtest88.com/message-ws"
+            HOST_TYPE.DEV -> "ws://chat-dev.youliaoim.com/message-ws"
             HOST_TYPE.RELEASE -> "wss://chatlc101.devtest88.com/message-ws"
+            else -> "ws://im-chat-dev.gnit.vip/message-ws"
         }
 
         /**
          * API地址
+         * 生产的默认配置从jenkins读取
          */
         var baseApiHost = when (currentType) {
             HOST_TYPE.DEV -> "https://chatlc101.devtest88.com/v1/"
-            HOST_TYPE.TEST -> "https://chatlc101.devtest88.com/v1/"
-            HOST_TYPE.UAT -> "https://chatlc101.devtest88.com/v1/"
             HOST_TYPE.RELEASE -> "https://chatlc101.devtest88.com/v1/"
+            else -> "https://chatlc101.devtest88.com/v1/"
         }
 
         val baseApiUrl
@@ -152,6 +154,9 @@ open class ApiUrl {
 
             //创建群组
             val createGroup get() = "${baseApiUrl}chat/groupInfo/build"
+
+            //获取群组信息
+            val getGroupInfoByGroupId get() = "${baseApiUrl}chat/groupInfo/getGroupInfoByGroupId"
 
             //复制群组信息
             val copyGroup get() = "${baseApiUrl}chat/groupInfo/copy"
@@ -280,14 +285,32 @@ open class ApiUrl {
             //关键字屏蔽
             val getKeyWord get() = "${baseApiUrl}member/sensitiveWord/getSensitiveWordByMemberLevelId"
 
+            //获取配置
+            val getSystemInfo get() = "${baseApiUrl}member/memberInfo/getSystemInfo"
+
             //批量编辑收藏消息
             val putCollectContent get() = "${baseApiUrl}chat/favoriteInfo/modify"
+
+            //分享联系人
+            val shareContact get() = "${baseApiUrl}message/shareContact"
 
             //会话列表接口
             val sessionList get() = "${baseApiUrl}message/sessionInfo/list"
 
             //从服务端调用消息
             val getMsgFromService get() = "${baseApiUrl}message/messagePush/history/list/page"
+
+            //查询@自己消息数据
+            val getAtMsgList get() = "${baseApiUrl}message/messagePush/at/list"
+
+            //上报@消息已读
+            val ackAtMessage get() = "${baseApiUrl}message/messagePush/at/ack/messageIds"
+
+            //根据ID获取消息
+            val getMessageByIds get() = "${baseApiUrl}message/messagePush/getMessageByIds"
+
+            //新增会话
+            val sessionInfoAdd get() = "${baseApiUrl}message/sessionInfo/add"
         }
     }
     //</editor-fold>

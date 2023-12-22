@@ -1,9 +1,6 @@
 package com.ym.chat.utils
 
-import com.ym.chat.bean.ChatMessageBean
-import com.ym.chat.bean.FriendListBean
-import com.ym.chat.bean.GroupInfoBean
-import com.ym.chat.bean.GroupMemberBean
+import com.ym.chat.bean.*
 
 /**
  * 缓存数据
@@ -27,4 +24,7 @@ object ImCache {
 
     //是否需要更新通知消息
     var isUpdateNotifyMsg: Boolean = true
+
+    //at了自己的消息数据
+    var atConverMsgList: MutableList<AtMessageInfoBean> = mutableListOf()
 }

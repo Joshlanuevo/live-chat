@@ -217,7 +217,9 @@ class CollectModel : BaseViewModel() {
         imgUrl: String, w: Int = 0, h: Int = 0
     ) {
         //拼装图片消息
-        val imgContent = GsonUtil.toJson(ImageBean(w, h, imgUrl))
+        val imgContent = GsonUtil.toJson(ImageBean(w, h).apply {
+            url = imgUrl
+        })
         //生成发送消息的Bean对象
         val params =
             createSendParams(imgContent, MMKVUtils.getUser()?.id ?: "", MsgType.MESSAGETYPE_PICTURE)

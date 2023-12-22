@@ -2,16 +2,14 @@ package com.ym.chat.db
 
 import android.text.TextUtils
 import android.util.Log
-import com.blankj.utilcode.util.Utils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.ym.base.constant.EventKeys
 import com.ym.base.util.save.MMKVUtils
-import com.ym.chat.R
 import com.ym.chat.bean.ConversationBean
 import com.ym.chat.bean.ConversationBean_
 import com.ym.chat.bean.DelConBean
+import com.ym.chat.service.WebsocketWork
 import com.ym.chat.utils.ChatType
-import com.ym.chat.utils.ChatUtils
 import com.ym.chat.utils.MsgType
 
 /**
@@ -39,19 +37,19 @@ class ConversationDb {
             if (con == null) {
                 //初始化"我的收藏"
                 var mineCollectConver = ConversationBean().apply {
-                    name = ChatUtils.getString(R.string.wodeshoucang)
+                    name = "我的收藏"
                     type = 2
                     sysType = 1
                     sysSort = 0
-                    lastMsg = ChatUtils.getString(R.string.huanyingshiyong)
+                    lastMsg = "欢迎使用\"我的收藏\""
                 }
                 put(mineCollectConver)
-                Log.d(TAG, ChatUtils.getString(R.string.chusihhuachenggong))
+                Log.d(TAG, "我的收藏初始化成功")
             }
             if (isNotify == null) {
                 //初始化"系统通知"
                 var notify = ConversationBean().apply {
-                    name = ChatUtils.getString(R.string.xitongtongzhi)
+                    name = "系统通知"
                     type = 2
                     sysType = 2
                     sysSort = 1
@@ -147,6 +145,17 @@ class ConversationDb {
     }
 
     /**
+     * 根据id查询指定会话
+     */
+    fun getConversationByTargetId(targetId: String):ConversationBean? {
+        return ChatDao.mBoxStore.boxFor(ConversationBean::class.java).run {
+            val targetConver = query().filter { it.chatId == targetId }.build().find()
+            closeThreadResources()
+            targetConver[0]
+        }
+    }
+
+    /**
      * 存储好友会话数据
      */
     fun saveFriendConversation(
@@ -160,7 +169,9 @@ class ConversationDb {
         serviceMsgCount: Int = -1,
         isMute: Boolean? = null,
         isRead: Boolean = true,
-        name:String = ""
+        nameStr: String = "",
+        imgStr: String = "",
+        isUpdateUI: Boolean = true
     ) {
         ChatDao.mBoxStore.boxFor(ConversationBean::class.java).run {
             val targetConver = query().filter { it.chatId == targetId }.build().find()
@@ -169,6 +180,12 @@ class ConversationDb {
                 var temoConver = targetConver[0]
                 temoConver.lastMsg = lastMsgStr
                 temoConver.lastMsgType = lastMsgTypeStr
+                if (!TextUtils.isEmpty(nameStr)) {
+                    temoConver.name = nameStr
+                }
+                if (!TextUtils.isEmpty(imgStr)) {
+                    temoConver.img = imgStr
+                }
                 if (msgTime > 0) {
                     temoConver.lastTime = msgTime
                 } else {
@@ -197,7 +214,9 @@ class ConversationDb {
                 }
                 put(temoConver)
                 //通知页面刷新
-                LiveEventBus.get(EventKeys.UPDATE_CONVER).post(temoConver)
+                if (isUpdateUI) {
+                    LiveEventBus.get(EventKeys.UPDATE_CONVER).post(temoConver)
+                }
             } else {
                 //不存在会话数据
                 var mineCollectConver = ConversationBean().apply {
@@ -206,7 +225,6 @@ class ConversationDb {
                     chatId = targetId
                     type = 0
                     lastMsg = lastMsgStr
-                    this.name = name
                     if (serviceMsgCount >= 0) {
                         msgCount = serviceMsgCount
                     } else {
@@ -215,7 +233,27 @@ class ConversationDb {
                             msgCount = 1
                         }
                     }
+                    if (!TextUtils.isEmpty(nameStr)) {
+                        name = nameStr
+                    }
+                    if (!TextUtils.isEmpty(imgStr)) {
+                        img = imgStr
+                    }
                     lastMsgType = lastMsgTypeStr
+                    name = nameStr
+                    img = imgStr
+
+                    if (!TextUtils.isEmpty(nameStr)) {
+                        name = nameStr
+                    } else {
+                        ChatDao.getFriendDb().getFriendById(targetId)?.let { friend ->
+                            name = friend.nickname
+                            img = friend.headUrl
+                        }
+                    }
+                    if (!TextUtils.isEmpty(imgStr)) {
+                        img = imgStr
+                    }
 
                     if (msgTime > 0) {
                         lastTime = msgTime
@@ -236,7 +274,9 @@ class ConversationDb {
                 put(mineCollectConver)
 
                 //通知页面刷新
-                LiveEventBus.get(EventKeys.UPDATE_CONVER).post(null)
+                if (isUpdateUI) {
+                    LiveEventBus.get(EventKeys.UPDATE_CONVER).post(null)
+                }
             }
             closeThreadResources()
         }
@@ -257,6 +297,9 @@ class ConversationDb {
         serviceMsgCount: Int = -1,
         isMute: Boolean? = null,
         isRead: Boolean? = null,
+        nameStr: String = "",
+        imgStr: String = "",
+        isUpdateUI: Boolean = true
     ) {
         ChatDao.mBoxStore.boxFor(ConversationBean::class.java).run {
             val targetConver = query().filter { it.chatId == targetId }.build().find()
@@ -265,6 +308,12 @@ class ConversationDb {
                 var tempConver = targetConver[0]
                 tempConver.lastMsg = lastMsgStr
                 tempConver.lastMsgType = lastMsgTypeStr
+                if (!TextUtils.isEmpty(nameStr)) {
+                    tempConver.name = nameStr
+                }
+                if (!TextUtils.isEmpty(imgStr)) {
+                    tempConver.img = imgStr
+                }
                 if (msgTime > 0) {
                     tempConver.lastTime = msgTime
                 } else {
@@ -283,9 +332,7 @@ class ConversationDb {
                     }
                 }
 
-                if (!TextUtils.isEmpty(fromId)) {
-                    tempConver.fromId = fromId
-                }
+                tempConver.fromId = fromId
                 if (isTop != null) {
                     tempConver.isTop = isTop
                 }
@@ -298,7 +345,9 @@ class ConversationDb {
                 put(tempConver)
 
                 //通知页面刷新
-                LiveEventBus.get(EventKeys.UPDATE_CONVER).post(tempConver)
+                if (isUpdateUI) {
+                    LiveEventBus.get(EventKeys.UPDATE_CONVER).post(tempConver)
+                }
             } else {
                 //不存在会话数据
                 var mineCollectConver = ConversationBean().apply {
@@ -306,6 +355,17 @@ class ConversationDb {
                     type = 1
                     lastMsg = lastMsgStr
                     lastMsgType = lastMsgTypeStr
+                    if (!TextUtils.isEmpty(nameStr)) {
+                        name = nameStr
+                    } else {
+                        ChatDao.getGroupDb().getGroupInfoById(targetId)?.let { group ->
+                            name = group.name
+                            img = group.headUrl
+                        }
+                    }
+                    if (!TextUtils.isEmpty(imgStr)) {
+                        img = imgStr
+                    }
                     if (serviceMsgCount >= 0) {
                         msgCount = serviceMsgCount
                     } else {
@@ -320,9 +380,7 @@ class ConversationDb {
                         lastTime = System.currentTimeMillis()
                     }
                 }
-                if (!TextUtils.isEmpty(fromId)) {
-                    mineCollectConver.fromId = fromId
-                }
+                mineCollectConver.fromId = fromId
                 if (isTop != null) {
                     mineCollectConver.isTop = isTop
                 }
@@ -335,7 +393,18 @@ class ConversationDb {
                 put(mineCollectConver)
 
                 //通知页面刷新
-                LiveEventBus.get(EventKeys.UPDATE_CONVER).post(null)
+                if (isUpdateUI) {
+                    LiveEventBus.get(EventKeys.UPDATE_CONVER).post(null)
+                }
+
+                val delConBean = DelConBean().apply {
+                    cmd = 49
+                    memberId = MMKVUtils.getUser()?.id ?: ""
+                    type = ChatType.CHAT_TYPE_GROUP
+                    groupId = targetId
+                    operationType = "Add"
+                }
+                WebsocketWork.WS.updateConver(delConBean)
             }
             closeThreadResources()
         }
@@ -529,7 +598,7 @@ class ConversationDb {
     /**
      * 设置会话列表消息未读数
      */
-    fun setConverMsgCount(chatId: String,count:Int) {
+    fun setConverMsgCount(chatId: String, count: Int) {
         ChatDao.mBoxStore.boxFor(ConversationBean::class.java).run {
             val tempResult = query().filter { it.chatId == chatId }.build().find()
             if (tempResult != null && tempResult.size > 0) {
@@ -645,6 +714,8 @@ class ConversationDb {
                 tempMsg.lastMsgType = lastMsgType
                 tempMsg.isRead = true
                 tempMsg.fromId = ""
+                tempMsg.msgCount = 0
+                tempMsg.hasAtMsg = false
                 put(tempMsg)
                 closeThreadResources()
                 //通知页面刷新

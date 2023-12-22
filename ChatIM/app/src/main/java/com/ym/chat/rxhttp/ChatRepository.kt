@@ -130,6 +130,28 @@ object ChatRepository : BaseRepository() {
     }
 
     /**
+     * 分享联系人
+     */
+    suspend fun shareContact(
+        receiverGroupId: String,
+        receiverMemberId: String,
+        shareMemberId: String
+    ): BaseBean<String> {
+        return RxHttp.postJson(ApiUrl.Chat.shareContact)
+            .apply {
+                if (!TextUtils.isEmpty(receiverGroupId)) {
+                    add("receiverGroupId", receiverGroupId)
+                } else if (!TextUtils.isEmpty(receiverMemberId)) {
+                    add("receiverMemberId", receiverMemberId)
+                }
+            }
+            .add("shareMemberId", shareMemberId)
+            .setCacheMode(CacheMode.ONLY_NETWORK)
+            .toOtherJson<BaseBean<String>>()
+            .await()
+    }
+
+    /**
      * 获取历史消息
      */
     suspend fun getHisMsg(
@@ -157,6 +179,41 @@ object ChatRepository : BaseRepository() {
     }
 
     /**
+     * 根据id获取消息
+     */
+    suspend fun getMessageByIds(list: MutableList<String>): String {
+        return RxHttp.postBody(ApiUrl.Chat.getMessageByIds).setBody(list)
+            .setCacheMode(CacheMode.ONLY_NETWORK).toStr().await()
+    }
+
+    /**
+     * 获取历史消息
+     */
+    suspend fun getAtMsgList(sessionId: String = ""): BaseBean<MutableList<AtMessageInfoBean>> {
+        return RxHttp.get(ApiUrl.Chat.getAtMsgList)
+            .apply {
+                if (!TextUtils.isEmpty(sessionId)) {
+                    addQuery("sessionId", sessionId)
+                }
+            }
+            .setCacheMode(CacheMode.ONLY_NETWORK)
+            .toOtherJson<BaseBean<MutableList<AtMessageInfoBean>>>()
+            .await()
+    }
+
+    /**
+     * 获取历史消息
+     */
+    suspend fun ackAtMessage(msgIds: MutableList<String>): String {
+        return RxHttp.postBody(ApiUrl.Chat.ackAtMessage)
+            .setBody(msgIds)
+            .setCacheMode(CacheMode.ONLY_NETWORK)
+            .toStr()
+            .await()
+    }
+
+
+    /**
      * 已读消息回执
      */
     suspend fun messageAck(msgIds: MutableList<String>): String {
@@ -173,6 +230,17 @@ object ChatRepository : BaseRepository() {
     suspend fun messageReply(strMsg: String): String {
         return RxHttp.putJson(ApiUrl.Chat.messageReply)
             .add("content", strMsg)
+            .setCacheMode(CacheMode.ONLY_NETWORK)
+            .toStr()
+            .await()
+    }
+
+    /**
+     * 新增会话
+     */
+    suspend fun sessionInfoAdd(params: MutableMap<String,String>): String {
+        return RxHttp.postJson(ApiUrl.Chat.sessionInfoAdd)
+            .addAll(params)
             .setCacheMode(CacheMode.ONLY_NETWORK)
             .toStr()
             .await()

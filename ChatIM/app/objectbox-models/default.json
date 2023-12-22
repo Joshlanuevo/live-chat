@@ -149,7 +149,7 @@
     },
     {
       "id": "2:58950731670075635",
-      "lastPropertyId": "25:5045705860789641842",
+      "lastPropertyId": "28:4199470775673902817",
       "name": "ChatMessageBean",
       "properties": [
         {
@@ -283,13 +283,28 @@
           "id": "25:5045705860789641842",
           "name": "fromHead",
           "type": 9
+        },
+        {
+          "id": "26:2756225272920129155",
+          "name": "groupName",
+          "type": 9
+        },
+        {
+          "id": "27:2874661458391382610",
+          "name": "toName",
+          "type": 9
+        },
+        {
+          "id": "28:4199470775673902817",
+          "name": "toHead",
+          "type": 9
         }
       ],
       "relations": []
     },
     {
       "id": "3:8096052369388168380",
-      "lastPropertyId": "18:4432798515194275332",
+      "lastPropertyId": "19:7621737491300465250",
       "name": "ConversationBean",
       "properties": [
         {
@@ -383,6 +398,11 @@
         {
           "id": "18:4432798515194275332",
           "name": "isMute",
+          "type": 1
+        },
+        {
+          "id": "19:7621737491300465250",
+          "name": "hasAtMsg",
           "type": 1
         }
       ],

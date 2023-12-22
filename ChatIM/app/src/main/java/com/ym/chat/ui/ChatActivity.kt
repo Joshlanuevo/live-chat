@@ -3,22 +3,25 @@ package com.ym.chat.ui
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.*
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Environment
 import android.provider.Browser
 import android.text.TextUtils
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.annotation.Nullable
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.GsonUtils
+import com.blankj.utilcode.util.SPUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.chad.library.adapter.base.BaseBinderAdapter
 import com.dylanc.viewbinding.binding
@@ -37,12 +40,12 @@ import com.ym.base.widget.ext.visible
 import com.ym.chat.R
 import com.ym.chat.bean.*
 import com.ym.chat.databinding.ActivityChatBinding
+import com.ym.chat.databinding.DialogNoticeBinding
 import com.ym.chat.db.ChatDao
 import com.ym.chat.dialog.ConfirmDialogCallback
 import com.ym.chat.dialog.ConfirmSelectDialogCallback
 import com.ym.chat.dialog.HintDialog
 import com.ym.chat.dialog.SelectHintDialog
-import com.ym.chat.ext.loadImg
 import com.ym.chat.item.*
 import com.ym.chat.item.chatlistener.ChatPopClickType
 import com.ym.chat.item.chatlistener.OnChatItemListener
@@ -50,7 +53,11 @@ import com.ym.chat.rxhttp.MeExpressionRepository
 import com.ym.chat.service.WebsocketWork
 import com.ym.chat.update.UpdateProcessTask
 import com.ym.chat.utils.*
+import com.ym.chat.utils.ChatType.CHAT_TYPE_FRIEND
 import com.ym.chat.utils.ChatType.CHAT_TYPE_GROUP_SEND
+import com.ym.chat.utils.ChatUtils.mCurrentChatId
+import com.ym.chat.utils.ChatUtils.sendTxtMsgTime
+import com.ym.chat.utils.IntExt.toGroupMemberSize
 import com.ym.chat.utils.MsgType.ALLOWSPEAK
 import com.ym.chat.utils.MsgType.CancelMemberRole
 import com.ym.chat.utils.MsgType.GroupModifyName
@@ -67,9 +74,8 @@ import com.ym.chat.widget.panel.ConversationInputPanel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import me.minetsh.imaging.IMGEditActivity
+import org.json.JSONArray
 import org.json.JSONObject
-import java.io.File
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.Executors
@@ -124,8 +130,10 @@ class ChatActivity : LoadingActivity(),
     private var firstShowPosition: Int = 0//第一个完整显示item 的序列号
     private var isShowTopDefaultView = false //是否显示置顶消息填充的View
     private var executorServiceSingle = Executors.newCachedThreadPool() //线程池
-    private var mImageFile: File? = null
+
+    //    private var mImageFile: File? = null
     private var loadDirection = ""
+    private var clickJumpMsgId = ""//跳转消息的id
 
     companion object {
 
@@ -138,9 +146,9 @@ class ChatActivity : LoadingActivity(),
         const val SEARCH_CONTENT_ID = "searchContentId"
         const val FRIEND_id_LIST = "friend_id_list"
         const val FRIEND_NAME_LIST = "friend_name_list"
-        const val GET_HISTORY_PAGESIZE = 1000
         const val TONAME = "toName"
         const val TOHEADER = "toHeader"
+        const val GET_HISTORY_PAGESIZE = 50
 
         val owerAndManagerList = mutableListOf<String>()//群管理员或群主数据
         val groupMemberList = mutableListOf<GroupMemberBean>()//所有群成员
@@ -207,7 +215,7 @@ class ChatActivity : LoadingActivity(),
             friendIds = "" //群发消息 群发成员id 字符串
             friendNames = ""//群发消息 群发成员name 字符串
         }
-        bindView?.layoutTop?.root?.gone()//初始化置顶界面
+        bindView.layoutTop.root.gone()//初始化置顶界面
         requestData()
     }
 
@@ -277,11 +285,11 @@ class ChatActivity : LoadingActivity(),
                                     2 -> {//清空历史消息
                                         if (data.roleType.lowercase() != "normal") {
                                             HintDialog(
-                                                getString(R.string.删除历史消息),
-                                                String.format(
-                                                    getString(R.string.删除提示),
-                                                    data.name
-                                                ),
+                                                "删除历史消息",
+                                                "您确定要删除 ${data?.name} 的历史消息\n" +
+                                                        "记录吗？ \n" +
+                                                        "删除历史消息后，所有群成员将无法\n" +
+                                                        "查看历史消息。",
                                                 object : ConfirmDialogCallback {
                                                     override fun onItemClick() {
                                                         groupInfo?.id?.let { it1 ->
@@ -302,17 +310,11 @@ class ChatActivity : LoadingActivity(),
                                         var title = ""
                                         var content = ""
                                         if (data.roleType.lowercase() == "owner") {
-                                            title = getString(R.string.解散群聊)
-                                            content = String.format(
-                                                getString(R.string.确定解散提示),
-                                                data.name
-                                            )
+                                            title = "解散群聊"
+                                            content = "您确定要解散并删除 ${data?.name} 吗？ "
                                         } else {
                                             title = "退出群聊"
-                                            content = String.format(
-                                                getString(R.string.确定离开提示),
-                                                data.name
-                                            )
+                                            content = "您是否确认想要离开群组 ${data?.name} ?"
                                         }
                                         HintDialog(
                                             title,
@@ -373,6 +375,7 @@ class ChatActivity : LoadingActivity(),
         initInputPanel()
         initAtRecyclerView()
 
+        bindView.listChat.itemAnimator = null
         bindView.listChat.addOnLayoutChangeListener(this)
         bindView.listChat.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -427,22 +430,94 @@ class ChatActivity : LoadingActivity(),
 
         bindView.refresh.setOnRefreshListener {
             loadDirection = "Up"
-            mAdapter.data.firstOrNull {
-                it is ChatMessageBean && (it.msgType != MsgType.MESSAGETYPE_NOTICE || it.msgType != MsgType.MESSAGETYPE_TIME)
-            }?.let {
-                it as ChatMessageBean
-                mViewModel.getLoadMoreMsg(getChatType(), it.id, loadDirection, mTargetId)
+            if (mAdapter.data.isEmpty()) {
+                it.finishLoadMore()
+                it.finishRefresh()
+            } else {
+                mAdapter.data.firstOrNull {
+                    it is ChatMessageBean && (it.msgType != MsgType.MESSAGETYPE_NOTICE && it.msgType != MsgType.MESSAGETYPE_TIME) && it.sendState != 2
+                }?.let {
+                    it as ChatMessageBean
+                    mViewModel.getLoadMoreMsg(getChatType(), it.id, loadDirection, mTargetId)
+                }
             }
         }
         bindView.refresh.setOnLoadMoreListener {
             loadDirection = "Down"
             mAdapter.data.lastOrNull {
-                it is ChatMessageBean && (it.msgType != MsgType.MESSAGETYPE_NOTICE || it.msgType != MsgType.MESSAGETYPE_TIME)
+                it is ChatMessageBean && (it.msgType != MsgType.MESSAGETYPE_NOTICE || it.msgType != MsgType.MESSAGETYPE_TIME) && it.sendState != 2
             }?.let {
                 it as ChatMessageBean
-                mViewModel.getLoadMoreMsg(getChatType(), it.id, loadDirection, mTargetId)
+                val msgId = if (it.operationType == "Modify") {
+                    it.editId
+                } else {
+                    it.id
+                }
+                mViewModel.getLoadMoreMsg(getChatType(), msgId, loadDirection, mTargetId)
             }
         }
+        bindView.ivAtTag.click {
+            //点击@消息跳转
+            val atList = mViewModel.atMessageList.value
+            if (atList != null) {
+                clickJumpMsgId = atList[0].messageId
+                if (!scrollToPosition(mAdapter.data, clickJumpMsgId)) {
+                    mViewModel.jumpIndexMsg(getChatType(), clickJumpMsgId, mTargetId)
+                } else {
+                    //上报已读@消息
+                    mViewModel.upReadAtMsg(mutableListOf<String>().apply {
+                        add(clickJumpMsgId)
+                    })
+                    //判读是否显示@图标
+                    val atList = mViewModel.atMessageList.value
+                    if (atList != null && atList.size > 0) {
+                        atList.removeAt(0)
+                        if (atList.size > 0) {
+                            bindView.ivAtTag.visible()
+                            bindView.tvAtCount.visible()
+                            bindView.tvAtCount.text = "${atList.size}"
+                        } else {
+                            val list = ImCache.atConverMsgList.filter { it.sessionId == mTargetId }
+                            if (list.isNotEmpty()) {
+                                ImCache.atConverMsgList.removeAll(list)
+                            }
+                            bindView.ivAtTag.gone()
+                            bindView.tvAtCount.gone()
+                            LiveEventBus.get(EventKeys.UPDATE_CONVER_END).post(null)
+                        }
+                    } else {
+                        //没有@消息
+                        val list = ImCache.atConverMsgList.filter { it.sessionId == mTargetId }
+                        if (list.isNotEmpty()) {
+                            ImCache.atConverMsgList.removeAll(list)
+                        }
+                        bindView.ivAtTag.gone()
+                        bindView.tvAtCount.gone()
+                        LiveEventBus.get(EventKeys.UPDATE_CONVER_END).post(null)
+                    }
+                }
+            }
+        }
+
+//        val hasVoiceCall = SPUtils.getInstance().getBoolean(EventKeys.HAS_VOICECALL,false)
+//        if(hasVoiceCall){
+//            bindView.ivAudioCall.visible()
+//            bindView.ivVideoCall.visible()
+//        }else{
+//            bindView.ivAudioCall.gone()
+//            bindView.ivVideoCall.gone()
+//        }
+        bindView.ivAudioCall.gone()
+        bindView.ivVideoCall.gone()
+
+        bindView.ivAudioCall.click {
+//            RongCallKit.startSingleCall(this,mTargetId, RongCallKit.CallMediaType.CALL_MEDIA_TYPE_AUDIO)
+        }
+        bindView.ivVideoCall.click {
+//            RongCallKit.startSingleCall(this,mTargetId, RongCallKit.CallMediaType.CALL_MEDIA_TYPE_VIDEO)
+        }
+
+//        requestData()
     }
 
     private var mUnReadCount = 0
@@ -513,12 +588,20 @@ class ChatActivity : LoadingActivity(),
             addItemBinderMany(ChatImageLeft(onChatItemListener))
             addItemBinderMany(ChatImageRight(onChatItemListener))
 
+            //名片消息
+            addItemBinderMany(ChatContactCardLeft(onChatItemListener) { contactBean, _ ->
+                clickContactCard(contactBean)
+            })
+            addItemBinderMany(ChatContactCardRight(onChatItemListener) { contactBean, _ ->
+                clickContactCard(contactBean)
+            })
+
             //未知消息
             addItemBinderMany(ChatUndefinedLeft(onChatItemListener))
             addItemBinderMany(ChatUndefinedRight(onChatItemListener))
 
             //文件消息
-            addItemBinderMany(ChatFileLeft(onChatItemListener, onClickListener = { item, position ->
+            addItemBinderMany(ChatFileLeft(onChatItemListener, onClickListener = { item, _ ->
                 downloadFile(item)
             }))
             addItemBinderMany(
@@ -554,14 +637,6 @@ class ChatActivity : LoadingActivity(),
             addItemBinderMany(ChatVideoRight(onChatItemListener, onPlayClickListener = {
                 ChatUtils.playVideo(this@ChatActivity, it)
             }))
-
-            //名片消息
-            addItemBinderMany(ChatContactCardLeft(onChatItemListener) { contactBean, _ ->
-                clickContactCard(contactBean)
-            })
-            addItemBinderMany(ChatContactCardRight(onChatItemListener) { contactBean, _ ->
-                clickContactCard(contactBean)
-            })
         }
     }
 
@@ -613,7 +688,7 @@ class ChatActivity : LoadingActivity(),
                     openFileInBrowser(this@ChatActivity, uri, fileMsg.url)
                 }
             } else {
-                getString(R.string.文件已开始下载).toast()
+                "文件已开始下载".toast()
                 val request =
                     DownloadManager.Request(Uri.parse(fileMsg.url)) //添加下载文件的网络路径
 
@@ -634,7 +709,7 @@ class ChatActivity : LoadingActivity(),
             }
 
         } catch (e: Exception) {
-            getString(R.string.文件下载异常).toast()
+            "文件下载异常".toast()
         }
     }
 
@@ -647,7 +722,7 @@ class ChatActivity : LoadingActivity(),
             if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
                 //获取当前完成任务的ID
                 val reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                getString(R.string.文件已下载完成).toast()
+                "文件已下载完成".toast()
 //                val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
 //                val uri = downloadManager.getUriForDownloadedFile(reference)
 //                openFileInBrowser(this@ChatActivity, uri)
@@ -667,7 +742,7 @@ class ChatActivity : LoadingActivity(),
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             context.startActivity(Intent.createChooser(intent, "Chooser"))
         } catch (e: ActivityNotFoundException) {
-            getString(R.string.手机中没有支持此文件的App).toast()
+            "手机中没有支持此文件的App".toast()
         }
     }
 
@@ -708,67 +783,71 @@ class ChatActivity : LoadingActivity(),
                     chatInfo = ChatDao.getFriendDb().getFriendById(mTargetId)
                     if (chatInfo == null) {
                         val f = FriendListBean()
-                        f.id = mTargetId
-                        f.name = "用户 $mTargetId"
+                        if (!TextUtils.isEmpty(toName)) {
+                            f.id = mTargetId
+                            f.name = toName ?: ""
+                            f.headUrl = toHeadler ?: ""
+                        } else {
+                            f.id = mTargetId
+                            f.name = "用户 $mTargetId"
+                            f.headUrl = toHeadler ?: ""
+                        }
                         chatInfo = f
                         ChatDao.getFriendDb().saveFriend(chatInfo)
-                        ChatDao.syncFriendAndGroupToLocal()
                     }
-                    bindView.tvTitle.text = chatInfo?.nickname
-                    bindView.tvTitleHint.visible()
-                    bindView.tvTitleHint.text = getString(R.string.jiamichat)
-                    bindView.layoutHeader.ivHeader.loadImg(chatInfo)
-                    Utils.showDaShenImageView(bindView.layoutHeader.ivHeaderMark, chatInfo)
                     getTypeInfo()
 
-                    if (chatInfo == null) {
-                        //没有找到好友数据
-                        bindView.inputPanelFrameLayout.gone()
+                    bindView.tvTitle.text = chatInfo?.nickname
+
+                    bindView.layoutHeader.apply {
+                        setChatId(mTargetId)
+                        setChatName(chatInfo?.name ?: "")
+                        setRoundRadius(96F)
+                    }.showUrl(chatInfo?.headUrl)
+
+                    bindView.tvTitleHint.visible()
+                    bindView.tvTitleHint.text = "加密聊天"
+
+                    //获取聊天消息
+                    if (mAdapter.data.isEmpty()) {
+                        showLoading()
                     }
+                    mViewModel.getMsgList(mTargetId, mChatType)
+                    bindView.layoutTop.root.gone()
+                    bindView.inputPanelFrameLayout.closeMute()
 
                     //重置会话列表未读数
                     ChatDao.getConversationDb().resetConverMsgCount(mTargetId)
                     //设置消息已读
                     ChatDao.getChatMsgDb().setMsgRead(getChatType(), mTargetId)
-                    //获取聊天消息
-                    showLoading()
-                    mViewModel.getMsgList(mTargetId, mChatType)
                     startTimer()
-                    bindView.layoutTop.root.gone()
-                    bindView.inputPanelFrameLayout.closeMute()
                 }
 
                 1 -> {
-                    groupInfo = ChatDao.getGroupDb().getGroupInfoById(mTargetId)
-                    bindView.tvTitle.text = groupInfo?.name
-                    isMute = groupInfo?.allowSpeak == "N"
-                    bindView.tvTitleHint.visible()
-                    bindView.layoutHeader.ivHeader.loadImg(
-                        groupInfo?.headUrl, groupInfo?.name, R.drawable.ic_mine_header_group, true
-                    )
-//                    if (!MMKVUtils.isAdmin())
-//                        bindView.tvGroupNotifyMsg.visible()
+
                     getTypeInfo()
 
-                    if (groupInfo == null) {
-                        //没有找到好友数据
-                        bindView.inputPanelFrameLayout.gone()
+                    //获取群信息
+                    groupInfo = ChatDao.getGroupDb().getGroupInfoById(mTargetId)
+                    if (groupInfo != null) {
+                        showGroupUi()
+                    } else {
+                        mViewModel.getGroupInfoByGroupId(mTargetId)
                     }
 
-                    //获取群主管理员id列表
-                    mViewModel.getManagerList(mTargetId)
+                    //获取聊天消息
+                    if (mAdapter.data.isEmpty()) {
+                        showLoading()
+                    }
+                    mViewModel.getMsgList(mTargetId, mChatType)
+                    mViewModel.getTopInfoList(mTargetId)//从云端获取最新
+                    mViewModel.getAtMsg(mTargetId)
 
                     //重置会话列表未读数
                     ChatDao.getConversationDb().resetConverMsgCount(mTargetId)
                     //设置消息已读
                     ChatDao.getChatMsgDb().setMsgRead(getChatType(), mTargetId)
-                    //获取聊天消息
-                    showLoading()
-                    mViewModel.getMsgList(mTargetId, mChatType)
                     startTimer()
-
-//                    showTopMsgView()//显示本地缓存置顶消息
-                    mViewModel.getTopInfoList(mTargetId)//从云端获取最新
                 }
 
                 2 -> {//群发消息
@@ -783,6 +862,22 @@ class ChatActivity : LoadingActivity(),
                     mViewModel.friendNames = friendNames
                     bindView.layoutTop.root.gone()
                 }
+            }
+        }
+    }
+
+    private fun showNoticeDialog() {
+        if (!TextUtils.isEmpty(groupInfo?.notice)) {
+            val dialogBinding = DialogNoticeBinding.inflate(layoutInflater)
+            val dialog = AlertDialog.Builder(this).setView(dialogBinding.root).create()
+            dialog.show()
+            //给AlertDialog设置4个圆角
+            dialog.window?.let { window ->
+                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
+            dialogBinding.tvContent.text = groupInfo?.notice
+            dialogBinding.btnClick.click {
+                dialog.dismiss()
             }
         }
     }
@@ -810,7 +905,7 @@ class ChatActivity : LoadingActivity(),
     var positionHighlight = 0
     private fun scrollToItem(position: Int) {
 
-        if (mAdapterTop?.data?.size!! > 0) bindView.viewDefault.visible()
+        if (mAdapterTop.data.size > 0) bindView.viewDefault.visible()
         bindView.listChat.scrollToPosition(position)
 
         val item = mAdapter.data[position]
@@ -838,9 +933,9 @@ class ChatActivity : LoadingActivity(),
                         0 -> {
                             if (mTargetId == memberId) {
                                 if (onlineCount == 1) {
-                                    bindView.tvTitleHint.text = getString(R.string.在线加密聊天)
+                                    bindView.tvTitleHint.text = "在线-加密聊天"
                                 } else {
-                                    bindView.tvTitleHint.text = getString(R.string.离线加密聊天)
+                                    bindView.tvTitleHint.text = "离线-加密聊天"
                                 }
                             }
                         }
@@ -849,7 +944,7 @@ class ChatActivity : LoadingActivity(),
                             if (mTargetId == groupId) {
                                 inLineNum = onlineCount
                                 bindView.tvTitleHint.text =
-                                    "${getString(R.string.加密聊天)} (${groupMemberList.size ?: 1})"//显示在线人数/总人数
+                                    "加密聊天 (${groupMemberList.size.toGroupMemberSize()})"//显示在线人数/总人数
                             }
                         }
                     }
@@ -866,8 +961,28 @@ class ChatActivity : LoadingActivity(),
                     val operatorId = data.optString("operatorId")//操作人ID
                     val name = data.optString("operatorName")//操作人
                     val memberId = data.optString("memberId")//被移除人id
-                    if (groupId == groupInfo?.id && memberId == MMKVUtils.getUser()?.id)
+                    val removeMemberMessage = data.optBoolean("removeMemberMessage")//被移除人id
+                    if (groupId == groupInfo?.id && memberId == MMKVUtils.getUser()?.id) {
                         showHintDialog(name)
+                    }
+
+                    //移除被踢出人的所有消息
+                    if (removeMemberMessage) {
+                        try {
+                            mAdapter.data.filter {
+                                it is ChatMessageBean && (it.from == memberId)
+                            }.let { result ->
+                                if (result.isNotEmpty()) {
+                                    mAdapter.data.removeAll(result)
+                                    clearDataHeader()
+                                    mAdapter.notifyDataSetChanged()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+
                     //处理多端同步
                     if (operatorId == MMKVUtils.getUser()?.id) {
                         //重新获取群成员数据
@@ -912,9 +1027,19 @@ class ChatActivity : LoadingActivity(),
             if (msg.chatType == ChatType.CHAT_TYPE_FRIEND && if (msg.dir == 0) msg.from == chatInfo?.id else msg.to == chatInfo?.id) {
                 //单聊消息
                 processMsg(msg)
+                if (!TextUtils.isEmpty(msg.parentMessageId)) {
+                    mViewModel.getMsgByIds(mutableListOf<String>().apply {
+                        add(msg.parentMessageId)
+                    })
+                }
             } else if (msg.chatType == ChatType.CHAT_TYPE_GROUP && msg.groupId == groupInfo?.id) {
                 //群组消息
                 processMsg(msg)
+                if (!TextUtils.isEmpty(msg.parentMessageId)) {
+                    mViewModel.getMsgByIds(mutableListOf<String>().apply {
+                        add(msg.parentMessageId)
+                    })
+                }
             } else {
                 //其他消息
             }
@@ -937,9 +1062,11 @@ class ChatActivity : LoadingActivity(),
                     groupInfo?.headUrl = it.headUrl
                     groupInfo?.allowSpeak = it.allowSpeak
                     "headUrl==${it.headUrl}---${it.allowSpeak}".logD()
-                    bindView.layoutHeader.ivHeader.loadImg(
-                        groupInfo?.headUrl, groupInfo?.name, R.drawable.ic_mine_header_group, true
-                    )
+                    bindView.layoutHeader.apply {
+                        setChatId(groupInfo?.id ?: "")
+                        setChatName(groupInfo?.name ?: "")
+                        setRoundRadius(96F)
+                    }.showUrl(groupInfo?.headUrl)
                 } catch (e: Exception) {
 
                 }
@@ -956,6 +1083,27 @@ class ChatActivity : LoadingActivity(),
                 chatInfo?.remark = it.remark
             }
         }
+
+        LiveEventBus.get(EventKeys.WS_STATUS, ImConnectSatus::class.java).observe(this) {
+            //连接状态回调
+            initTitleStr(it)
+        }
+
+        LiveEventBus.get(EventKeys.EDIT_UPDATE, ChatMessageBean::class.java)
+            .observe(this) { editMsg ->
+                //编辑消息更新
+                val needUpdateMsgIndex =
+                    mAdapter.data.indexOfFirst { it is ChatMessageBean && it.id == editMsg.id }
+                if (needUpdateMsgIndex >= 0) {
+                    val needUpdateMsg = (mAdapter.data[needUpdateMsgIndex] as ChatMessageBean)
+                    needUpdateMsg.content = editMsg.content
+                    needUpdateMsg.editId = editMsg.id
+                    needUpdateMsg.msgType = editMsg.msgType
+                    needUpdateMsg.operationType = editMsg.operationType
+                    mAdapter.notifyItemChanged(needUpdateMsgIndex)
+                }
+            }
+
 
         //获取最新置顶消息
         mViewModel.getTopMsgList.observe(this) { result ->
@@ -1027,7 +1175,7 @@ class ChatActivity : LoadingActivity(),
 
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
-                    getString(R.string.群发消息已发送成功).toast()
+                    "群发消息已发送成功".toast()
                     finish()
                 }
 
@@ -1046,20 +1194,41 @@ class ChatActivity : LoadingActivity(),
             when (sendMsgType) {
                 1 -> {
                     bindView.listChat.scrollToPosition(it.size - 1)
-                    sendForwardMsg()
+                    if (!isForwardMsg) {
+                        isForwardMsg = true
+                        sendForwardMsg()
+                    }
                 } //如果是转发消息 执行发消息
                 2 -> scrollToPosition(it) //如果是搜索消息，根据消息ID，跳转到指定条目
                 else -> {
-                    val postion = mViewModel.firstUnReadMsg?.value ?: -1
-                    bindView.refresh.setEnableLoadMore(false)
-                    if (postion != -1) {
-                        isAutoScrollBottom = false
-                        bindView.listChat.scrollToPosition(postion)
-                    } else {
-                        isAutoScrollBottom = false
-                        bindView.listChat.scrollToPosition(it.size - 1)
-                    }
+                    isAutoScrollBottom = false
+                    bindView.listChat.scrollToPosition(it.size - 1)
+
+//                    val postion = mViewModel.firstUnReadMsg?.value ?: -1
+//                    bindView.refresh.setEnableLoadMore(true)
+//                    if (postion != -1) {
+//                        isAutoScrollBottom = false
+//                        bindView.listChat.scrollToPosition(postion)
+//                    } else {
+//                        isAutoScrollBottom = false
+//                        bindView.listChat.scrollToPosition(it.size - 1)
+//                    }
                 }
+            }
+        }
+
+        mViewModel.replayMsgList.observe(this) {
+            if (it != null && it.size > 0) {
+                mAdapter.data.filter { it is ChatMessageBean && (it.cmd == 11) }
+                    .forEachIndexed { index, dataMsg ->
+                        it.forEach { m ->
+                            dataMsg as ChatMessageBean
+                            if (dataMsg.parentMessageId == m.id) {
+                                dataMsg.replayParentMsg = m
+                                mAdapter.notifyItemChanged(index)
+                            }
+                        }
+                    }
             }
         }
 
@@ -1072,7 +1241,7 @@ class ChatActivity : LoadingActivity(),
 
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
-                    getString(R.string.收藏成功).toast()
+                    "收藏成功".toast()
                     collectMsg?.let { msg ->
                         ChatDao.getConversationDb()
                             .updateCollectLastMsg(msg.msgType, msg.content, msg.createTime)
@@ -1082,7 +1251,7 @@ class ChatActivity : LoadingActivity(),
 
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()
-                    getString(R.string.收藏失败).toast()
+                    "收藏失败".toast()
                 }
             }
         }
@@ -1139,7 +1308,7 @@ class ChatActivity : LoadingActivity(),
                     this.finish()
                     LiveEventBus.get(EventKeys.EXIT_GROUP, Boolean::class.java)
                         .post(true)
-                    getString(R.string.退群成功).toast()
+                    "退群成功".toast()
                 }
 
                 is BaseViewModel.LoadState.Fail -> {
@@ -1163,7 +1332,7 @@ class ChatActivity : LoadingActivity(),
                     this.finish()
                     LiveEventBus.get(EventKeys.EXIT_GROUP, Boolean::class.java)
                         .post(true)
-                    getString(R.string.群已解散).toast()
+                    "群已解散".toast()
                 }
 
                 is BaseViewModel.LoadState.Fail -> {
@@ -1185,7 +1354,7 @@ class ChatActivity : LoadingActivity(),
 
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
-                    getString(R.string.群消息已全部销毁).toast()
+                    "群消息已全部销毁".toast()
                     //清空本地聊天数据操作
                     groupInfo?.id?.let {
                         ChatDao.getChatMsgDb().delMsgListByGroupId(it)
@@ -1230,10 +1399,25 @@ class ChatActivity : LoadingActivity(),
             mEmojViewModel.getEmojList()
         }
 
+        mViewModel.atMessageList.observe(this) { list ->
+            //@消息
+            if (list.isNotEmpty()) {
+                bindView.ivAtTag.visible()
+                bindView.tvAtCount.visible()
+                bindView.tvAtCount.text = "${list.size}"
+            } else {
+                bindView.ivAtTag.gone()
+                bindView.tvAtCount.gone()
+            }
+        }
+
         //媒体消息回调
         LiveEventBus.get(EventKeys.EVENT_SEND_MSG, ChatMessageBean::class.java).observe(this) {
-            processMsg(it)
-            bindView.listChat.scrollToPosition(mAdapter.data.size - 1)
+            if (it.msgType != MsgType.MESSAGETYPE_PICTURE) {
+                processMsg(it)
+                bindView.listChat.scrollToPosition(mAdapter.data.size - 1)
+            }
+//            mAdapter.addData(it)
         }
 
         //后台更新了敏感词
@@ -1249,11 +1433,18 @@ class ChatActivity : LoadingActivity(),
         //消息发送状态更新
         LiveEventBus.get(EventKeys.SEND_STATE_UPDATE, ChatMessageBean::class.java)
             .observe(this) { msg ->
-                mAdapter.data.indexOfFirst {
-                    it is ChatMessageBean && it.dbId == msg.dbId
-                }.let { index ->
-                    mAdapter.setData(index, msg)
-
+                var hasExit = false
+                mAdapter.data.forEachIndexed { index, any ->
+                    if (any is ChatMessageBean && any.uuid == msg.uuid) {
+                        hasExit = true
+                        any.sendState = msg.sendState
+                        any.id = msg.id
+                        mAdapter.notifyItemChanged(index)
+                    }
+                }
+                if (!hasExit) {
+                    mAdapter.addData(msg)
+                    bindView.listChat.scrollToPosition(mAdapter.data.size - 1)
                 }
             }
 
@@ -1341,6 +1532,56 @@ class ChatActivity : LoadingActivity(),
             it?.forEach { e -> e.isDel = true }
             bindView.inputPanelFrameLayout.setGifData(it)
         }
+        mViewModel.jumpIndexMsgList.observe(this) {
+            //跳转到指定位置消息
+            hideLoading()
+            bindView.refresh.finishRefresh()
+            bindView.refresh.finishLoadMore()
+            var indexPosition = -1
+            it.forEachIndexed { index, chatMessageBean ->
+                if (chatMessageBean.id == clickJumpMsgId) {
+                    indexPosition = index
+                    chatMessageBean.isHighlight = true
+                } else {
+                    chatMessageBean.isHighlight = false
+                }
+            }
+            mAdapter.setList(mViewModel.generateDateHeaders(it, false))
+            isAutoScrollBottom = false
+            bindView.listChat.scrollToPosition(indexPosition)
+
+            //上报已读@消息
+            mViewModel.upReadAtMsg(mutableListOf<String>().apply {
+                add(clickJumpMsgId)
+            })
+            //判读是否显示@图标
+            val atList = mViewModel.atMessageList.value
+            if (atList != null && atList.size > 0) {
+                atList.removeAt(0)
+                if (atList.size > 0) {
+                    bindView.ivAtTag.visible()
+                    bindView.tvAtCount.visible()
+                    bindView.tvAtCount.text = "${atList.size}"
+                } else {
+                    val list = ImCache.atConverMsgList.filter { it.sessionId == mTargetId }
+                    if (list.isNotEmpty()) {
+                        ImCache.atConverMsgList.removeAll(list)
+                    }
+                    bindView.ivAtTag.gone()
+                    bindView.tvAtCount.gone()
+                    LiveEventBus.get(EventKeys.UPDATE_CONVER_END).post(null)
+                }
+            } else {
+                //没有@消息
+                val list = ImCache.atConverMsgList.filter { it.sessionId == mTargetId }
+                if (list.isNotEmpty()) {
+                    ImCache.atConverMsgList.removeAll(list)
+                }
+                bindView.ivAtTag.gone()
+                bindView.tvAtCount.gone()
+                LiveEventBus.get(EventKeys.UPDATE_CONVER_END).post(null)
+            }
+        }
 
         mViewModel.loadMoreMsgList.observe(this) {
             hideLoading()
@@ -1348,14 +1589,14 @@ class ChatActivity : LoadingActivity(),
             bindView.refresh.finishLoadMore()
             if (loadDirection == "Down") {
                 mAdapter.addData(mViewModel.generateDateHeaders(it, false))
-                if (it.size >= GET_HISTORY_PAGESIZE) {
+                if (it.size != 0) {
                     bindView.refresh.setEnableLoadMore(true)
                 } else {
                     bindView.refresh.setEnableLoadMore(false)
                 }
             } else {
                 mAdapter.addData(0, mViewModel.generateDateHeaders(it, false))
-                if (it.size >= GET_HISTORY_PAGESIZE) {
+                if (it.size != 0) {
                     bindView.refresh.setEnableRefresh(true)
                 } else {
                     bindView.refresh.setEnableRefresh(false)
@@ -1415,15 +1656,15 @@ class ChatActivity : LoadingActivity(),
                 var friend = ChatDao.getFriendDb().getFriendById(it)
                 var content = ""
                 if (chatInfo?.id == it) {
-                    content = String.format(getString(R.string.shanchutishi1),friend?.nickname)
+                    content = "你已被${friend?.nickname}删除好友关系"
                 } else {
                     //操作人是自己
-                    content = String.format(getString(R.string.shanchutishi2),friend?.nickname)
+                    content = "你已删除${friend?.nickname}的好友关系"
                 }
                 if (mChatType == 0) {
                     //被删除好友
                     HintDialog(
-                        getString(R.string.zhuyi),
+                        "注意",
                         content,
                         object : ConfirmDialogCallback {
                             override fun onItemClick() {
@@ -1438,6 +1679,58 @@ class ChatActivity : LoadingActivity(),
                     ).show(supportFragmentManager, "HintDialog")
                 }
             }
+
+        mViewModel.getGroupInfo.observe(this) {
+            //查询群组信息
+            when (it) {
+                is BaseViewModel.LoadState.Loading -> {}
+                is BaseViewModel.LoadState.Fail -> {
+                }
+
+                is BaseViewModel.LoadState.Success -> {
+                    groupInfo = it.data
+                    showGroupUi()
+                }
+            }
+        }
+    }
+
+    private fun showGroupUi() {
+        if (groupInfo == null) {
+            val g = GroupInfoBean()
+            g.id = mTargetId
+            if (!TextUtils.isEmpty(toName)) {
+                g.name = toName ?: ""
+                g.headUrl = toHeadler ?: ""
+            } else {
+                g.name = "群组 $mTargetId"
+                g.headUrl = toHeadler ?: ""
+            }
+            groupInfo = g
+            ChatDao.getGroupDb().saveGroup(groupInfo)
+        }
+        mCurrentChatId = mTargetId
+
+        val showGroupMember = SPUtils.getInstance().getBoolean(EventKeys.HIDE_MEMBER, true)
+        if (showGroupMember) {
+            bindView.tvTitleHint.visible()
+        } else {
+            bindView.tvTitleHint.gone()
+        }
+
+        //弹出群公告
+        showNoticeDialog()
+        bindView.tvTitle.text = groupInfo?.name
+        isMute = groupInfo?.allowSpeak == "N"
+
+        bindView.layoutHeader.apply {
+            setChatId(mTargetId)
+            setChatName(groupInfo?.name ?: "")
+            setRoundRadius(96F)
+        }.showUrl(groupInfo?.headUrl)
+
+        //获取群主管理员id列表
+        mViewModel.getManagerList(mTargetId)
     }
 
     /**
@@ -1445,9 +1738,15 @@ class ChatActivity : LoadingActivity(),
      */
     @SuppressLint("SetTextI18n")
     private fun showMemberTypeView(memberList: MutableList<GroupMemberBean>?) {
+
         mAdapter.notifyDataSetChanged()//刷新数据显示群成员头像 昵称
         groupMemberList.clear()
-        bindView.tvTitleHint.text = "${getString(R.string.jiamichat)} (${memberList?.size ?: 1})"//显示在线人数
+        if (memberList != null && memberList.size > 0) {
+            bindView.tvTitleHint.text = "加密聊天 (${memberList.size.toGroupMemberSize()})"//显示在线人数
+        } else {
+            bindView.tvTitleHint.text = "加密聊天 (1)"//显示在线人数
+        }
+
         memberList?.let { groupMemberList.addAll(it) }
 
         val tempList = mutableListOf<String>()
@@ -1466,7 +1765,7 @@ class ChatActivity : LoadingActivity(),
 
         isMemberMute = isMemberMute(memberList)
 
-        showMeteView(isMemberMute)
+//        showMeteView(isMemberMute)
     }
 
     /**
@@ -1478,33 +1777,30 @@ class ChatActivity : LoadingActivity(),
             if (owerAndManagerList != null && owerAndManagerList.size > 0) {
                 if (!owerAndManagerList.contains(MMKVUtils.getUser()?.id)) {
                     //当前用户非群主或者管理员
-                    var text =
-                        if (isMemberMute) getString(R.string.你已被禁言) else getString(R.string.benqunjinyan)
-                    bindView.inputPanelFrameLayout.setMute(text, null)
+                    var text = if (isMemberMute) "请勿泄露数据" else "任务正在派发"
+//                    bindView.inputPanelFrameLayout.setMute(text, null)
                 } else {
                     //当前用户是管理员
-                    if (isMemberMute) {
-                        bindView.inputPanelFrameLayout.setMute(getString(R.string.你已被禁言), null)
-                    } else {
-                        //管理员或者群主，不会禁言
-                        bindView.inputPanelFrameLayout.closeMute()
-                    }
+//                    if (isMemberMute) {
+//                        bindView.inputPanelFrameLayout.setMute("请勿泄露数据", null)
+//                    } else {
+//                        //管理员或者群主，不会被群禁言
+//                        bindView.inputPanelFrameLayout.closeMute()
+//                    }
+
+                    //管理员或者群主，不会被群禁言
+                    bindView.inputPanelFrameLayout.closeMute()
                 }
             } else {
-                //没有拿回群管理员数据，本地数据里面找
-                if (groupInfo?.roleType == "Normal")
-                    bindView.inputPanelFrameLayout.setMute(
-                        getString(R.string.benqunjinyan),
-                        null
-                    )
+                bindView.inputPanelFrameLayout.closeMute()
             }
         } else {
             if (isMemberMute) {
                 //给单个人禁言
-                bindView.inputPanelFrameLayout.setMute(getString(R.string.你已被禁言), null)
+//                bindView.inputPanelFrameLayout.setMute("请勿泄露数据", null)
             } else {
                 //关闭群禁言
-                bindView.inputPanelFrameLayout.closeMute()
+//                bindView.inputPanelFrameLayout.closeMute()
             }
         }
     }
@@ -1537,15 +1833,18 @@ class ChatActivity : LoadingActivity(),
     /**
      * 显示指定条目的数据
      */
-    private fun scrollToPosition(chatMsgList: MutableList<Any>, id: String) {
+    private fun scrollToPosition(chatMsgList: MutableList<Any>, id: String): Boolean {
+        var has = false
         chatMsgList.forEachIndexed { i, c ->
             if (c is ChatMessageBean && (c.id == id || c.editId == id)) {
                 isAutoScrollBottom = false
                 scrollToItem(i)
+                has = true
 //                bindView.listChat.scrollToPosition(i)
                 return@forEachIndexed
             }
         }
+        return has
     }
 
     /**
@@ -1555,6 +1854,7 @@ class ChatActivity : LoadingActivity(),
         if (msg.msgType == MsgType.MESSAGETYPE_NOTICE) {
             mAdapter.addData(msg)
         } else {
+
             try {
                 val lastMsg =
                     mAdapter.data.last { it is ChatMessageBean && (it.msgType != MESSAGETYPE_TIME || it.msgType != MsgType.MESSAGETYPE_NOTICE) }
@@ -1571,6 +1871,28 @@ class ChatActivity : LoadingActivity(),
                     mAdapter.addData(it)
                 }
                 mAdapter.addData(msg)
+            }
+
+            //处理多条转发消息，拆分显示
+            if (msg.operationType == "Forward") {
+                //移除原有消息体
+//                tempMsgList.remove(msg)
+                val str = msg.content
+                val array = JSONArray(str)
+                if (array != null && array.length() > 0) {
+                    for (index in 0 until array.length()) {
+                        val str = array.getString(index)
+                        val msgObj = JSONObject(str)
+                        val type = msgObj.optString("msgType")
+                        val tempMsg = msg.copy()
+                        tempMsg.msgType = type
+                        tempMsg.content = str
+                        if (msg.from == MMKVUtils.getUser()?.id) {
+                            tempMsg.dir = 1
+                        }
+                        mAdapter.addData(tempMsg)
+                    }
+                }
             }
         }
     }
@@ -1600,6 +1922,8 @@ class ChatActivity : LoadingActivity(),
         }
     }
 
+    private var isForwardMsg = false
+
     /**发送转发消息***/
     private fun sendForwardMsg() {
         recordBean.let { r ->
@@ -1617,7 +1941,7 @@ class ChatActivity : LoadingActivity(),
         //录音成功
         if (!TextUtils.isEmpty(audioFile)) {
             if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                showLoading(getString(R.string.发送语音中))
+                showLoading("发送语音中...")
             }
 
             var parentId = ""
@@ -1677,8 +2001,8 @@ class ChatActivity : LoadingActivity(),
         if (isGifE) {
             /**如果是发送gif表情图，必须弹框提示，限制发送太快*/
             HintDialog(
-                getString(R.string.fasong),
-                getString(R.string.你确定要发送GIf表情图),
+                "发送",
+                "你确定要发送GIf表情图",
                 isCanTouchOutsideSet = false,
                 iconId = R.drawable.ic_mine_header_group,
                 callback = object : ConfirmDialogCallback {
@@ -1736,101 +2060,107 @@ class ChatActivity : LoadingActivity(),
     override fun onExtMenuClick(position: Int) {
         when (position) {
             0 -> {
+                GNLog.i("用户点击了选择相册")
+
+                val newTime = System.currentTimeMillis()
+                if (newTime - sendTxtMsgTime < ChatUtils.ALLOW_TIME_LONG * 1000) {
+                    "消息发送过于频繁".toast()
+                    GNLog.i("消息发送过于频繁")
+                    return
+                }
+
+                isNeedRequestData = false
                 //选择相册
                 ImageUtils.goSelImg(
                     this,
-                    maxSelectNum = if (mChatType == 2) 1 else 20
+                    maxSelectNum = 1
                 ) { localPath, w, h, time, listSize ->
-                    if (listSize == 1 && !PatternUtils.isImageUrlGifMatcher(localPath)) {
-
-                        try {
-                            mImageFile =
-                                File(
-                                    cacheDir,
-                                    localPath.substring(localPath.indexOfLast { it == '/' } + 1)
-                                )
-
-                            startActivityForResult(
-                                Intent(this, IMGEditActivity::class.java)
-                                    .putExtra(
-                                        IMGEditActivity.EXTRA_IMAGE_URI,
-                                        Uri.fromFile(File(localPath))
-                                    )
-                                    .putExtra(
-                                        IMGEditActivity.EXTRA_IMAGE_SAVE_PATH,
-                                        mImageFile?.absolutePath
-                                    ),
-                                REQ_IMAGE_EDIT
-                            )
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-
-                    } else {
-                        //发送图片消息
-                        if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                            showLoading(getString(R.string.发送图片中))
-                        }
-
-                        var parentId = ""
-                        if (mWaitReplyMsg != null) {
-                            parentId = mWaitReplyMsg?.id ?: ""
-                        }
-                        mViewModel.sendImageMsg(localPath, getToId(), getChatType(), w, h, parentId)
-                        bindView.inputPanelFrameLayout.hideReplyView()
+                    //发送图片消息
+                    if (getChatType() == CHAT_TYPE_GROUP_SEND) {
+                        showLoading("发送图片中...")
                     }
+
+                    GNLog.i("选择了相片")
+                    var parentId = ""
+                    if (mWaitReplyMsg != null) {
+                        parentId = mWaitReplyMsg?.id ?: ""
+                    }
+                    mViewModel.sendImageMsg(localPath, getToId(), getChatType(), w, h, parentId)
+                    bindView.inputPanelFrameLayout.hideReplyView()
                 }
             }
 
             1 -> {
+                GNLog.i("用户点击了选择拍照")
+                val newTime = System.currentTimeMillis()
+                if (newTime - sendTxtMsgTime < ChatUtils.ALLOW_TIME_LONG * 1000) {
+                    "消息发送过于频繁".toast()
+                    GNLog.i("消息发送过于频繁")
+                    return
+                }
+
+                isNeedRequestData = false
                 //拍照
                 ImageUtils.goCamera(this) { localPath, w, h, time, listSize ->
 
-                    if (listSize == 1 && !PatternUtils.isImageUrlGifMatcher(localPath)) {
-                        try {
-                            mImageFile =
-                                File(
-                                    cacheDir,
-                                    localPath.substring(localPath.indexOfLast { it == '/' } + 1)
-                                )
-                            startActivityForResult(
-                                Intent(this, IMGEditActivity::class.java)
-                                    .putExtra(
-                                        IMGEditActivity.EXTRA_IMAGE_URI,
-                                        Uri.fromFile(File(localPath))
-                                    )
-                                    .putExtra(
-                                        IMGEditActivity.EXTRA_IMAGE_SAVE_PATH,
-                                        mImageFile?.absolutePath
-                                    ),
-                                REQ_IMAGE_EDIT
-                            )
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-
-                    } else {
-                        if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                            showLoading("发送图片中...")
-                        }
-                        var parentId = ""
-                        if (mWaitReplyMsg != null) {
-                            parentId = mWaitReplyMsg?.id ?: ""
-                        }
-
-                        mViewModel.sendImageMsg(localPath, getToId(), getChatType(), w, h, parentId)
-                        bindView.inputPanelFrameLayout.hideReplyView()
+                    if (getChatType() == CHAT_TYPE_GROUP_SEND) {
+                        showLoading("发送图片中...")
                     }
+                    var parentId = ""
+                    if (mWaitReplyMsg != null) {
+                        parentId = mWaitReplyMsg?.id ?: ""
+                    }
+                    GNLog.i("拍摄了相片")
+
+                    mViewModel.sendImageMsg(localPath, getToId(), getChatType(), w, h, parentId)
+                    bindView.inputPanelFrameLayout.hideReplyView()
+
+//                    if (listSize == 1 && !PatternUtils.isImageUrlGifMatcher(localPath)) {
+//                        try {
+//                            mImageFile =
+//                                File(
+//                                    cacheDir,
+//                                    localPath.substring(localPath.indexOfLast { it == '/' } + 1)
+//                                )
+//                            startActivityForResult(
+//                                Intent(this, IMGEditActivity::class.java)
+//                                    .putExtra(
+//                                        IMGEditActivity.EXTRA_IMAGE_URI,
+//                                        Uri.fromFile(File(localPath))
+//                                    )
+//                                    .putExtra(
+//                                        IMGEditActivity.EXTRA_IMAGE_SAVE_PATH,
+//                                        mImageFile?.absolutePath
+//                                    ),
+//                                REQ_IMAGE_EDIT
+//                            )
+//                        } catch (e: Exception) {
+//                            e.printStackTrace()
+//                        }
+//
+//                    } else {
+//                        if (getChatType() == CHAT_TYPE_GROUP_SEND) {
+//                            showLoading("发送图片中...")
+//                        }
+//                        var parentId = ""
+//                        if (mWaitReplyMsg != null) {
+//                            parentId = mWaitReplyMsg?.id ?: ""
+//                        }
+//
+//                        mViewModel.sendImageMsg(localPath, getToId(), getChatType(), w, h, parentId)
+//                        bindView.inputPanelFrameLayout.hideReplyView()
+//                    }
 
                 }
             }
 
             2 -> {
                 //发送视频
+                isNeedRequestData = false
                 ImageUtils.goRecordVideo(this) { localPath, w, h, time ->
                     //发送视频录制消息
                     if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                        showLoading(getString(R.string.发送视频中))
+                        showLoading("发送视频中...")
                     }
                     var parentId = ""
                     if (mWaitReplyMsg != null) {
@@ -1844,8 +2174,9 @@ class ChatActivity : LoadingActivity(),
 
             3 -> {
                 //选择文件
+                isNeedRequestData = false
                 if (mChatType == 2) {
-                    getString(R.string.暂不支持群发消息).toast()
+                    "暂不支持群发消息".toast()
                 } else {
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
                     intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -1880,8 +2211,8 @@ class ChatActivity : LoadingActivity(),
                 } else {
                     "上传的文件过大---size=${fileSizeFloat}".logE()
                     HintDialog(
-                        getString(R.string.zhuyi),
-                        getString(R.string.wenjianguodatishi),
+                        "注意",
+                        "上传的文件不能大于150M",
                         object : ConfirmDialogCallback {
                             override fun onItemClick() {
                             }
@@ -1891,31 +2222,31 @@ class ChatActivity : LoadingActivity(),
                 }
 
             } else if (requestCode == REQ_IMAGE_EDIT) {
-                var width = 0
-                var height = 0
-                if (data != null) {
-                    width = data.getIntExtra("imgWidth", 0)
-                    height = data.getIntExtra("imgHeight", 0)
-                }
-                //发送图片消息
-                if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                    showLoading("发送图片中...")
-                }
-                var parentId = ""
-                if (mWaitReplyMsg != null) {
-                    parentId = mWaitReplyMsg?.id ?: ""
-                }
-                if (mImageFile != null) {
-                    mViewModel.sendImageMsg(
-                        mImageFile!!.absolutePath,
-                        getToId(),
-                        getChatType(),
-                        width,
-                        height,
-                        parentId
-                    )
-                    bindView.inputPanelFrameLayout.hideReplyView()
-                }
+//                var width = 0
+//                var height = 0
+//                if (data != null) {
+//                    width = data.getIntExtra("imgWidth", 0)
+//                    height = data.getIntExtra("imgHeight", 0)
+//                }
+//                //发送图片消息
+//                if (getChatType() == CHAT_TYPE_GROUP_SEND) {
+//                    showLoading("发送图片中...")
+//                }
+//                var parentId = ""
+//                if (mWaitReplyMsg != null) {
+//                    parentId = mWaitReplyMsg?.id ?: ""
+//                }
+//                if (mImageFile != null) {
+//                    mViewModel.sendImageMsg(
+//                        mImageFile!!.absolutePath,
+//                        getToId(),
+//                        getChatType(),
+//                        width,
+//                        height,
+//                        parentId
+//                    )
+//                    bindView.inputPanelFrameLayout.hideReplyView()
+//                }
             }
 
         }
@@ -1925,13 +2256,7 @@ class ChatActivity : LoadingActivity(),
      * 获取toId
      */
     private fun getToId(): String {
-        return when (mChatType) {
-            //单聊
-            0 -> chatInfo?.id ?: ""
-            //群聊
-            1 -> groupInfo?.id ?: ""
-            else -> ""
-        }
+        return mTargetId
     }
 
     /**
@@ -1957,12 +2282,11 @@ class ChatActivity : LoadingActivity(),
             isAutoHideKeyWord = false
             bindView.coordinator.visible()
 
-            val atMsg = ChatDao.getGroupDb().getMemberByGroupId(mTargetId).apply {
-                add(0, GroupMemberBean(name = getString(R.string.所有人), memberId = "0000000000000000000"))
-                this.forEach { it.atStr = str ?: "" }
-            }
+            val tempMemberList = mutableListOf<GroupMemberBean>()
+            tempMemberList.add(GroupMemberBean(name = "所有人", memberId = "0000000000000000000"))
+            tempMemberList.addAll(groupMemberList)
             //测试数据
-            mAtAdapter.setList(atMsg)
+            mAtAdapter.setList(tempMemberList)
         }
     }
 
@@ -2044,18 +2368,46 @@ class ChatActivity : LoadingActivity(),
 
         override fun onItemHeaderClick(data: ChatMessageBean) {
             //点击头像
-            if (groupInfo?.roleType?.uppercase() == "admin".uppercase()
-                || groupInfo?.roleType?.uppercase() == "owner".uppercase()
-            ) {
-                val groupMember = ChatDao.getGroupDb().getMemberInGroup(data.from, mTargetId)
-                val chatInfo = groupMember?.let { ChatMsgUtils.groupMemberCopyFriendListBean(it) }
-                if (chatInfo != null)
-                    startActivity(
-                        Intent(mActivity, FriendInfoActivity::class.java)
-                            .putExtra(CHAT_INFO, chatInfo as Serializable)
-                            .putExtra(ContactActivity.IN_TYPE, 1)
-                    )
+            val groupMember = groupMemberList.firstOrNull { it.id == data.from }
+
+            val chatInfo = groupMember?.let { ChatMsgUtils.groupMemberCopyFriendListBean(it) }
+            if (chatInfo != null) {
+                startActivity(
+                    Intent(mActivity, FriendInfoActivity::class.java)
+                        .putExtra(CHAT_INFO, chatInfo as Serializable)
+                        .putExtra(ContactActivity.IN_TYPE, 1)
+                )
             }
+//            if (groupInfo?.roleType?.uppercase() == "admin".uppercase()
+//                || groupInfo?.roleType?.uppercase() == "owner".uppercase()
+//            ) {
+//                val groupMember = groupMemberList.firstOrNull { it.id == data.from }
+//
+//                val chatInfo = groupMember?.let { ChatMsgUtils.groupMemberCopyFriendListBean(it) }
+//                if (chatInfo != null)
+//                    startActivity(
+//                        Intent(mActivity, FriendInfoActivity::class.java)
+//                            .putExtra(CHAT_INFO, chatInfo as Serializable)
+//                            .putExtra(ContactActivity.IN_TYPE, 1)
+//                    )
+//            }else{
+//                val groupMember = groupMemberList.firstOrNull { it.id == data.from }
+//                if (groupMember?.role?.uppercase()== "admin".uppercase()
+//                    ||groupMember?.role?.uppercase()== "owner".uppercase()){
+//                    val chatInfo = groupMember?.let { ChatMsgUtils.groupMemberCopyFriendListBean(it) }
+//                    if (chatInfo != null)
+//                        startActivity(
+//                            Intent(mActivity, FriendInfoActivity::class.java)
+//                                .putExtra(CHAT_INFO, chatInfo as Serializable)
+//                                .putExtra(ContactActivity.IN_TYPE, 1)
+//                        )
+//                }
+//            }
+
+//            "点击了头像".toast()
+
+//            val groupMember = ChatDao.getGroupDb().getMemberInGroup(data.from, mTargetId)
+
         }
 
         override fun onItemHeaderLongClick(type: Int, data: ChatMessageBean) {
@@ -2073,11 +2425,11 @@ class ChatActivity : LoadingActivity(),
                 1 -> {
                     var member = ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
                     var headUrl = member?.headUrl ?: ""
-                    var name = member?.nickname ?: getString(R.string.此人)
+                    var name = member?.nickname ?: "此人"
                     //踢出群聊
                     HintDialog(
-                        getString(R.string.yichuqunliao),
-                        String.format(getString(R.string.yichutishi),name),
+                        "移除群聊",
+                        "是否将${name}移除群聊？",
                         object : ConfirmDialogCallback {
                             override fun onItemClick() {
                                 //踢出群聊
@@ -2097,8 +2449,8 @@ class ChatActivity : LoadingActivity(),
                     var name = member?.nickname ?: "此人"
                     var isMute = member?.allowSpeak == "N"
                     HintDialog(
-                        if (isMute) getString(R.string.取消禁言) else getString(R.string.设置禁言),
-                        if (isMute) String.format(getString(R.string.quxiaojinyan),name) else String.format(getString(R.string.shezhijinyan),name),
+                        if (isMute) "取消禁言" else "设置禁言",
+                        if (isMute) "是否将${name}取消禁言？" else "是否将${name}设置禁言？",
                         object : ConfirmDialogCallback {
                             override fun onItemClick() {
                                 //设置禁言
@@ -2130,8 +2482,8 @@ class ChatActivity : LoadingActivity(),
         override fun reSendMsg(data: ChatMessageBean) {
             //重发消息
             HintDialog(
-                getString(R.string.重发消息),
-                getString(R.string.是否重发该消息),
+                "重发消息",
+                "是否重发该消息？",
                 object : ConfirmDialogCallback {
                     override fun onItemClick() {
                         //消息重发
@@ -2154,7 +2506,7 @@ class ChatActivity : LoadingActivity(),
                     //添加表情
                     try {
                         if (currentGifNum >= MAX_GIF_NUM) {
-                            String.format(getString(R.string.最多只能添加),"${MAX_GIF_NUM}").toast()
+                            "最多只能添加${MAX_GIF_NUM}张表情".toast()
                             return
                         }
                         val imageMsg = GsonUtils.fromJson(data.content, ImageBean::class.java)
@@ -2168,10 +2520,10 @@ class ChatActivity : LoadingActivity(),
                                         imageMsg.height
                                     )
                                 if (result.code == 200) {
-                                    getString(R.string.表情已添加成功).toast()
+                                    "表情已添加成功".toast()
                                     mEmojViewModel.getEmojList()
                                 } else if (result.code == 40102) {
-                                    getString(R.string.表情包数量超出限制).toast()
+                                    "表情包数量超出限制".toast()
                                 } else {
                                     "GIF图片张,上传失败！".logE()
                                 }
@@ -2201,7 +2553,7 @@ class ChatActivity : LoadingActivity(),
                         getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("simple text", data.content)
                     clipboard.setPrimaryClip(clip)
-                    getString(R.string.消息内容已复制).toast()
+                    "消息内容已复制".toast()
                 }
 
                 ChatPopClickType.Forward -> {
@@ -2257,21 +2609,26 @@ class ChatActivity : LoadingActivity(),
         } else {
             headUrl = ChatDao.getGroupDb()
                 .getMemberInGroup(chatMessageBean.from, chatMessageBean.groupId)?.headUrl ?: ""
-            var groupInfo =
-                chatMessageBean?.groupId?.let { ChatDao.getGroupDb().getGroupInfoById(it) }
+            var groupInfo = ChatDao.getGroupDb().getGroupInfoById(chatMessageBean?.groupId ?: "")
             isAdmin = groupInfo?.roleType?.lowercase() != "normal"
         }
 
         SelectHintDialog(
-            getString(R.string.zhuyi),
-            getString(R.string.quedingxiaohui),
+            "注意",
+            "确定要销毁消息，销毁后无法找回。",
             object : ConfirmSelectDialogCallback {
                 override fun onItemClick(isSelect: Boolean) {
-                    var delMsgType = if (isSelect) {
+//                    var delMsgType = if (isSelect) {
+//                        //单向删除 Unilateral
+//                        "Unilateral"
+//                    } else {
+//                        //双向删除 Bilateral
+//                        "Bilateral"
+//                    }
+                    val delMsgType = if (getChatType() == CHAT_TYPE_FRIEND) {
                         //单向删除 Unilateral
                         "Unilateral"
                     } else {
-                        //双向删除 Bilateral
                         "Bilateral"
                     }
                     deleteMsg(chatMessageBean, delMsgType)
@@ -2279,58 +2636,32 @@ class ChatActivity : LoadingActivity(),
             },
             R.drawable.ic_mine_header,
             headUrl = headUrl,
-            isShowLLSelectView = true,
+            isShowLLSelectView = false,
             isShowHeader = true,
             isAdmin = true
         ).show(supportFragmentManager, "HintDialog")
     }
 
     private fun deleteMsg(data: ChatMessageBean, delMsgType: String) {
-        ChatDao.getChatMsgDb().delMessage(data.dbId) {
-            //删除回调
-            mAdapter.data.remove(data)
-            clearDataHeader()
-        }
+        //删除回调
+        mAdapter.data.remove(data)
+        clearDataHeader()
+
         mAdapter.notifyDataSetChanged()
 
         if (data.chatType == ChatType.CHAT_TYPE_FRIEND) {
             //删除好友消息
-            if ("Modify" == data.operationType) {
-                Log.e("Modify", data.id + "   " + data.editId)
-                mViewModel.deleteMessage(
-                    data.editId,
-                    data.chatType,
-                    "",
-                    data.from,
-                    data.to,
-                    delMsgType
-                )
-            } else {
-                mViewModel.deleteMessage(data.id, data.chatType, "", data.from, data.to, delMsgType)
-            }
+            mViewModel.deleteMessage(data.id, data.chatType, "", data.from, data.to, delMsgType)
         } else if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
             //删除群聊消息
-            if ("Modify" == data.operationType) {
-                Log.e("Modify 群", data.id + "   " + data.editId)
-
-                mViewModel.deleteMessage(
-                    data.editId,
-                    data.chatType,
-                    data.groupId,
-                    MMKVUtils.getUser()?.id ?: "",
-                    "",
-                    delMsgType
-                )
-            } else {
-                mViewModel.deleteMessage(
-                    data.id,
-                    data.chatType,
-                    data.groupId,
-                    MMKVUtils.getUser()?.id ?: "",
-                    "",
-                    delMsgType
-                )
-            }
+            mViewModel.deleteMessage(
+                data.id,
+                data.chatType,
+                data.groupId,
+                MMKVUtils.getUser()?.id ?: "",
+                "",
+                delMsgType
+            )
         }
     }
 
@@ -2344,7 +2675,7 @@ class ChatActivity : LoadingActivity(),
             position,
             onStart = {
                 mAdapter.data.filterIsInstance<ChatMessageBean>().let { list ->
-                    list.firstOrNull { f -> f.dbId == bean.dbId }?.let { b ->
+                    list.firstOrNull { f -> f.id == bean.id }?.let { b ->
                         b.isPlaying = true
                         if (b.dir == 0) {
                             //音频消息，发送已读回执
@@ -2362,13 +2693,13 @@ class ChatActivity : LoadingActivity(),
             },
             onStop = {
                 mAdapter.data.filterIsInstance<ChatMessageBean>().let { list ->
-                    list.firstOrNull { f -> f.dbId == bean.dbId }?.isPlaying = false
+                    list.firstOrNull { f -> f.id == bean.id }?.isPlaying = false
                     mAdapter.notifyItemChanged(position)
                 }
             },
             onComplete = {
                 mAdapter.data.filterIsInstance<ChatMessageBean>().let { list ->
-                    list.firstOrNull { f -> f.dbId == bean.dbId }?.isPlaying = false
+                    list.firstOrNull { f -> f.id == bean.id }?.isPlaying = false
                     mAdapter.notifyItemChanged(position)
                 }
             })
@@ -2394,7 +2725,7 @@ class ChatActivity : LoadingActivity(),
                 ALLOWSPEAK -> {
                     //禁言
                     isMute = groupAction.setValue == "N"
-                    showMeteView(isMemberMute)
+//                    showMeteView(isMemberMute)
                 }
 
                 SetMemberRole -> {
@@ -2403,7 +2734,7 @@ class ChatActivity : LoadingActivity(),
                     if (groupAction.setValue == MMKVUtils.getUser()?.id) {
                         //当前用户角色变成了管理员
                         if (isMemberMute) {//现在是单个禁言状态
-                            bindView.inputPanelFrameLayout.setMute(getString(R.string.你已被禁言), null)
+//                            bindView.inputPanelFrameLayout.setMute("你已被禁言", null)
                         } else {
                             //其他状态都不禁言
                             bindView.inputPanelFrameLayout.closeMute()
@@ -2424,10 +2755,7 @@ class ChatActivity : LoadingActivity(),
                     if (groupAction.setValue == MMKVUtils.getUser()?.id) {
                         //当前用户角色被取消管理员，如果是禁言状态
                         if (isMute) {
-                            bindView.inputPanelFrameLayout.setMute(
-                                getString(R.string.benqunjinyanzhong),
-                                null
-                            )
+//                            bindView.inputPanelFrameLayout.setMute("本群禁言，可私聊群主或管理员申请开启发言", null)
                         }
                         //不是管理员时 不可以查看群成员资料
                         groupInfo?.roleType = "Normal"
@@ -2446,6 +2774,7 @@ class ChatActivity : LoadingActivity(),
                 MsgType.NOTICE -> {
                     //修改群公告
                     groupInfo?.notice = groupAction.setValue
+                    showNoticeDialog()
                 }
 
                 MsgType.HEADERURL -> {
@@ -2464,7 +2793,7 @@ class ChatActivity : LoadingActivity(),
                             //被允许发言
                             isMemberMute = false
                         }
-                        showMeteView(isMemberMute)
+//                        showMeteView(isMemberMute)
                         groupMemberList.forEach {
                             if (it.memberId == groupAction.targetId) {
                                 it.allowSpeak = groupAction.setValue
@@ -2589,12 +2918,12 @@ class ChatActivity : LoadingActivity(),
     private fun setTopDialog(data: ChatMessageBean) {
         HintDialog(
             groupInfo?.name ?: "",
-            getString(R.string.您想要在群组中置顶这则消息吗),
+            "您想要在群组中置顶这则消息吗？",
             object : ConfirmDialogCallback {
                 override fun onItemClick() {
                     msgTopList.let {
                         if (msgTopList.size >= 5) {
-                            getString(R.string.最多只能置顶5条消息).toast()
+                            "最多只能置顶5条消息".toast()
                         } else {
                             var id = data.id
                             if ("Modify" == data.operationType) {
@@ -2747,6 +3076,8 @@ class ChatActivity : LoadingActivity(),
         bindView.inputPanelFrameLayout.onDestroy()
         super.onDestroy()
         AudioPlayManager.getInstance().stopPlay()
+        //上传日志
+//        PlatformUtils.uploadLog()
         timer?.cancel()
         timerTask?.cancel()
         timerTask = null
@@ -2759,29 +3090,34 @@ class ChatActivity : LoadingActivity(),
     }
 
     private var isNeedRequestData = false
+
     override fun onResume() {
         super.onResume()
+        ChatUtils.mCurrentChatId = getToId()
+        ChatUtils.mCurrentChatType = getChatType()
+
         if (!isNeedRequestData) {
             isNeedRequestData = true
         } else {
             requestData()
         }
     }
-    override fun onRestart() {
-        super.onRestart()
-        mAdapter?.notifyDataSetChanged()
-    }
 
     override fun onPause() {
         super.onPause()
+
+        //置空打开的聊天页面信息
+        ChatUtils.mCurrentChatId = ""
+        ChatUtils.mCurrentChatType = ""
+
         bindView.inputPanelFrameLayout.onActivityPause()
     }
 
     /**删除一个gif*/
     override fun onDelGifClick(id: String) {
         HintDialog(
-            getString(R.string.zhuyi),
-            getString(R.string.quedingshanchu),
+            "注意",
+            "你确定要删除吗？",
             isShowBtnCancel = false,
             iconId = R.drawable.ic_mine_header_group,
             callback = object : ConfirmDialogCallback {
@@ -2792,5 +3128,52 @@ class ChatActivity : LoadingActivity(),
                 }
             }
         ).show(supportFragmentManager, "HintDialog")
+    }
+
+    /**
+     * 初始化title显示
+     */
+    private fun initTitleStr(wsState: ImConnectSatus) {
+        when (wsState) {
+            ImConnectSatus.CONNECTING -> {
+                //连接中
+                bindView.tvWsState.visible()
+                bindView.tvWsState.text = "正在连接..."
+            }
+
+            ImConnectSatus.SUCCESS -> {
+                //连接成功
+                bindView.tvWsState.gone()
+                bindView.tvWsState.text = "已连接"
+            }
+
+            ImConnectSatus.CONNECT_FAIL -> {
+                //连接失败
+                bindView.tvWsState.visible()
+                bindView.tvWsState.text = "连接失败"
+            }
+
+            ImConnectSatus.CLOSE -> {
+                //连接已断开
+                bindView.tvWsState.visible()
+                if (bindView.tvWsState.text != "连接中...") {
+                    bindView.tvWsState.text = "连接中..."
+                }
+            }
+
+            ImConnectSatus.NET_ERROR -> {
+                //网络已断开
+                bindView.tvWsState.visible()
+                bindView.tvWsState.text = "等待网络"
+            }
+
+            ImConnectSatus.RECONNECT -> {
+                //自动重连中
+                bindView.tvWsState.visible()
+                if (bindView.tvWsState.text != "连接中...") {
+                    bindView.tvWsState.text = "连接中..."
+                }
+            }
+        }
     }
 }
