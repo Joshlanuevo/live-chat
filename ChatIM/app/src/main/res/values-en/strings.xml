@@ -81,7 +81,7 @@
     <string name="laheihaoyou">Block friends</string>
     <string name="jinyan">Ban messages</string>
     <string name="shanchuhaoyou">Delete friend</string>
-    <string name="liaotian">Chat</string>
+    <string name="lianxiren">Contact</string>
     <string name="qingshuru">Please Input</string>
     <string name="baocun">Save</string>
     <string name="sousuo">Search friends/groups</string>
@@ -103,6 +103,7 @@
     <string name="meiyoujilu">No Record</string>
     <string name="xinjianqunfa">Create a new group message</string>
     <string name="xiaoxi">Message</string>
+    <string name="liaotian">Chat</string>
     <string name="haoyou">Friends</string>
     <string name="faxian">Find</string>
     <string name="wode">Me</string>

@@ -51,7 +51,7 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:drawableTop="@drawable/discount_icon"
-                android:text="@string/xiaoxi"
+                android:text="@string/liaotian"
                 app:itemBackground="@null" />
 
             <RadioButton
@@ -62,7 +62,7 @@
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/tab_friend_icon"
-                android:text="@string/haoyou"
+                android:text="@string/lianxiren"
                 app:itemBackground="@null" />
 
             <RadioButton

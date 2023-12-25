@@ -2,6 +2,7 @@ package com.ym.chat.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import android.webkit.ConsoleMessage
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -38,7 +39,9 @@ class MovementFragment : LoadingFragment(R.layout.fragment_movement) {
     }
 
     override fun requestData() {
-        showLoading()
+        bindView.llLoading.visibility = View.VISIBLE
+        bindView.loading.playAnimation()
+
         mViewModel.getFindUrl()
     }
 
@@ -92,7 +95,7 @@ class MovementFragment : LoadingFragment(R.layout.fragment_movement) {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 if (newProgress == 100) {
-                    hideLoading()
+                    bindView.llLoading.visibility = View.GONE
                 }
             }
         })

@@ -98,34 +98,6 @@ class HomeActivity : LoadingActivity() {
     private var beforeY: Float = 0.0f
     private var isStartGame = false
 
-    /**
-     * 滑动监听
-     */
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-//        when (ev.action) {
-//            ACTION_DOWN -> {
-//                beforeX = ev.x
-//                beforeY = ev.y
-//            }
-//            ACTION_MOVE -> {
-//                val tempX = ev.x
-//                val tempY = ev.y
-//                val diffX = abs(tempX - beforeX)
-//                val diffY = abs(tempY - beforeY)
-//                return if ((diffX - diffY) > 200 && (tempX - beforeX) < -200 && !isStartGame) {
-//                    //进入包网
-//                    isStartGame = true
-//                    startActivity(Intent(this, WebGameActivity::class.java))
-//                    true
-//                } else {
-//                    super.dispatchTouchEvent(ev)
-//                }
-//            }
-//            else -> {}
-//        }
-        return super.dispatchTouchEvent(ev)
-    }
-
     private fun getCount() {
         val count = ChatDao.getConversationDb().getConverunReadCount()
         if (count > 0) {

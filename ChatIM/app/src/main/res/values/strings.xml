@@ -81,7 +81,6 @@
     <string name="laheihaoyou">拉黑好友</string>
     <string name="jinyan">禁言</string>
     <string name="shanchuhaoyou">删除好友</string>
-    <string name="liaotian">聊天</string>
     <string name="qingshuru">请输入</string>
     <string name="baocun">保存</string>
     <string name="sousuo">搜索好友/群组</string>
@@ -103,7 +102,9 @@
     <string name="meiyoujilu">没有记录</string>
     <string name="xinjianqunfa">新建群发</string>
     <string name="xiaoxi">消息</string>
+    <string name="liaotian">聊天</string>
     <string name="haoyou">好友</string>
+    <string name="lianxiren">联系人</string>
     <string name="faxian">发现</string>
     <string name="wode">我的</string>
     <string name="huanyindenglu">欢迎登录</string>
