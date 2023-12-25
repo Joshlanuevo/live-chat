@@ -129,10 +129,6 @@ class LoginActivity : LoadingActivity() {
             //去注册
             startActivity(Intent(this, RegisterActivity::class.java))
         }
-//        bindView.tvChangeSerId.click {
-//            //换一个
-//            startActivity(Intent(this, ChangeServiceIdActivity::class.java))
-//        }
         bindView.tvForgetPwd.pressEffectAlpha().click {
             //找回密码
             startActivity(Intent(this, FindPwdActivity::class.java))

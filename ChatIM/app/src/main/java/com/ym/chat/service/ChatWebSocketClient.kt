@@ -32,6 +32,7 @@ import com.ym.chat.utils.ImCache
 import com.ym.chat.utils.LogHelp
 import com.ym.chat.utils.MsgType
 import com.ym.chat.utils.StringExt.decodeContent
+import com.ym.chat.utils.ToastUtils
 import com.ym.chat.viewmodel.FriendViewModel
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -357,6 +358,7 @@ class ChatWebSocketClient(
                             jsonData.optString("type")//type=   KickOut: '您的账号已在别处登录'  Disable: '您已被后台管理员封禁'
                         MMKVUtils.clearUserInfo()
                         ImCache.KillOutType = type//记录被踢原因
+                        com.blankj.utilcode.util.ToastUtils.showShort("收到31号消息")
                         LiveEventBus.get(EventKeys.LOGIN_OR_OUT, Boolean::class.java).post(false)
                     } catch (e: Exception) {
                         e.printStackTrace()

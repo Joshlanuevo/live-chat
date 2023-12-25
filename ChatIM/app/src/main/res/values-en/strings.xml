@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">You Liao</string>
+    <string name="app_name">Live700</string>
     <string name="需要存储权限">Need Storage Permission</string>
     <string name="voice_rec">Slide Up To Cancel</string>
     <string name="voice_cancel">Release To Cancel</string>
@@ -59,7 +59,7 @@
     <string name="wentijietu">Screenshot of problem</string>
     <string name="ganxiebaogui">Thank you for your valuable suggestions. We will fix and improve your suggestions and problems as soon as possible!</string>
     <string name="tijiao">Submit</string>
-    <string name="youliaojiandan">YouChat makes communication so easy</string>
+    <string name="youliaojiandan">Live700 makes communication so easy</string>
     <string name="qudenglu">Go to login</string>
     <string name="zhaohuimima">Find password</string>
     <string name="qingshurushoujihao">Please enter phone number</string>

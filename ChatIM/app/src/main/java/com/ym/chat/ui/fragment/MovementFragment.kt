@@ -67,7 +67,7 @@ class MovementFragment : LoadingFragment(R.layout.fragment_movement) {
                 0,
                 0
             )
-//            .setMainFrameErrorView(errorView)
+            .setMainFrameErrorView(View.inflate(context,R.layout.agentweb_error_page,null))
             .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
             .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK) //打开其他应用时，弹窗咨询用户是否前往其他应用
             .setWebViewClient(GameWebViewClient { isShowTitle ->

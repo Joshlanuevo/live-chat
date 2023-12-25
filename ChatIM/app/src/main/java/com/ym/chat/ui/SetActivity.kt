@@ -20,6 +20,7 @@ import com.ym.chat.databinding.ActivitySetBinding
 import com.ym.chat.dialog.CancelDialogCallback
 import com.ym.chat.dialog.ConfirmDialogCallback
 import com.ym.chat.dialog.HintDialog
+import com.ym.chat.service.WebsocketWork
 import com.ym.chat.utils.AppManagerUtils
 import com.ym.chat.utils.DataCleanManagerUtils
 import com.ym.chat.utils.LanguageUtils
@@ -75,15 +76,15 @@ class SetActivity : LoadingActivity() {
                 object : ConfirmDialogCallback {
                     override fun onItemClick() {
                         mViewModel.loginOut()
+                        //            //退出登录
+                        MMKVUtils.clearUserInfo()
+                        LiveEventBus.get(EventKeys.LOGIN_OR_OUT, Boolean::class.java).post(false)
+//                        "已退出登录".toast()
+                        WebsocketWork.WS.close()
                     }
                 }, headUrl = MMKVUtils.getUser()?.headUrl, isShowHeader = true, isTitleTxt = true
             ).show(supportFragmentManager, "HintDialog")
 
-//            //退出登录
-//            MMKVUtils.clearUserInfo()
-//            LiveEventBus.get(EventKeys.LOGIN_OR_OUT, Boolean::class.java).post(false)
-//            "已退出登录".toast()
-//            WebsocketWork.WS.close()
         }
         bindView.llSafetySet.click {
             //安全设置
@@ -122,8 +123,9 @@ class SetActivity : LoadingActivity() {
 
                                 LiveEventBus.get(EventKeys.LANGUAGE).post(LanguageChangeEvent());
                                 LanguageUtils.changeLanguage(this@SetActivity, "en", "en")
-                                val i = Intent(this@SetActivity,HomeActivity::class.java)
-                                i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                val i = Intent(this@SetActivity, HomeActivity::class.java)
+                                i.flags =
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                                 startActivity(i)
 //                                ProcessPhoenix.triggerRebirth(this@SetActivity,i)
                             }
@@ -152,8 +154,9 @@ class SetActivity : LoadingActivity() {
                             override fun onItemClick() {
                                 LiveEventBus.get(EventKeys.LANGUAGE).post(LanguageChangeEvent())
                                 LanguageUtils.changeLanguage(this@SetActivity, "zh", "cn")
-                                val i = Intent(this@SetActivity,HomeActivity::class.java)
-                                i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                                val i = Intent(this@SetActivity, HomeActivity::class.java)
+                                i.flags =
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                                 startActivity(i)
 //                                ProcessPhoenix.triggerRebirth(this@SetActivity,i);
                             }

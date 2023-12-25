@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">友聊</string>
+    <string name="app_name">Live700</string>
     <string name="需要存储权限">需要存储权限</string>
     <string name="voice_rec">手指上滑，取消发送</string>
     <string name="voice_cancel">松开手指，取消发送</string>
@@ -59,7 +59,7 @@
     <string name="wentijietu">问题截图</string>
     <string name="ganxiebaogui">感谢您提供宝贵的建议，我们会尽快修复完善您提出的 建议及问题！</string>
     <string name="tijiao">提交</string>
-    <string name="youliaojiandan">友聊让通信如此简单</string>
+    <string name="youliaojiandan">Live700让通信如此简单</string>
     <string name="qudenglu">去登录</string>
     <string name="zhaohuimima">找回密码</string>
     <string name="qingshurushoujihao">请输入手机号</string>
