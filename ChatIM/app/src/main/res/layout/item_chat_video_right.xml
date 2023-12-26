@@ -19,7 +19,7 @@
 
     <include
         android:id="@+id/layout_header"
-        layout="@layout/layout_header"
+        layout="@layout/layout_header_chat"
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:src="@drawable/user_head_default"
@@ -37,6 +37,21 @@
         app:layout_constraintEnd_toStartOf="@id/layout_header"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:gravity="right"
+            android:id="@+id/tvFromUserName"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/tv_blue"
+            android:lines="1"
+            android:ellipsize="middle"
+            android:textSize="@dimen/dp_14"
+            tools:text="[管理员]小花" />
 
         <!--回复消息显示-->
         <LinearLayout
@@ -99,7 +114,7 @@
                     android:layout_marginRight="@dimen/dp_40"
                     android:ellipsize="end"
                     android:lines="1"
-                    tools:text="～我去输液了"
+                    android:text="～我去输液了"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp_12"
                     app:layout_constraintLeft_toLeftOf="@id/tvReplyName"
@@ -195,7 +210,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:text="@string/yidu"
+            android:text="已读"
             android:textSize="12dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -228,6 +243,7 @@
         <TextView
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
+            android:visibility="gone"
             android:layout_height="18dp"
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginRight="@dimen/dp_6"

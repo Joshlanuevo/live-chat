@@ -1,42 +1,35 @@
 package com.ym.chat.item
 
-import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import coil.load
-import coil.request.CachePolicy
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.SizeUtils
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.gif.GifDrawable
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.ym.base.ext.logE
 import com.ym.base.ext.toast
 import com.ym.base.widget.adapter.QuickVBItemBinderPro
 import com.ym.base.widget.ext.click
 import com.ym.base.widget.ext.gone
-import com.ym.base.widget.ext.invisible
 import com.ym.base.widget.ext.visible
 import com.ym.chat.R
 import com.ym.chat.bean.ChatMessageBean
 import com.ym.chat.bean.ImageBean
 import com.ym.chat.databinding.ItemImgChatLeftBinding
-import com.ym.chat.databinding.ItemTxtChatLeftBinding
 import com.ym.chat.db.ChatDao
-import com.ym.chat.ext.loadImg
+import com.ym.chat.ext.loadHeader
 import com.ym.chat.item.chatlistener.OnChatItemListener
 import com.ym.chat.popup.ChatHeaderPopupWindow
-import com.ym.chat.ui.ChatActivity
 import com.ym.chat.ui.PictureActivity
-import com.ym.chat.utils.*
+import com.ym.chat.utils.ChatType
+import com.ym.chat.utils.ChatUtils
+import com.ym.chat.utils.PopUtils
 import com.ym.chat.utils.StringExt.showInGroupName
+import com.ym.chat.utils.WeChatImageUtils
 import okhttp3.internal.filterList
+import org.json.JSONObject
 
 /**
  * 图片item-左边
@@ -46,7 +39,7 @@ class ChatImageLeft(
 ) : QuickVBItemBinderPro<ChatMessageBean, ItemImgChatLeftBinding>() {
 
     init {
-        addChildClickViewIds(R.id.tvContentLeft, R.id.layout_header)
+        addChildClickViewIds(R.id.tvContentLeft)
         addChildLongClickViewIds(R.id.tvContentLeft, R.id.layout_header)
     }
 
@@ -67,12 +60,22 @@ class ChatImageLeft(
             } else {
                 //不需要现实对方昵称和头像
                 holder.viewBinding.tvFromUserName.gone()
-                holder.viewBinding.layoutHeader.flHeader.gone()
+                holder.viewBinding.layoutHeader.ivHeader.gone()
                 holder.viewBinding.llLeft.setBackgroundResource(R.drawable.shape_solid_white_8_8)
             }
             holder.viewBinding.tvTime.text = getTimeStr(data.createTime)
             try {
-                val imageMsg = GsonUtils.fromJson(data.content, ImageBean::class.java)
+
+                val imageMsg = if (data.operationType == "Forward") {
+                    val c = JSONObject(data.content).optString("content")
+//                    val original = JSONObject(data.content).optString("original")
+//                    holder.viewBinding.tvFromUserName.visible()
+//                    holder.viewBinding.tvFromUserName.text = "消息转发来自：${original}"
+                    GsonUtils.fromJson(c, ImageBean::class.java)
+                } else {
+                    GsonUtils.fromJson(data.content, ImageBean::class.java)
+                }
+
                 val imageSize: IntArray = WeChatImageUtils.getImageSizeByOrgSizeToWeChat(
                     imageMsg.width,
                     imageMsg.height,
@@ -85,43 +88,9 @@ class ChatImageLeft(
                 holder.viewBinding.tvContentLeft.layoutParams.height = height
                 holder.viewBinding.consReply.layoutParams.width = width
 
-                if (imageMsg.url.lowercase().contains(".gif".lowercase())) {
-                    Glide.with(context).asGif().load(imageMsg.url)
-                        .listener(object : RequestListener<GifDrawable> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<GifDrawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
-
-                            override fun onResourceReady(
-                                resource: GifDrawable?,
-                                model: Any?,
-                                target: Target<GifDrawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
-                        })
-                        .error(R.drawable.ic_load_fail)
-                        .placeholder(R.drawable.image_chat_placeholder)
-                        .into(holder.viewBinding.tvContentLeft)
-                } else {
-                    Glide.with(context).load(imageMsg.url).error(R.drawable.ic_load_fail)
-                        .placeholder(R.drawable.image_chat_placeholder)
-                        .into(holder.viewBinding.tvContentLeft)
-//                    holder.viewBinding.tvContentLeft.load(imageMsg.url) {
-//                        size(width, height)
-//                        placeholder(R.drawable.image_chat_placeholder)
-//                        diskCachePolicy(CachePolicy.ENABLED)
-//                        memoryCachePolicy(CachePolicy.ENABLED)
-//                        networkCachePolicy(CachePolicy.ENABLED)
-//                        error(R.drawable.ic_load_fail)
-//                    }
+                holder.viewBinding.tvContentLeft.load(imageMsg.url) {
+                    placeholder(R.drawable.image_chat_placeholder)
+                    error(R.drawable.image_chat_placeholder)
                 }
             } catch (e: Exception) {
                 holder.viewBinding.tvContentLeft.layoutParams.width = 200
@@ -137,14 +106,17 @@ class ChatImageLeft(
             //显示回复
             if (!TextUtils.isEmpty(data.parentMessageId)) {
                 //处理回复消息
-                //处理回复消息
                 holder.viewBinding.let { view ->
-                    val list = adapter.data.filterList {
-                        this is ChatMessageBean && this.id == data.parentMessageId
+                    var parentMsg = data.replayParentMsg
+                    if (parentMsg == null) {
+                        val list = adapter.data.filterList {
+                            this is ChatMessageBean && this.id == data.parentMessageId
+                        }
+                        if (list != null && list.size > 0) {
+                            parentMsg = list[0] as ChatMessageBean
+                        }
                     }
-//                val parentMsg = ChatDao.getChatMsgDb().getMsgById(data.parentMessageId)
-                    if (list != null && list.size > 0) {
-                        val parentMsg = list[0] as ChatMessageBean
+                    if (parentMsg != null) {
                         holder.viewBinding.consReply.visible()
                         holder.viewBinding.consReply.click {
                             onChatItemListener.clickReplyMsg(parentMsg)
@@ -172,7 +144,8 @@ class ChatImageLeft(
             }
 
             //置顶消息显示
-            ChatUtils.showTopMsg(holder.viewBinding.ivTop,data.id)
+            ChatUtils.showTopMsg(holder.viewBinding.ivTop, data.id)
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -181,26 +154,50 @@ class ChatImageLeft(
     /**
      * 显示头像
      */
-    private fun showHeader(holder: BinderVBHolder<ItemImgChatLeftBinding>, data: ChatMessageBean) {
-
-        holder.viewBinding.layoutHeader.flHeader.visible()
+    private fun showHeader(
+        holder: BinderVBHolder<ItemImgChatLeftBinding>,
+        data: ChatMessageBean
+    ) {
+        holder.viewBinding.tvFromUserName.visible()
+        holder.viewBinding.layoutHeader.ivHeader.visible()
+        holder.viewBinding.layoutHeader.root.click {
+            //点击头像
+            onChatItemListener.onItemHeaderClick(data)
+        }
         try {
             var member = ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
             if (member != null) {
-                holder.viewBinding.tvFromUserName.text = member.nickname.showInGroupName(member.role)
-                holder.viewBinding.layoutHeader.ivHeader.loadImg(member)
-                Utils.showDaShenImageView(holder.viewBinding.layoutHeader.ivHeaderMark, member)
+                var name = if (!TextUtils.isEmpty(member.nickRemark)) {
+                    member.nickRemark
+                } else {
+                    member.name
+                }
+                holder.viewBinding.tvFromUserName.text =
+                    member.nickname.showInGroupName(member.role)
+                holder.viewBinding.layoutHeader.ivHeader.apply {
+                    setRoundRadius(72F)
+                    setChatId(data.from)
+                    setChatName(name)
+                }.showUrl(member.headUrl)
+//                Utils.showDaShenImageView(holder.viewBinding.layoutHeader.ivHeaderMark, member)
             } else {
                 holder.viewBinding.tvFromUserName.text = data.fromName
-                holder.viewBinding.layoutHeader.ivHeader.loadImg("", data.fromName, "")
+                holder.viewBinding.layoutHeader.ivHeader.apply {
+                    setRoundRadius(72F)
+                    setChatId(data.from)
+                    setChatName(data.fromName)
+                }.showDefault()
             }
         } catch (e: Exception) {
             holder.viewBinding.tvFromUserName.text = data.fromName
-            holder.viewBinding.layoutHeader.ivHeader.loadImg("", data.fromName, "")
+            holder.viewBinding.layoutHeader.ivHeader.apply {
+                setRoundRadius(72F)
+                setChatId(data.from)
+                setChatName(data.fromName)
+            }.showDefault()
             "---------获取成员数据异常-${e.message.toString()}".logE()
         }
     }
-
 
     override fun onChildClick(
         holder: BinderVBHolder<ItemImgChatLeftBinding>,
@@ -210,7 +207,12 @@ class ChatImageLeft(
     ) {
         if (view.id == R.id.tvContentLeft) {
             try {
-                val imageMsg = GsonUtils.fromJson(data.content, ImageBean::class.java)
+                val imageMsg = if (data.operationType == "Forward") {
+                    val c = JSONObject(data.content).optString("content")
+                    GsonUtils.fromJson(c, ImageBean::class.java)
+                } else {
+                    GsonUtils.fromJson(data.content, ImageBean::class.java)
+                }
                 var msgType = 2
                 var id = ""
                 if (data.chatType == "Friend") {
@@ -220,7 +222,10 @@ class ChatImageLeft(
                     msgType = 1
                     id = data.groupId
                 }
-                PictureActivity.start(context, imageMsg.url, msgType, id)
+                val imgs = mutableListOf<String>().apply {
+                    add(imageMsg.url)
+                }
+                PictureActivity.start(context, "", msgType, id, pictureCollectUrlList = imgs)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -270,8 +275,8 @@ class ChatImageLeft(
     private fun showChatHeaderPopup(view: View, data: ChatMessageBean) {
         var isShowViewDelGroup = false
         var isShowViewMute = false
-        ChatDao.getGroupDb().getMemberInGroup(data.from,data.groupId)
-            ?: return context.getString(R.string.cichengyuanbuzaiqunzhong).toast()
+//        ChatDao.getGroupDb().getMemberInGroup(data.from,data.groupId)
+//            ?: return "此成员已不在群中".toast()
         //被长按头像成员在群的角色
         var memberRole = ChatDao.getGroupDb().getGroupRoleInfoById(data.groupId, data.from)
         //本人(操作人在群的角色)

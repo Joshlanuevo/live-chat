@@ -25,7 +25,7 @@
 
     <include
         android:id="@+id/layout_header"
-        layout="@layout/layout_header"
+        layout="@layout/layout_header_chat"
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:layout_toStartOf="@id/viewSpace"
@@ -74,6 +74,20 @@
             android:layout_marginRight="@dimen/dp_5"
             android:background="@drawable/shape_solid_green_16"
             android:orientation="vertical">
+
+            <TextView
+                android:gravity="right"
+                android:id="@+id/tvFromUserName"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/tv_blue"
+                android:lines="1"
+                android:ellipsize="middle"
+                android:textSize="@dimen/dp_14"
+                tools:text="[管理员]小花" />
 
             <!--回复消息显示-->
             <LinearLayout
@@ -140,7 +154,7 @@
                             android:layout_marginRight="@dimen/dp_10"
                             android:ellipsize="end"
                             android:lines="1"
-                            tools:text="～我去输液了"
+                            android:text="～我去输液了"
                             android:textColor="@color/black"
                             android:textSize="@dimen/dp_12"
                             app:layout_constraintLeft_toLeftOf="@id/tvReplyName"
@@ -233,7 +247,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/dp_5"
                         android:textColor="@color/tv_blue"
-                        android:text="@string/yibianji"
+                        android:text="(已编辑)"
                         android:visibility="gone"
                         android:textSize="11dp" />
 
@@ -243,6 +257,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/tv_blue"
                         android:textSize="11dp"
+                        android:visibility="invisible"
                         tools:text="10:00" />
 
                     <ImageView

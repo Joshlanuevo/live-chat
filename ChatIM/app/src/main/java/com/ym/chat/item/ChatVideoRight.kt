@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import coil.load
+import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.ym.base.ext.logE
 import com.ym.base.ext.toFile
@@ -17,6 +18,7 @@ import com.ym.base.widget.ext.gone
 import com.ym.base.widget.ext.visible
 import com.ym.chat.R
 import com.ym.chat.bean.ChatMessageBean
+import com.ym.chat.bean.VideoMsgBean
 import com.ym.chat.databinding.ItemChatVideoRightBinding
 import com.ym.chat.db.ChatDao
 import com.ym.chat.ext.loadImg
@@ -24,6 +26,7 @@ import com.ym.chat.item.chatlistener.OnChatItemListener
 import com.ym.chat.ui.ChatActivity
 import com.ym.chat.utils.*
 import okhttp3.internal.filterList
+import org.json.JSONObject
 
 /**
  * @Description
@@ -51,7 +54,7 @@ class ChatVideoRight(
     @SuppressLint("SetTextI18n")
     override fun convert(holder: BinderVBHolder<ItemChatVideoRightBinding>, data: ChatMessageBean) {
 
-        holder.viewBinding.layoutHeader.flHeader.gone()
+        holder.viewBinding.layoutHeader.ivHeader.gone()
 //        if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
 //            //需要显示对方昵称和头像
 //            holder.viewBinding.layoutHeader.flHeader.visible()
@@ -63,36 +66,30 @@ class ChatVideoRight(
         holder.viewBinding.progress.bindMsg(data)
         holder.viewBinding.tvTime.text = getTimeStr(data.createTime)
 
-        if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
-            MMKVUtils.getUser()?.id?.let {
-                try {
-                    ChatDao.getGroupDb().getMemberInGroup(it, data.groupId)?.let { member ->
-                        holder.viewBinding.layoutHeader.ivHeader.loadImg(member)
-                        Utils.showDaShenImageView(
-                            holder.viewBinding.layoutHeader.ivHeaderMark,
-                            member
-                        )
-                    }
-                } catch (e: Exception) {
-                    "---------获取成员数据异常-${e.message.toString()}".logE()
-                }
-            }
-        } else {
-            val userBean = MMKVUtils.getUser()
-            //显示自己头像
-            holder.viewBinding.layoutHeader.ivHeader.loadImg(userBean)
-            Utils.showDaShenImageView(
-                holder.viewBinding.layoutHeader.ivHeaderMark,
-                userBean?.displayHead == "Y",
-                userBean?.levelHeadUrl
-            )
-        }
+        val userBean = MMKVUtils.getUser()
+        //显示自己头像
+        holder.viewBinding.layoutHeader.ivHeader.apply {
+            setRoundRadius(72F)
+            setChatId(userBean?.id?:"")
+            setChatName(userBean?.name?:"")
+        }.showUrl(userBean?.headUrl)
 
         holder.viewBinding.let { vb ->
             vb.loadView.gone()
             vb.ivFail.gone()
 
-            data.videoInfo?.apply {
+            val videoInfo = if (data.operationType == "Forward") {
+                val c = JSONObject(data.content).optString("content")
+//                val original = JSONObject(data.content).optString("original")
+//                holder.viewBinding.tvFromUserName.visible()
+//                holder.viewBinding.tvFromUserName.text = "消息转发来自：${original}"
+                GsonUtils.fromJson(c, VideoMsgBean::class.java)
+            } else {
+                holder.viewBinding.tvFromUserName.gone()
+                GsonUtils.fromJson(data.content, VideoMsgBean::class.java)
+            }
+            data.videoInfo = videoInfo
+            videoInfo?.apply {
                 try {
                     val imageSize: IntArray = WeChatImageUtils.getImageSizeByOrgSizeToWeChat(
                         this.width,
@@ -115,9 +112,9 @@ class ChatVideoRight(
             }
 
 
-            if (!TextUtils.isEmpty(data.videoInfo?.coverUrl)) {
-                vb.ivCoverRight.load(data.videoInfo?.coverUrl)
-            } else {
+            if(videoInfo?.coverUrl?.startsWith("http")==true){
+                vb.ivCoverRight.load(videoInfo?.coverUrl)
+            }else{
                 vb.ivCoverRight.load(data.localPath.toFile())
             }
 
@@ -167,14 +164,17 @@ class ChatVideoRight(
         //显示回复
         if (!TextUtils.isEmpty(data.parentMessageId)) {
             //处理回复消息
-            //处理回复消息
             holder.viewBinding.let { view ->
-                val list = adapter.data.filterList {
-                    this is ChatMessageBean && this.id == data.parentMessageId
+                var parentMsg = data.replayParentMsg
+                if (parentMsg == null) {
+                    val list = adapter.data.filterList {
+                        this is ChatMessageBean && this.id == data.parentMessageId
+                    }
+                    if (list != null && list.size > 0) {
+                        parentMsg = list[0] as ChatMessageBean
+                    }
                 }
-//                val parentMsg = ChatDao.getChatMsgDb().getMsgById(data.parentMessageId)
-                if (list != null && list.size > 0) {
-                    val parentMsg = list[0] as ChatMessageBean
+                if (parentMsg != null) {
                     holder.viewBinding.consReply.visible()
                     holder.viewBinding.consReply.click {
                         onChatItemListener.clickReplyMsg(parentMsg)

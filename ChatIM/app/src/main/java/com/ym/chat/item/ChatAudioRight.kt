@@ -22,7 +22,6 @@ import com.ym.chat.databinding.ItemChatAudioRightBinding
 import com.ym.chat.db.ChatDao
 import com.ym.chat.ext.loadImg
 import com.ym.chat.item.chatlistener.OnChatItemListener
-import com.ym.chat.ui.ChatActivity
 import com.ym.chat.utils.*
 import okhttp3.internal.filterList
 import org.json.JSONObject
@@ -52,7 +51,7 @@ class ChatAudioRight(
     @SuppressLint("SetTextI18n")
     override fun convert(holder: BinderVBHolder<ItemChatAudioRightBinding>, data: ChatMessageBean) {
 
-        holder.viewBinding.layoutHeader.flHeader.gone()
+        holder.viewBinding.layoutHeader.ivHeader.gone()
 //        if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
 //            //需要显示对方昵称和头像
 //            holder.viewBinding.layoutHeader.flHeader.visible()
@@ -61,35 +60,26 @@ class ChatAudioRight(
 //            holder.viewBinding.layoutHeader.flHeader.gone()
 //        }
 
-        if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
-            MMKVUtils.getUser()?.id?.let {
-                try {
-                    ChatDao.getGroupDb().getMemberInGroup(it, data.groupId)?.let { member ->
-                        holder.viewBinding.layoutHeader.ivHeader.loadImg(member)
-                        Utils.showDaShenImageView(
-                            holder.viewBinding.layoutHeader.ivHeaderMark,
-                            member
-                        )
-                    }
-                } catch (e: Exception) {
-                    "---------获取成员数据异常-${e.message.toString()}".logE()
-                }
-            }
-        } else {
-            val userBean = MMKVUtils.getUser()
-            //显示自己头像
-            holder.viewBinding.layoutHeader.ivHeader.loadImg(userBean)
-            Utils.showDaShenImageView(
-                holder.viewBinding.layoutHeader.ivHeaderMark,
-                userBean?.displayHead == "Y",
-                userBean?.levelHeadUrl
-            )
-        }
+        val userBean = MMKVUtils.getUser()
+        //显示自己头像
+        holder.viewBinding.layoutHeader.ivHeader.apply {
+            setRoundRadius(72F)
+            setChatId(userBean?.id?:"")
+            setChatName(userBean?.name?:"")
+        }.showUrl(userBean?.headUrl)
 
         val defaultWidth = 100.dp2Px()
         holder.viewBinding.let { vb ->
             try {
-                val jsonObject = JSONObject(data.content)
+                val jsonObject = if (data.operationType == "Forward") {
+                    val c = JSONObject(data.content).optString("content")
+//                    val original = JSONObject(data.content).optString("original")
+//                    holder.viewBinding.tvFromUserName.visible()
+//                    holder.viewBinding.tvFromUserName.text = "消息转发来自：${original}"
+                    JSONObject(c)
+                } else {
+                    JSONObject(data.content)
+                }
                 val time = jsonObject.optLong("time")
 //                val url = jsonObject.optLong("url")
                 vb.durationTextViewRight.text = "${time}''"
@@ -159,14 +149,17 @@ class ChatAudioRight(
         //显示回复
         if (!TextUtils.isEmpty(data.parentMessageId)) {
             //处理回复消息
-            //处理回复消息
             holder.viewBinding.let { view ->
-                val list = adapter.data.filterList {
-                    this is ChatMessageBean && this.id == data.parentMessageId
+                var parentMsg = data.replayParentMsg
+                if (parentMsg == null) {
+                    val list = adapter.data.filterList {
+                        this is ChatMessageBean && this.id == data.parentMessageId
+                    }
+                    if (list != null && list.size > 0) {
+                        parentMsg = list[0] as ChatMessageBean
+                    }
                 }
-//                val parentMsg = ChatDao.getChatMsgDb().getMsgById(data.parentMessageId)
-                if (list != null && list.size > 0) {
-                    val parentMsg = list[0] as ChatMessageBean
+                if (parentMsg != null) {
                     holder.viewBinding.consReply.visible()
                     holder.viewBinding.consReply.click {
                         onChatItemListener.clickReplyMsg(parentMsg)

@@ -15,7 +15,7 @@
 
     <include
         android:id="@+id/layout_header"
-        layout="@layout/layout_header"
+        layout="@layout/layout_header_chat"
         android:layout_width="38dp"
         android:layout_height="38dp"
         app:layout_constraintBottom_toBottomOf="@id/llLeft"

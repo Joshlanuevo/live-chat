@@ -5,9 +5,11 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toDrawable
 import coil.load
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.SizeUtils
+import com.ym.base.ext.logE
 import com.ym.base.util.save.MMKVUtils
 import com.ym.base.widget.adapter.QuickVBItemBinderPro
 import com.ym.base.widget.ext.click
@@ -16,11 +18,12 @@ import com.ym.base.widget.ext.visible
 import com.ym.chat.R
 import com.ym.chat.bean.ChatMessageBean
 import com.ym.chat.bean.ContactCardMsgBean
+import com.ym.chat.bean.FileMsgBean
 import com.ym.chat.databinding.ItemContactCardChatRightBinding
+import com.ym.chat.db.ChatDao
+import com.ym.chat.ext.loadImg
 import com.ym.chat.item.chatlistener.OnChatItemListener
-import com.ym.chat.utils.ChatUtils
-import com.ym.chat.utils.PopUtils
-import com.ym.chat.utils.Utils
+import com.ym.chat.utils.*
 import okhttp3.internal.filterList
 import org.json.JSONObject
 
@@ -74,6 +77,9 @@ class ChatContactCardRight(
             try {
                 val contactBean = if (data.operationType == "Forward") {
                     val c = JSONObject(data.content).optString("content")
+//                    val original = JSONObject(data.content).optString("original")
+//                    holder.viewBinding.tvFromUserName.visible()
+//                    holder.viewBinding.tvFromUserName.text = "消息转发来自：${original}"
                     GsonUtils.fromJson(c, ContactCardMsgBean::class.java)
                 } else {
                     GsonUtils.fromJson(data.content, ContactCardMsgBean::class.java)

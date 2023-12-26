@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.ym.base.ext.dp2Px
 import com.ym.base.ext.logE
@@ -18,13 +17,10 @@ import com.ym.chat.R
 import com.ym.chat.bean.ChatMessageBean
 import com.ym.chat.config.Config
 import com.ym.chat.databinding.ItemChatAudioLeftBinding
-import com.ym.chat.databinding.ItemFileChatLeftBinding
 import com.ym.chat.db.ChatDao
-import com.ym.chat.ext.loadImg
+import com.ym.chat.ext.loadHeader
 import com.ym.chat.item.chatlistener.OnChatItemListener
 import com.ym.chat.popup.ChatHeaderPopupWindow
-import com.ym.chat.popup.NotifyPopupWindow
-import com.ym.chat.ui.ChatActivity
 import com.ym.chat.utils.*
 import com.ym.chat.utils.StringExt.showInGroupName
 import okhttp3.internal.filterList
@@ -42,7 +38,7 @@ class ChatAudioLeft(
 ) : QuickVBItemBinderPro<ChatMessageBean, ItemChatAudioLeftBinding>() {
     init {
         addChildLongClickViewIds(R.id.llContent, R.id.layout_header)
-        addChildClickViewIds(R.id.llContent, R.id.clAudio, R.id.layout_header)
+        addChildClickViewIds(R.id.llContent, R.id.clAudio)
     }
 
     override fun onCreateViewBinding(
@@ -62,12 +58,20 @@ class ChatAudioLeft(
             } else {
                 //不需要现实对方昵称和头像
                 holder.viewBinding.tvFromUserName.gone()
-                holder.viewBinding.layoutHeader.flHeader.gone()
+                holder.viewBinding.layoutHeader.ivHeader.gone()
             }
 
             val defaultWidth = 100.dp2Px()
             try {
-                val jsonObject = JSONObject(data.content)
+                val jsonObject = if (data.operationType == "Forward") {
+                    val c = JSONObject(data.content).optString("content")
+//                    val original = JSONObject(data.content).optString("original")
+//                    holder.viewBinding.tvFromUserName.visible()
+//                    holder.viewBinding.tvFromUserName.text = "消息转发来自：${original}"
+                    JSONObject(c)
+                } else {
+                    JSONObject(data.content)
+                }
                 val time = jsonObject.optLong("time")
 //                val url = jsonObject.optLong("url")
                 vb.durationTextView.text = "${time}''"
@@ -110,14 +114,17 @@ class ChatAudioLeft(
             //显示回复
             if (!TextUtils.isEmpty(data.parentMessageId)) {
                 //处理回复消息
-                //处理回复消息
                 holder.viewBinding.let { view ->
-                    val list = adapter.data.filterList {
-                        this is ChatMessageBean && this.id == data.parentMessageId
+                    var parentMsg = data.replayParentMsg
+                    if (parentMsg == null) {
+                        val list = adapter.data.filterList {
+                            this is ChatMessageBean && this.id == data.parentMessageId
+                        }
+                        if (list != null && list.size > 0) {
+                            parentMsg = list[0] as ChatMessageBean
+                        }
                     }
-//                val parentMsg = ChatDao.getChatMsgDb().getMsgById(data.parentMessageId)
-                    if (list != null && list.size > 0) {
-                        val parentMsg = list[0] as ChatMessageBean
+                    if (parentMsg != null) {
                         holder.viewBinding.consReply.visible()
                         holder.viewBinding.consReply.click {
                             onChatItemListener.clickReplyMsg(parentMsg)
@@ -145,15 +152,15 @@ class ChatAudioLeft(
             }
 
             //置顶消息显示
-            ChatUtils.showTopMsg(holder.viewBinding.ivTop,data.id)
+            ChatUtils.showTopMsg(holder.viewBinding.ivTop, data.id)
         }
     }
 
     private fun showChatHeaderPopup(view: View, data: ChatMessageBean) {
         var isShowViewDelGroup = false
         var isShowViewMute = false
-        ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
-            ?: return ActivityUtils.getTopActivity().getString(R.string.cichengyuanbuzaiqunzhong).toast()
+//        ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
+//            ?: return "此成员已不在群中".toast()
         //被长按头像成员在群的角色
         var memberRole = ChatDao.getGroupDb().getGroupRoleInfoById(data.groupId, data.from)
         //本人(操作人在群的角色)
@@ -204,20 +211,38 @@ class ChatAudioLeft(
         data: ChatMessageBean
     ) {
         holder.viewBinding.tvFromUserName.visible()
-        holder.viewBinding.layoutHeader.flHeader.visible()
+        holder.viewBinding.layoutHeader.ivHeader.visible()
+        holder.viewBinding.layoutHeader.root.click {
+            //点击头像
+            onChatItemListener.onItemHeaderClick(data)
+        }
         try {
             var member = ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
             if (member != null) {
-                holder.viewBinding.tvFromUserName.text = member.nickname.showInGroupName(member.role)
-                holder.viewBinding.layoutHeader.ivHeader.loadImg(member)
-                Utils.showDaShenImageView(holder.viewBinding.layoutHeader.ivHeaderMark, member)
+                var name = if (!TextUtils.isEmpty(member.nickRemark)){member.nickRemark}else{member.name}
+                holder.viewBinding.tvFromUserName.text =
+                    member.nickname.showInGroupName(member.role)
+                holder.viewBinding.layoutHeader.ivHeader.apply {
+                    setRoundRadius(72F)
+                    setChatId(data.from)
+                    setChatName(name)
+                }.showUrl(member.headUrl)
+//                Utils.showDaShenImageView(holder.viewBinding.layoutHeader.ivHeaderMark, member)
             } else {
                 holder.viewBinding.tvFromUserName.text = data.fromName
-                holder.viewBinding.layoutHeader.ivHeader.loadImg("", data.fromName, "")
+                holder.viewBinding.layoutHeader.ivHeader.apply {
+                    setRoundRadius(72F)
+                    setChatId(data.from)
+                    setChatName(data.fromName)
+                }.showUrl(data.fromHead)
             }
         } catch (e: Exception) {
             holder.viewBinding.tvFromUserName.text = data.fromName
-            holder.viewBinding.layoutHeader.ivHeader.loadImg("", data.fromName, "")
+            holder.viewBinding.layoutHeader.ivHeader.apply {
+                setRoundRadius(72F)
+                setChatId(data.from)
+                setChatName(data.fromName)
+            }.showDefault()
             "---------获取成员数据异常-${e.message.toString()}".logE()
         }
     }

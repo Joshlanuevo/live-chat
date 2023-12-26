@@ -98,60 +98,16 @@ class PictureActivity : BaseActivity() {
             var picUrl = it.getStringExtra(PICTURE_URL)
             picType = it.getIntExtra(PICTURE_TYPE, 2)
             var picId = it.getStringExtra(PICTURE_ID)
-            when (picType) {
-                0 -> {
-                    bindView.ivSave.visible()
-                    pictureList = picId?.let { it1 ->
-                        ChatDao.getChatMsgDb().getMsgListByTargetToPicture(
-                            it1
-                        )
-                    }
-                    pictureList?.forEachIndexed { i, c ->
-                        try {
-                            val imageMsg = GsonUtils.fromJson(c.content, ImageBean::class.java)
-                            mFragments.add(PictureFragment(imageMsg.url))
-                            if (picUrl == imageMsg.url) {
-                                index = i + 1
-                            }
-                        } catch (e: Exception) {
-                            "图片json异常 -${c.content}".logE()
-                        }
-                    }
-                    maxPage = mFragments?.size!!
-                }
-                1 -> {
-                    bindView.ivSave.visible()
-                    pictureList = picId?.let { it1 ->
-                        ChatDao.getChatMsgDb().getMsgListByGroupIdToPicture(
-                            it1
-                        )
-                    }
-                    pictureList?.forEachIndexed { i, c ->
-                        try {
-                            val imageMsg = GsonUtils.fromJson(c.content, ImageBean::class.java)
-                            mFragments.add(PictureFragment(imageMsg.url))
-                            if (picUrl == imageMsg.url) {
-                                index = i + 1
-                            }
-                        } catch (e: Exception) {
-                            "图片json异常 -${c.content}".logE()
-                        }
-                    }
-                    maxPage = mFragments?.size!!
-                }
-                2 -> {
-                    bindView.ivSave.visible()
-                    pictureListStr =
-                        it.getSerializableExtra(PICTURE_COLLECT_URL_LIST) as MutableList<String>
-                    pictureListStr?.forEachIndexed { i, u ->
-                        mFragments.add(PictureFragment(u))
-                        if (picUrl == u) {
-                            index = i + 1
-                        }
-                    }
-                    maxPage = mFragments?.size!!
+            bindView.ivSave.visible()
+            pictureListStr =
+                it.getSerializableExtra(PICTURE_COLLECT_URL_LIST) as MutableList<String>
+            pictureListStr?.forEachIndexed { i, u ->
+                mFragments.add(PictureFragment(u))
+                if (picUrl == u) {
+                    index = i + 1
                 }
             }
+            maxPage = mFragments?.size!!
         }
 
         // 页面滑动事件监听
@@ -180,27 +136,30 @@ class PictureActivity : BaseActivity() {
 
         bindView.tvPicIndex.text = "$index/${maxPage}"
         bindView.ivSave.click {
-            when (picType) {
-                0, 1 ->
-                    if (pictureList != null) {
-                        if (pictureList?.size!! >= index) {
-                            try {
-                                val imageMsg = GsonUtils.fromJson(
-                                    pictureList!![index - 1].content,
-                                    ImageBean::class.java
-                                )
-                                downFile(imageMsg.url)
-                            } catch (e: Exception) {
-                                "图片json异常".logE()
-                            }
-                        }
-                    }
-                2 -> {
-                    if (pictureListStr != null && pictureListStr?.size!! >= index) {
-                        downFile(pictureListStr!![index - 1])
-                    }
-                }
+            if (pictureListStr != null && pictureListStr?.size!! >= index) {
+                downFile(pictureListStr!![index - 1])
             }
+//            when (picType) {
+//                0, 1 ->
+//                    if (pictureList != null) {
+//                        if (pictureList?.size!! >= index) {
+//                            try {
+//                                val imageMsg = GsonUtils.fromJson(
+//                                    pictureList!![index - 1].content,
+//                                    ImageBean::class.java
+//                                )
+//                                downFile(imageMsg.url)
+//                            } catch (e: Exception) {
+//                                "图片json异常".logE()
+//                            }
+//                        }
+//                    }
+//                2 -> {
+//                    if (pictureListStr != null && pictureListStr?.size!! >= index) {
+//                        downFile(pictureListStr!![index - 1])
+//                    }
+//                }
+//            }
         }
     }
 
@@ -211,7 +170,7 @@ class PictureActivity : BaseActivity() {
         if (url.lowercase().contains(".gif")) {
             //如果是gif图片
             if (checkPermission()) {
-                getString(R.string.图片已开始下载).toast()
+                "图片已开始下载...".toast()
                 down(url)
             }
         } else {
@@ -228,7 +187,7 @@ class PictureActivity : BaseActivity() {
                         null
                     )
                 url?.let {
-                    getString(R.string.图片已保存到本地相册).toast()
+                    "图片已保存到本地相册".toast()
                 }
             }
         }
@@ -365,8 +324,8 @@ class PictureActivity : BaseActivity() {
     private fun showHintDialog() {
         if (hintDialog == null)
             hintDialog = HintDialog(
-                getString(R.string.提示),
-                getString(R.string.下载gif图之前必须要获取),
+                "提示",
+                "下载gif图之前必须要获取，保存文件的所有权限,是否允许确定",
                 isShowBtnCancel = false,
                 isCanTouchOutsideSet = false,
                 iconId = R.drawable.ic_hint_delete,

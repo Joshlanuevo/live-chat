@@ -16,7 +16,7 @@
 
     <include
         android:id="@+id/layout_header"
-        layout="@layout/layout_header"
+        layout="@layout/layout_header_chat"
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:src="@drawable/user_head_default"
@@ -36,6 +36,21 @@
         app:layout_constraintEnd_toStartOf="@id/layout_header"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:gravity="right"
+            android:id="@+id/tvFromUserName"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/tv_blue"
+            android:lines="1"
+            android:ellipsize="middle"
+            android:textSize="@dimen/dp_14"
+            tools:text="[管理员]小花" />
 
         <!--回复消息显示-->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
-                tools:text="宝～我去输液了，，Ali～我去输液了～我去输液了Ali～我去输液了～我去输液了"
+                android:text="宝～我去输液了，，Ali～我去输液了～我去输液了Ali～我去输液了～我去输液了"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dp_14"
                 app:layout_constraintLeft_toLeftOf="@id/tvReplyName"
@@ -167,7 +182,7 @@
                 android:paddingLeft="@dimen/dp_5"
                 android:paddingRight="@dimen/dp_5"
                 android:paddingBottom="@dimen/dp_5"
-                android:text="@string/xiazai"
+                android:text="下载"
                 android:textColor="#037EE5"
                 android:textSize="14dp"
                 android:visibility="visible" />
@@ -194,6 +209,7 @@
                     android:id="@+id/tvTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:textColor="@color/tv_blue"
                     android:textSize="11dp"
                     tools:text="10:00" />

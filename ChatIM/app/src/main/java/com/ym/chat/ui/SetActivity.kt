@@ -75,12 +75,12 @@ class SetActivity : LoadingActivity() {
                 getString(R.string.您确定要退出当前帐号吗),
                 object : ConfirmDialogCallback {
                     override fun onItemClick() {
+
+                        MMKVUtils.clearUserInfo()
+                        WebsocketWork.WS.close()
                         mViewModel.loginOut()
                         //            //退出登录
-                        MMKVUtils.clearUserInfo()
-                        LiveEventBus.get(EventKeys.LOGIN_OR_OUT, Boolean::class.java).post(false)
 //                        "已退出登录".toast()
-                        WebsocketWork.WS.close()
                     }
                 }, headUrl = MMKVUtils.getUser()?.headUrl, isShowHeader = true, isTitleTxt = true
             ).show(supportFragmentManager, "HintDialog")

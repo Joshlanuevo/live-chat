@@ -446,10 +446,16 @@ class WebsocketWork(val context: Context, val parameters: WorkerParameters) :
          * 关闭连接
          */
         fun close() {
+            isNeedReconnect = false
             wsClient?.run {
 //                send(MMKVUtils.getUser()?.id)
-                wsClient?.close()
-                isNeedReconnect = false
+                try {
+                    wsClient?.close()
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }finally {
+                    wsClient = null
+                }
             }
         }
     }
@@ -620,6 +626,11 @@ class WebsocketWork(val context: Context, val parameters: WorkerParameters) :
         //已经开启了重连任务
         if (mReconnectJob?.isActive == true || isReconnecting) {
             mReconnectJob?.cancel()
+        }
+
+        if (MMKVUtils.getUser()==null){
+            mReconnectJob?.cancel()
+            return
         }
 
         if (isNeedReconnect) {

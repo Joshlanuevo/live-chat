@@ -18,7 +18,7 @@
 
     <include
         android:id="@+id/layout_header"
-        layout="@layout/layout_header"
+        layout="@layout/layout_header_chat"
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:src="@drawable/user_head_default"
@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
-                tools:text="宝～我去输液了，，Ali～我去输液了～我去输液了Ali～我去输液了～我去输液了"
+                android:text="宝～我去输液了，，Ali～我去输液了～我去输液了Ali～我去输液了～我去输液了"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dp_14"
                 app:layout_constraintLeft_toLeftOf="@id/tvReplyName"
@@ -166,6 +166,7 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
         android:gravity="center"
+        android:visibility="gone"
         android:textColor="@color/white"
         android:textSize="11dp"
         android:background="@drawable/shape_time_ivbg"

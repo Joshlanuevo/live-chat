@@ -199,8 +199,12 @@ object MMKVUtils {
     }
 
     fun clearUserInfo() {
-        mUserBean = null
-        mmkvUser?.clearAll()
+        try {
+            mUserBean = null
+            mmkvUser?.clearAll()
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     fun saveToken(token: String?) {

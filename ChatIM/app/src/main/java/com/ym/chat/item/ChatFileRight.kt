@@ -37,6 +37,7 @@ import com.ym.chat.ui.ChatActivity
 import com.ym.chat.ui.PictureActivity
 import com.ym.chat.utils.*
 import okhttp3.internal.filterList
+import org.json.JSONObject
 
 /**
  * 文件消息item-右边
@@ -61,7 +62,7 @@ class ChatFileRight(
 
     override fun convert(holder: BinderVBHolder<ItemFileChatRightBinding>, data: ChatMessageBean) {
 
-        holder.viewBinding.layoutHeader.flHeader.gone()
+        holder.viewBinding.layoutHeader.ivHeader.gone()
 //        if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
 //            //需要显示对方昵称和头像
 //            holder.viewBinding.layoutHeader.flHeader.visible()
@@ -74,34 +75,26 @@ class ChatFileRight(
         holder.viewBinding.tvTime.text = getTimeStr(data.createTime)
 
         try {
-            if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
-                MMKVUtils.getUser()?.id?.let {
-                    try {
-                        ChatDao.getGroupDb().getMemberInGroup(it, data.groupId)?.let { member ->
-                            holder.viewBinding.layoutHeader.ivHeader.loadImg(member)
-                            Utils.showDaShenImageView(
-                                holder.viewBinding.layoutHeader.ivHeaderMark,
-                                member
-                            )
-                        }
-                    } catch (e: Exception) {
-                        "---------获取成员数据异常-${e.message.toString()}".logE()
-                    }
-                }
-            } else {
-                val userBean = MMKVUtils.getUser()
-//            显示自己头像
-                holder.viewBinding.layoutHeader.ivHeader.loadImg(userBean)
-                Utils.showDaShenImageView(
-                    holder.viewBinding.layoutHeader.ivHeaderMark,
-                    userBean?.displayHead == "Y",
-                    userBean?.levelHeadUrl
-                )
-            }
+            val userBean = MMKVUtils.getUser()
+            //显示自己头像
+            holder.viewBinding.layoutHeader.ivHeader.apply {
+                setRoundRadius(72F)
+                setChatId(userBean?.id?:"")
+                setChatName(userBean?.name?:"")
+            }.showUrl(userBean?.headUrl)
+
             holder.viewBinding.loadView.gone()
             holder.viewBinding.ivFail.gone()
             try {
-                val fileMsg = GsonUtils.fromJson(data.content, FileMsgBean::class.java)
+                val fileMsg = if (data.operationType == "Forward") {
+                    val c = JSONObject(data.content).optString("content")
+//                    val original = JSONObject(data.content).optString("original")
+//                    holder.viewBinding.tvFromUserName.visible()
+//                    holder.viewBinding.tvFromUserName.text = "消息转发来自：${original}"
+                    GsonUtils.fromJson(c, FileMsgBean::class.java)
+                } else {
+                    GsonUtils.fromJson(data.content, FileMsgBean::class.java)
+                }
                 holder.viewBinding.tvName.text = fileMsg.name
                 holder.viewBinding.tvSize.text = fileMsg.size
 
@@ -112,7 +105,7 @@ class ChatFileRight(
                 } else {
                     (holder.viewBinding.ivIcon2.drawable as ClipDrawable).level =
                         (10000 * (1 - data.downloadProcess)).toInt()
-                    holder.viewBinding.ivDownload.text = context.getString(R.string.xiazai)
+                    holder.viewBinding.ivDownload.text = "下载"
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -156,14 +149,17 @@ class ChatFileRight(
             //显示回复
             if (!TextUtils.isEmpty(data.parentMessageId)) {
                 //处理回复消息
-                //处理回复消息
                 holder.viewBinding.let { view ->
-                    val list = adapter.data.filterList {
-                        this is ChatMessageBean && this.id == data.parentMessageId
+                    var parentMsg = data.replayParentMsg
+                    if (parentMsg == null) {
+                        val list = adapter.data.filterList {
+                            this is ChatMessageBean && this.id == data.parentMessageId
+                        }
+                        if (list != null && list.size > 0) {
+                            parentMsg = list[0] as ChatMessageBean
+                        }
                     }
-//                val parentMsg = ChatDao.getChatMsgDb().getMsgById(data.parentMessageId)
-                    if (list != null && list.size > 0) {
-                        val parentMsg = list[0] as ChatMessageBean
+                    if (parentMsg != null) {
                         holder.viewBinding.consReply.visible()
                         holder.viewBinding.consReply.click {
                             onChatItemListener.clickReplyMsg(parentMsg)

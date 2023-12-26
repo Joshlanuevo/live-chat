@@ -9,6 +9,7 @@ import coil.load
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.ym.base.ext.logE
+import com.ym.base.ext.toast
 import com.ym.base.widget.adapter.QuickVBItemBinderPro
 import com.ym.base.widget.ext.click
 import com.ym.base.widget.ext.gone
@@ -18,6 +19,7 @@ import com.ym.chat.bean.ChatMessageBean
 import com.ym.chat.bean.ContactCardMsgBean
 import com.ym.chat.databinding.ItemContactCardChatLeftBinding
 import com.ym.chat.db.ChatDao
+import com.ym.chat.ext.loadHeader
 import com.ym.chat.item.chatlistener.OnChatItemListener
 import com.ym.chat.popup.ChatHeaderPopupWindow
 import com.ym.chat.utils.ChatType
@@ -37,6 +39,7 @@ class ChatContactCardLeft(
 ) : QuickVBItemBinderPro<ChatMessageBean, ItemContactCardChatLeftBinding>() {
 
     init {
+//        addChildClickViewIds(R.id.layout_header)
         addChildLongClickViewIds(R.id.layoutFile, R.id.layout_header)
     }
 

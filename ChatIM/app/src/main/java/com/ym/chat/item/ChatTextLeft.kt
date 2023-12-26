@@ -22,17 +22,21 @@ import com.ym.chat.R
 import com.ym.chat.bean.ChatMessageBean
 import com.ym.chat.databinding.ItemTxtChatLeftBinding
 import com.ym.chat.db.ChatDao
-import com.ym.chat.ext.loadImg
+import com.ym.chat.ext.loadHeader
 import com.ym.chat.item.chatlistener.OnChatItemListener
 import com.ym.chat.popup.ChatHeaderPopupWindow
 import com.ym.chat.ui.ChatActivity
 import com.ym.chat.ui.ContactActivity
 import com.ym.chat.ui.FriendInfoActivity
-import com.ym.chat.utils.*
+import com.ym.chat.utils.ChatMsgUtils
+import com.ym.chat.utils.ChatType
+import com.ym.chat.utils.ChatUtils
+import com.ym.chat.utils.PopUtils
 import com.ym.chat.utils.StringExt.showInGroupName
 import com.ym.chat.widget.ateditview.AtUserHelper
 import com.ym.chat.widget.ateditview.AtUserLinkOnClickListener
 import okhttp3.internal.filterList
+import org.json.JSONObject
 import java.io.Serializable
 
 /**
@@ -59,7 +63,17 @@ class ChatTextLeft(
 
         holder.viewBinding.tvContentLeft.movementMethod =
             LinkMovementMethod.getInstance()//不设置点击会失效
-        holder.viewBinding.tvContentLeft.text = AtUserHelper.parseAtUserLinkJx(data.content,
+
+        val text = if (data.operationType == "Forward") {
+            val original = JSONObject(data.content).optString("original")
+            val content = JSONObject(data.content).optString("content")
+//            holder.viewBinding.tvFromUserName.text = "消息转发来自：${original}"
+            content
+        } else {
+            data.content
+        }
+
+        holder.viewBinding.tvContentLeft.text = AtUserHelper.parseAtUserLinkJx(text,
             ContextCompat.getColor(context, R.color.color_at),
             object : AtUserLinkOnClickListener {
                 override fun ulrLinkClick(str: String?) {
@@ -74,7 +88,7 @@ class ChatTextLeft(
                             val intent = Intent(Intent.ACTION_VIEW, uri)
                             context.startActivity(intent)
                         } catch (e: ActivityNotFoundException) {
-                            context.getString(R.string.cuowudelianjiedizhi).toast()
+                            "错误的链接地址".toast()
                         }
                     }
                 }
@@ -118,7 +132,7 @@ class ChatTextLeft(
         } else {
             //不需要现实对方昵称和头像
             holder.viewBinding.tvFromUserName.gone()
-            holder.viewBinding.layoutHeader.flHeader.gone()
+            holder.viewBinding.layoutHeader.ivHeader.gone()
         }
 
         //编辑
@@ -140,12 +154,16 @@ class ChatTextLeft(
         if (!TextUtils.isEmpty(data.parentMessageId)) {
             //处理回复消息
             holder.viewBinding.let { view ->
-                val list = adapter.data.filterList {
-                    this is ChatMessageBean && this.id == data.parentMessageId
+                var parentMsg = data.replayParentMsg
+                if (parentMsg == null) {
+                    val list = adapter.data.filterList {
+                        this is ChatMessageBean && this.id == data.parentMessageId
+                    }
+                    if (list != null && list.size > 0) {
+                        parentMsg = list[0] as ChatMessageBean
+                    }
                 }
-//                val parentMsg = ChatDao.getChatMsgDb().getMsgById(data.parentMessageId)
-                if (list != null && list.size > 0) {
-                    val parentMsg = list[0] as ChatMessageBean
+                if (parentMsg != null) {
                     holder.viewBinding.consReply.visible()
                     holder.viewBinding.consReply.click {
                         onChatItemListener.clickReplyMsg(parentMsg)
@@ -161,7 +179,7 @@ class ChatTextLeft(
                     holder.viewBinding.consReply.gone()
                 }
             }
-        } else {
+        }else{
             holder.viewBinding.consReply.gone()
         }
 
@@ -183,22 +201,44 @@ class ChatTextLeft(
     /**
      * 显示头像
      */
-    private fun showHeader(holder: BinderVBHolder<ItemTxtChatLeftBinding>, data: ChatMessageBean) {
+    private fun showHeader(
+        holder: BinderVBHolder<ItemTxtChatLeftBinding>,
+        data: ChatMessageBean
+    ) {
         holder.viewBinding.tvFromUserName.visible()
-        holder.viewBinding.layoutHeader.flHeader.visible()
+        holder.viewBinding.layoutHeader.ivHeader.visible()
+        holder.viewBinding.layoutHeader.root.click {
+            //点击头像
+            onChatItemListener.onItemHeaderClick(data)
+        }
         try {
             var member = ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
             if (member != null) {
-                holder.viewBinding.tvFromUserName.text = member.nickname.showInGroupName(member.role)
-                holder.viewBinding.layoutHeader.ivHeader.loadImg(member)
-                Utils.showDaShenImageView(holder.viewBinding.layoutHeader.ivHeaderMark, member)
+                var name = if (!TextUtils.isEmpty(member.nickRemark)){member.nickRemark}else{member.name}
+                holder.viewBinding.tvFromUserName.text =
+                    member.nickname.showInGroupName(member.role)
+                holder.viewBinding.layoutHeader.ivHeader.apply {
+                    setRoundRadius(72F)
+                    setChatId(data.from)
+                    setChatName(name)
+                }.showUrl(member.headUrl)
+//                Utils.showDaShenImageView(holder.viewBinding.layoutHeader.ivHeaderMark, member)
             } else {
                 holder.viewBinding.tvFromUserName.text = data.fromName
-                holder.viewBinding.layoutHeader.ivHeader.loadImg("", data.fromName, "")
+                holder.viewBinding.layoutHeader.ivHeader.apply {
+                    setRoundRadius(72F)
+                    setChatId(data.from)
+                    setChatName(data.fromName)
+                }.showUrl(data.fromHead)
             }
         } catch (e: Exception) {
             holder.viewBinding.tvFromUserName.text = data.fromName
-            holder.viewBinding.layoutHeader.ivHeader.loadImg("", data.fromName, "")
+            holder.viewBinding.tvFromUserName.text = data.fromName
+            holder.viewBinding.layoutHeader.ivHeader.apply {
+                setRoundRadius(72F)
+                setChatId(data.from)
+                setChatName(data.fromName)
+            }.showUrl(data.fromHead)
             "---------获取成员数据异常-${e.message.toString()}".logE()
         }
     }
@@ -253,9 +293,6 @@ class ChatTextLeft(
                 itemBean.isSel = !sel
                 adapter.notifyItemChanged(position)
             }
-        } else if (view.id == R.id.layout_header) {
-            //点击头像
-            onChatItemListener.onItemHeaderClick(data)
         }
     }
 
@@ -263,8 +300,8 @@ class ChatTextLeft(
     private fun showChatHeaderPopup(view: View, data: ChatMessageBean) {
         var isShowViewDelGroup = false
         var isShowViewMute = false
-        ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
-            ?: return context.getString(R.string.cichengyuanbuzaiqunzhong).toast()
+//        ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
+//            ?: return "此成员已不在群中".toast()
         //被长按头像成员在群的角色
         var memberRole = ChatDao.getGroupDb().getGroupRoleInfoById(data.groupId, data.from)
         //本人(操作人在群的角色)

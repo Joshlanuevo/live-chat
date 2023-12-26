@@ -15,7 +15,7 @@
 
     <include
         android:id="@+id/layout_header"
-        layout="@layout/layout_header"
+        layout="@layout/layout_header_chat"
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:src="@drawable/user_head_default"
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
-                tools:text="宝～我去输液了，，Ali～我去输液了～我去输液了Ali～我去输液了～我去输液了"
+                android:text="宝～我去输液了，，Ali～我去输液了～我去输液了Ali～我去输液了～我去输液了"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dp_14"
                 app:layout_constraintLeft_toLeftOf="@id/tvReplyName"
@@ -162,7 +162,7 @@
                 android:ellipsize="middle"
                 android:maxEms="8"
                 android:maxLines="1"
-                tools:text="史蒂夫文件史蒂夫文件1.zip"
+                android:text="史蒂夫文件史蒂夫文件1.zip"
                 android:textColor="@color/text_main"
                 android:textSize="@dimen/dp_12"
                 android:visibility="visible" />
@@ -179,17 +179,17 @@
                 android:textSize="@dimen/dp_11"
                 android:visibility="visible" />
 
-<!--            <ImageView-->
-<!--                android:id="@+id/ivDownload"-->
-<!--                android:layout_width="@dimen/dp_30"-->
-<!--                android:layout_height="@dimen/dp_25"-->
-<!--                android:layout_marginLeft="@dimen/dp_20"-->
-<!--                android:layout_toRightOf="@+id/tvName"-->
-<!--                android:paddingLeft="@dimen/dp_5"-->
-<!--                android:paddingRight="@dimen/dp_5"-->
-<!--                android:paddingBottom="@dimen/dp_5"-->
-<!--                android:src="@drawable/icon_chat_download"-->
-<!--                android:visibility="visible" />-->
+            <!--            <ImageView-->
+            <!--                android:id="@+id/ivDownload"-->
+            <!--                android:layout_width="@dimen/dp_30"-->
+            <!--                android:layout_height="@dimen/dp_25"-->
+            <!--                android:layout_marginLeft="@dimen/dp_20"-->
+            <!--                android:layout_toRightOf="@+id/tvName"-->
+            <!--                android:paddingLeft="@dimen/dp_5"-->
+            <!--                android:paddingRight="@dimen/dp_5"-->
+            <!--                android:paddingBottom="@dimen/dp_5"-->
+            <!--                android:src="@drawable/icon_chat_download"-->
+            <!--                android:visibility="visible" />-->
 
             <TextView
                 android:id="@+id/ivDownload"
@@ -201,7 +201,7 @@
                 android:paddingRight="1dp"
                 android:paddingBottom="@dimen/dp_5"
                 android:src="@drawable/icon_chat_download"
-                android:text="@string/xiazai"
+                android:text="下载"
                 android:textColor="#037EE5"
                 android:textSize="14dp"
                 android:visibility="visible" />
@@ -227,6 +227,7 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="12dp"
         android:layout_marginBottom="3dp"
+        android:visibility="gone"
         android:textColor="#8E8E93"
         android:textSize="11dp"
         app:layout_constraintBottom_toBottomOf="@id/llLeft"

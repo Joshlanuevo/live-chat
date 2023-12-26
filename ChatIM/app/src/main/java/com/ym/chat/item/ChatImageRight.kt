@@ -34,6 +34,8 @@ import com.ym.chat.ui.ChatActivity
 import com.ym.chat.ui.PictureActivity
 import com.ym.chat.utils.*
 import okhttp3.internal.filterList
+import org.json.JSONObject
+import java.io.File
 
 /**
  * 图片item-右边
@@ -57,7 +59,7 @@ class ChatImageRight(
 
     override fun convert(holder: BinderVBHolder<ItemImgChatRightBinding>, data: ChatMessageBean) {
 
-        holder.viewBinding.layoutHeader.flHeader.gone()
+        holder.viewBinding.layoutHeader.ivHeader.gone()
 //        if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
 //            //需要显示对方昵称和头像
 //            holder.viewBinding.layoutHeader.flHeader.visible()
@@ -70,34 +72,26 @@ class ChatImageRight(
         holder.viewBinding.tvTime.text = getTimeStr(data.createTime)
 
         try {
-            if (data.chatType == ChatType.CHAT_TYPE_GROUP) {
-                MMKVUtils.getUser()?.id?.let {
-                    try {
-                        ChatDao.getGroupDb().getMemberInGroup(it, data.groupId)?.let { member ->
-                            holder.viewBinding.layoutHeader.ivHeader.loadImg(member)
-                            Utils.showDaShenImageView(
-                                holder.viewBinding.layoutHeader.ivHeaderMark,
-                                member
-                            )
-                        }
-                    } catch (e: Exception) {
-                        "---------获取成员数据异常-${e.message.toString()}".logE()
-                    }
-                }
-            } else {
-                val userBean = MMKVUtils.getUser()
-//            显示自己头像
-                holder.viewBinding.layoutHeader.ivHeader.loadImg(userBean)
-                Utils.showDaShenImageView(
-                    holder.viewBinding.layoutHeader.ivHeaderMark,
-                    userBean?.displayHead == "Y",
-                    userBean?.levelHeadUrl
-                )
-            }
+            val userBean = MMKVUtils.getUser()
+            //显示自己头像
+            holder.viewBinding.layoutHeader.ivHeader.apply {
+                setRoundRadius(72F)
+                setChatId(userBean?.id?:"")
+                setChatName(userBean?.name?:"")
+            }.showUrl(userBean?.headUrl)
+
             holder.viewBinding.loadView.gone()
             holder.viewBinding.ivFail.gone()
             try {
-                val imageMsg = GsonUtils.fromJson(data.content, ImageBean::class.java)
+                val imageMsg = if (data.operationType == "Forward") {
+                    val c = JSONObject(data.content).optString("content")
+//                    val original = JSONObject(data.content).optString("original")
+//                    holder.viewBinding.tvFromUserName.visible()
+//                    holder.viewBinding.tvFromUserName.text = "消息转发来自：${original}"
+                    GsonUtils.fromJson(c, ImageBean::class.java)
+                } else {
+                    GsonUtils.fromJson(data.content, ImageBean::class.java)
+                }
                 val imageSize: IntArray = WeChatImageUtils.getImageSizeByOrgSizeToWeChat(
                     imageMsg.width,
                     imageMsg.height,
@@ -119,37 +113,18 @@ class ChatImageRight(
 //                    holder.viewBinding.tvContentRight.load(BitmapFactory.decodeFile(data.localPath)) {
 //                        size(width, height)
 //                    }
-                if (imageUrl.lowercase().contains(".gif".lowercase())) {
-                    Glide.with(context).asGif().load(imageUrl)
-                        .listener(object : RequestListener<GifDrawable> {
-                            override fun onLoadFailed(
-                                e: GlideException?,
-                                model: Any?,
-                                target: Target<GifDrawable>?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
 
-                            override fun onResourceReady(
-                                resource: GifDrawable?,
-                                model: Any?,
-                                target: Target<GifDrawable>?,
-                                dataSource: DataSource?,
-                                isFirstResource: Boolean
-                            ): Boolean {
-                                return false
-                            }
-                        })
-                        .placeholder(R.drawable.image_chat_placeholder)
-                        .error(R.drawable.ic_load_fail)
-                        .into(holder.viewBinding.tvContentRight)
+                if (!imageMsg.url.startsWith("http")) {
+                    holder.viewBinding.tvContentRight.load(File(imageUrl)) {
+                        placeholder(R.drawable.image_chat_placeholder)
+                        error(R.drawable.image_chat_placeholder)
+                    }
                 } else {
-                    Glide.with(context).load(imageMsg.url).error(R.drawable.ic_load_fail)
-                        .placeholder(R.drawable.image_chat_placeholder)
-                        .into(holder.viewBinding.tvContentRight)
+                    holder.viewBinding.tvContentRight.load(imageUrl) {
+                        placeholder(R.drawable.image_chat_placeholder)
+                        error(R.drawable.image_chat_placeholder)
+                    }
                 }
-
             } catch (e: Exception) {
                 holder.viewBinding.consReply.layoutParams.width = 200
                 holder.viewBinding.tvContentRight.layoutParams.width = 200
@@ -194,14 +169,17 @@ class ChatImageRight(
             //显示回复
             if (!TextUtils.isEmpty(data.parentMessageId)) {
                 //处理回复消息
-                //处理回复消息
                 holder.viewBinding.let { view ->
-                    val list = adapter.data.filterList {
-                        this is ChatMessageBean && this.id == data.parentMessageId
+                    var parentMsg = data.replayParentMsg
+                    if (parentMsg == null) {
+                        val list = adapter.data.filterList {
+                            this is ChatMessageBean && this.id == data.parentMessageId
+                        }
+                        if (list != null && list.size > 0) {
+                            parentMsg = list[0] as ChatMessageBean
+                        }
                     }
-//                val parentMsg = ChatDao.getChatMsgDb().getMsgById(data.parentMessageId)
-                    if (list != null && list.size > 0) {
-                        val parentMsg = list[0] as ChatMessageBean
+                    if (parentMsg != null) {
                         holder.viewBinding.consReply.visible()
                         holder.viewBinding.consReply.click {
                             onChatItemListener.clickReplyMsg(parentMsg)
@@ -230,7 +208,7 @@ class ChatImageRight(
             }
 
             //置顶消息显示
-            ChatUtils.showTopMsg(holder.viewBinding.ivTop,data.id)
+            ChatUtils.showTopMsg(holder.viewBinding.ivTop, data.id)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -253,7 +231,10 @@ class ChatImageRight(
                 msgType = 1
                 id = data.groupId
             }
-            PictureActivity.start(context, imageMsg.url, msgType, id)
+            val imgs = mutableListOf<String>().apply {
+                add(imageMsg.url)
+            }
+            PictureActivity.start(context, "", msgType, id, pictureCollectUrlList = imgs)
         } catch (e: Exception) {
 
         }
@@ -267,7 +248,7 @@ class ChatImageRight(
         position: Int
     ): Boolean {
         if (view.id == R.id.tvContentLeft || view.id == R.id.tvContentRight) {
-            if(data.sendState == 0) return true //文件发送中不弹popup
+            if (data.sendState == 0) return true //文件发送中不弹popup
             val type = PopUtils.calculatePopWindowPos(view)
             val gravityType = when (type[0]) {
                 1 -> Gravity.BOTTOM
