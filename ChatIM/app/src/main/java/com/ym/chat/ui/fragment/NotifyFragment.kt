@@ -192,7 +192,7 @@ class NotifyFragment(private val notifyType: Int) : LoadingFragment(R.layout.fra
         mNotifyViewModel.getFriendNotifyInfo.observe(this) {
             mNotifyList.clear()
             it.data?.let { it1 ->
-                mNotifyList.addAll(it1.reversed())
+                mNotifyList.addAll(it1)
             }
             mAdapter.setList(mNotifyList)
         }

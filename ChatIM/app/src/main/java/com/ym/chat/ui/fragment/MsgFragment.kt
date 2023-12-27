@@ -84,8 +84,14 @@ class MsgFragment : BaseFragment(R.layout.fragment_msg) {
                         when (it.sysType) {
                             //我的收藏
                             1 -> startActivity(Intent(activity, CollectActivity::class.java))
-                            //系统通知
-                            2 -> startActivity(Intent(activity, NotifyActivity::class.java))
+                            2 ->{
+                                //系统通知
+                                startActivity(Intent(activity, NotifyActivity::class.java).apply {
+                                    if(it.lastMsg==getString(R.string.haoyoutongzhi)){
+                                        putExtra("index",1)
+                                    }
+                                })
+                            }
                         }
                     }
                 }

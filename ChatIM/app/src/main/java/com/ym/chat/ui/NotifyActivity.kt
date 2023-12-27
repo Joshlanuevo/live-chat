@@ -156,6 +156,10 @@ class NotifyActivity : LoadingActivity() {
             mFragments.add(NotifyFragment(i))
         }
         bindView.viewPager.adapter = NotifyFragmentStateAdapter(this, mFragments)
+        var index = intent.getIntExtra("index", -1)
+        if (index >= 0) {
+            bindView.viewPager.setCurrentItem(1,true)
+        }
         var tabLayoutMediator =
             TabLayoutMediator(bindView.tab, bindView.viewPager) { tab, position ->
                 tab.text = mTitles[position]
