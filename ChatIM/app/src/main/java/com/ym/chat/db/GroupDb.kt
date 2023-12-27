@@ -152,10 +152,15 @@ class GroupDb {
      * 获取群组数据
      */
     fun getGroupList(): MutableList<GroupInfoBean> {
-        return ChatDao.mBoxStore.boxFor(GroupInfoBean::class.java).run {
-            var list = query().build().find()
-            closeThreadResources()
-            list
+        try {
+            return ChatDao.mBoxStore.boxFor(GroupInfoBean::class.java).run {
+                var list = query().build().find()
+                closeThreadResources()
+                list
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+            return mutableListOf<GroupInfoBean>()
         }
     }
 
@@ -242,22 +247,21 @@ class GroupDb {
         groupId: String?,
         callFinish: ((suc: Boolean) -> Unit)? = null
     ) {
+        mutableList?.forEach {
+            it.groupId = groupId?:""
+        }
         if (mutableList != null && mutableList.size > 0) {
             //加一个同步锁
-            Thread {
-                synchronized(ImCache.groupMemberList) {
-                    ChatDao.mBoxStore.boxFor(GroupMemberBean::class.java).run {
-                        val list = query().filter { it.groupId == groupId }.build().find()
-                        remove(list)
-                        //重新保存最新拉回的数据
-                        put(mutableList)
-                        ImCache.groupMemberList.clear()
-                        ImCache.groupMemberList.addAll(all)
-                        closeThreadResources()
-                        callFinish?.invoke(true)
-                    }
-                }
-            }.start()
+            ChatDao.mBoxStore.boxFor(GroupMemberBean::class.java).run {
+                val list = query().filter { it.groupId == groupId }.build().find()
+                remove(list)
+                //重新保存最新拉回的数据
+                put(mutableList)
+                ImCache.groupMemberList.clear()
+                ImCache.groupMemberList.addAll(all)
+                closeThreadResources()
+                callFinish?.invoke(true)
+            }
         }
     }
 
