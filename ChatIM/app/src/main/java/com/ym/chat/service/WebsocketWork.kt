@@ -7,18 +7,23 @@ import android.content.Context
 import android.os.Build
 import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.blankj.utilcode.util.ActivityUtils
 import com.blankj.utilcode.util.GsonUtils
 import com.blankj.utilcode.util.NetworkUtils
+import com.blankj.utilcode.util.ToastUtils
 import com.blankj.utilcode.util.Utils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.ym.base.constant.EventKeys
 import com.ym.base.ext.logE
+import com.ym.base.ext.toast
+import com.ym.base.ext.toast1
 import com.ym.base.util.save.MMKVUtils
 import com.ym.chat.R
 import com.ym.chat.bean.ChatMessageBean
@@ -178,6 +183,14 @@ class WebsocketWork(val context: Context, val parameters: WorkerParameters) :
                         success?.invoke(chatMsg.id)
                     } else {
                         //发送失败
+
+                        if(code==30021){
+                            "全员禁言中".toast1()
+                        }else{
+                            val info = jsonObject.optString("info")
+                            info.toast1()
+                        }
+
                         faile?.invoke()
                     }
                 } catch (e: Exception) {
