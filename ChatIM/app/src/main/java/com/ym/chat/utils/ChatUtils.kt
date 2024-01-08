@@ -1163,11 +1163,11 @@ object ChatUtils {
         val vDelMsg = mPopUpWindow?.findViewById<View>(R.id.vDelMsg)
         var isMessageNotice = data.messageNotice == "N"
         if (isMessageNotice) {
-            tvNotNotify?.text = "取消静音"
+            tvNotNotify?.text = context.getString(R.string.quxiaojinyin) // "取消静音"
             ivJy?.setImageResource(R.drawable.ic_msg_jy_1)
         }
         if (data.roleType.lowercase() == "owner") {
-            tvDel?.text = "解散群组"
+            tvDel?.text = context.getString(R.string.解散群组) // "解散群组"
         }
         if (data.roleType.lowercase() != "normal") {
             llDelMsg?.visible()

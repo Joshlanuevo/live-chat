@@ -148,21 +148,25 @@ class HomeMsgItem(
         }
     }
 
+    // Automatic translate text/message type depends on language mode // vannn //
     private fun showSystem(data: ConversationBean, viewBinding: ItemHomeMsgBinding) {
         viewBinding.ivSilence.gone()
         viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_red_10dp)
+        val welcomeString = context.getString(R.string.huanyingshiyong)
         //系统会话
         viewBinding.tvFrom.gone()
         if (data.sysType == 1) {
             //我的收藏
             viewBinding.tvNickName.text = context.getString(R.string.wodeshoucang)
-            showLastMsg(viewBinding.tvMsgPre, data)
+//            showLastMsg(viewBinding.tvMsgPre, data)
+            viewBinding.tvMsgPre.text = welcomeString
             viewBinding.tvHeader.gone()
             viewBinding.redPoint.gone()
             viewBinding.layoutHeader.apply {
                 setRoundRadius(100F)
             }.showImageRes(R.drawable.msg_collect)
-            showCollectLastMsg(viewBinding.tvMsgPre, data)
+//            showCollectLastMsg(viewBinding.tvMsgPre, data)
+            viewBinding.tvMsgPre.text = welcomeString
         } else if (data.sysType == 2) {
             //系统通知
             viewBinding.tvNickName.text = context.getString(R.string.xitongtongzhi)
@@ -360,18 +364,31 @@ class HomeMsgItem(
                         }
                     })
             }
+            // Automatic translate text/message type depends on language mode // vannn //
             MsgType.MESSAGETYPE_VIDEO -> {
-                "[视频]"
+                context.getString(R.string.m_shipin)
             }
             MsgType.MESSAGETYPE_VOICE -> {
-                "[语音]"
+                context.getString(R.string.m_yuyin)
             }
             MsgType.MESSAGETYPE_PICTURE -> {
-                "[图片]"
+                context.getString(R.string.m_tupian)
             }
             MsgType.MESSAGETYPE_FILE -> {
-                "[文件]"
+                context.getString(R.string.m_wenjian)
             }
+//            MsgType.MESSAGETYPE_VIDEO -> {
+//                "[视频]"
+//            }
+//            MsgType.MESSAGETYPE_VOICE -> {
+//                "[语音]"
+//            }
+//            MsgType.MESSAGETYPE_PICTURE -> {
+//                "[图片]"
+//            }
+//            MsgType.MESSAGETYPE_FILE -> {
+//                "[文件]"
+//            }
             MsgType.MESSAGETYPE_CONTACT -> {
                 val jsonObject = JSONObject(lastMsgContent)
                 val shareMemberName = jsonObject.optString("shareMemberName")
@@ -386,22 +403,23 @@ class HomeMsgItem(
     /**
      * 显示最后一条收藏消息预览
      */
+    // Automatic translate text/message type depends on language mode // vannn //
     private fun showCollectLastMsg(textView: TextView, conver: ConversationBean) {
         when (conver.lastMsgType.uppercase()) {
             MsgType.MESSAGETYPE_TEXT.uppercase(), MsgType.MESSAGETYPE_AT -> {
                 textView.text = conver.lastMsg
             }
             MsgType.MESSAGETYPE_VIDEO.uppercase() -> {
-                textView.text = "我收藏了一段视频"
+                textView.text = context.getString(R.string.shoucangleyiduanshipin)
             }
             MsgType.MESSAGETYPE_VOICE.uppercase() -> {
-                textView.text = "我收藏了一段语音"
+                textView.text = context.getString(R.string.shoucangleyiduanyuyin)
             }
             MsgType.MESSAGETYPE_PICTURE.uppercase() -> {
-                textView.text = "我收藏了一张图片"
+                textView.text = context.getString(R.string.shoucangleyiduantupian)
             }
             MsgType.MESSAGETYPE_FILE.uppercase() -> {
-                textView.text = "我收藏了一个文件"
+                textView.text = context.getString(R.string.shoucangleyiduanwenjian)
             }
         }
     }
@@ -528,14 +546,25 @@ class HomeMsgItem(
         linMsgPopup?.click {
             mPopUpWindow?.dismiss()
         }
+        // Pin message and automatic translate text depends on language mode // vannn //
         if (data.isTop) {
-            tvZd?.text = "取消置顶"
+            tvZd?.text = context.getString(R.string.zhidingxiaoxi)
             ivZd?.setImageResource(R.drawable.ic_msg_zd_1)
         }
+        // Check if the message is muted and automatic translate text depends on language mode // vannn //
         var isMessageNotice = data.isMute
         if (isMessageNotice) {
-            tvNotNotify?.text = "取消静音"
+            tvNotNotify?.text = context.getString(R.string.jinyinxiaoxi)
             ivJy?.setImageResource(R.drawable.ic_msg_jy_1)
         }
+//        if (data.isTop) {
+//            tvZd?.text = "取消置顶"
+//            ivZd?.setImageResource(R.drawable.ic_msg_zd_1)
+//        }
+//        var isMessageNotice = data.isMute
+//        if (isMessageNotice) {
+//            tvNotNotify?.text = "取消静音"
+//            ivJy?.setImageResource(R.drawable.ic_msg_jy_1)
+//        }
     }
 }

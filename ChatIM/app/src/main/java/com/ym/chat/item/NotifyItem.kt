@@ -100,13 +100,13 @@ class NotifyItem(
                     vb.tvContentTitle.text = data.contentTitle
                     if (data.systemType == 1) {
                         vb.ivTypeIcon.setImageResource(R.drawable.ic_notify_msg)
-                        vb.tvTypeTitle.text = "系统通知"
+                        vb.tvTypeTitle.text = context.getString(R.string.xitongtongzhi) // "系统通知"
                         if (data.contentBriefly != null)
                             vb.tvContent.text = Html.fromHtml(data.contentBriefly)
                         vb.tvLook.visible()
                     } else {
                         vb.ivTypeIcon.setImageResource(R.drawable.ic_notify_feedback_msg)
-                        vb.tvTypeTitle.text = "反馈回复通知"
+                        vb.tvTypeTitle.text = context.getString(R.string.fankuiwenjianhuifu) // "反馈回复通知"
                         vb.tvContent.text = Html.fromHtml(data.content)
                     }
                 }
@@ -114,11 +114,13 @@ class NotifyItem(
                     //系统验证码消息
                     vb.ivTypeIcon.setImageResource(R.drawable.ic_notify_verify)
                     vb.tvContent.visible()
-                    var contentTitle = "【新设备登录验证】"
+                    var contentTitle = context.getString(R.string.xinshebeidenglu) // "【新设备登录验证】"
                     var keepTime = data.keepTime?.toInt()?.div(60) ?: 15
                     var content =
-                        "【新设备登录验证】：${data.verfiyCode}， 新设备系统为：${data.deviceDescription}。 " +
-                                "如您授权新设备登录，请在新设备输入验证码。验证后，该设备下次登录无需验证。有效期：$keepTime 分钟。请勿泄漏！如果不是您本人操作，请检查您的帐号是否泄漏的可能。"
+                        "${R.string.xinshebeidenglu}：${data.verfiyCode}， ${R.string.xinshebeixitong}：${data.deviceDescription}。 " +
+                                "${R.string.如您授权新设备登录}：$keepTime ${R.string.请检查您的帐号是否泄漏的可能}"
+//                        "【新设备登录验证】：${data.verfiyCode}， 新设备系统为：${data.deviceDescription}。 " +
+//                                "如您授权新设备登录，请在新设备输入验证码。验证后，该设备下次登录无需验证。有效期：$keepTime 分钟。请勿泄漏！如果不是您本人操作，请检查您的帐号是否泄漏的可能。"
                     vb.tvContent.text = content.setColorAndString(contentTitle)
                 }
                 2 -> {
@@ -168,7 +170,7 @@ class NotifyItem(
                         0 -> {
                             //申请加好友，等待添加
                             if (isSend) {
-                                vb.tvVerifyContent.text = "已提交好友申请"
+                                vb.tvVerifyContent.text = context.getString(R.string.已提交好友申请) // "已提交好友申请"
                                 vb.btnRefuse.gone()
                                 vb.btnAgree.gone()
                             } else {
@@ -184,9 +186,9 @@ class NotifyItem(
 
                             //同意加好友
                             if (isSend) {
-                                vb.tvVerifyContent.text = "对方已同意你的申请"
+                                vb.tvVerifyContent.text = context.getString(R.string.yitongyinideshenqing) // "对方已同意你的申请"
                             } else {
-                                vb.tvVerifyContent.text = "已成为好友"
+                                vb.tvVerifyContent.text = context.getString(R.string.已成为好友) // "已成为好友"
                             }
                         }
                         2 -> {
@@ -196,9 +198,9 @@ class NotifyItem(
 
                             //拒绝加好友
                             if (isSend) {
-                                vb.tvVerifyContent.text = "对方已拒绝你的申请"
+                                vb.tvVerifyContent.text = context.getString(R.string.duifangyijujuenideshenqing) // "对方已拒绝你的申请"
                             } else {
-                                vb.tvVerifyContent.text = "已拒绝"
+                                vb.tvVerifyContent.text = context.getString(R.string.yijujue) // "已拒绝"
                             }
                         }
                     }
@@ -253,7 +255,7 @@ class NotifyItem(
 //                            )
 //                        }
 
-                        var text = "管理员${data.memberName}邀请加入${groupName} 群"
+                        var text = "${R.string.guanliyuan}${data.memberName}${R.string.yaoqingjiaru}${groupName} 群"
                         vb.tvNickName.text =
                             groupName?.let {
                                 data.memberName?.let { it1 ->
@@ -264,7 +266,7 @@ class NotifyItem(
                                 }
                             }
                         vb.tvMsgPre.visible()
-                        vb.tvMsgPre.text = "会员 ${data.friendMemberName} 申请入群"
+                        vb.tvMsgPre.text = "${R.string.huiyuan} ${data.friendMemberName} ${R.string.shenqingruqun}"
                     } catch (e: Exception) {
                         "---------获取成员数据异常-${e.message.toString()}".logE()
                     }
@@ -277,7 +279,7 @@ class NotifyItem(
                                 vb.tvVerifyContent.visible()
                                 vb.btnAgree.gone()
                                 vb.btnRefuse.gone()
-                                vb.tvVerifyContent.text = "已提交申请，等待验证"
+                                vb.tvVerifyContent.text = context.getString(R.string.yitijiaoshenqing) // "已提交申请，等待验证"
                             } else {
                                 //如果是别人提交的申请
                                 vb.btnAgree.visible()
@@ -290,10 +292,10 @@ class NotifyItem(
                             vb.tvVerifyContent.visible()
                             if (isSend) {
                                 //如果我发的申请
-                                vb.tvVerifyContent.text = "对方已同意你的申请"
+                                vb.tvVerifyContent.text = context.getString(R.string.yitongyinideshenqing) // "对方已同意你的申请"
                             } else {
                                 //如果是别人提交的申请
-                                vb.tvVerifyContent.text = "已同意"
+                                vb.tvVerifyContent.text = context.getString(R.string.已同意) // "已同意"
                             }
                         }
                         2 -> {
@@ -301,10 +303,10 @@ class NotifyItem(
                             vb.tvVerifyContent.visible()
                             if (isSend) {
                                 //如果我发的申请
-                                vb.tvVerifyContent.text = "对方已拒绝你的申请"
+                                vb.tvVerifyContent.text = context.getString(R.string.duifangyijujuenideshenqing) // "对方已拒绝你的申请"
                             } else {
                                 //如果是别人提交的申请
-                                vb.tvVerifyContent.text = "已拒绝"
+                                vb.tvVerifyContent.text = context.getString(R.string.yijujue) // "已拒绝"
                             }
                         }
                         3 -> {
@@ -312,10 +314,10 @@ class NotifyItem(
                             vb.tvVerifyContent.visible()
                             if (isSend) {
                                 //如果我发的申请
-                                vb.tvVerifyContent.text = "已同意"
+                                vb.tvVerifyContent.text = context.getString(R.string.已同意) // "已同意"
                             } else {
                                 //如果是别人提交的申请
-                                vb.tvVerifyContent.text = "已同意"
+                                vb.tvVerifyContent.text = context.getString(R.string.已同意) // "已同意"
                             }
                         }
                     }

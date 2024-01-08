@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="好友"
+            android:text="@string/haoyou"
             android:textColor="@color/color_11142D"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -63,12 +63,12 @@
                 android:background="@drawable/bg_et_login"
                 android:gravity="center_vertical"
                 android:paddingLeft="30dp"
-                android:text="搜索消息或用户"
+                android:text="@string/sousuoxiaoxihuoyonghu"
                 android:textColor="#999999"
                 android:textSize="14dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent" /> <!--vannn-->
 
             <ImageView
                 android:layout_width="14dp"

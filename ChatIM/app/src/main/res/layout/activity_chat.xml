@@ -71,11 +71,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
-                    android:text="加密聊天"
+                    android:text="@string/jiamichat"
                     android:textColor="@color/color_9E9E9E"
                     android:textSize="11dp"
                     android:visibility="gone"
-                    tools:visibility="visible" />
+                    tools:visibility="visible" /> <!--vannn-->
             </LinearLayout>
 
         </RelativeLayout>

@@ -806,7 +806,7 @@ class ChatActivity : LoadingActivity(),
                     }.showUrl(chatInfo?.headUrl)
 
                     bindView.tvTitleHint.visible()
-                    bindView.tvTitleHint.text = "加密聊天"
+                    bindView.tvTitleHint.text = getString(R.string.加密聊天) // "${R.string.加密聊天}" // changed the "加密聊天" // vannnn //
 
                     //获取聊天消息
                     if (mAdapter.data.isEmpty()) {
@@ -937,9 +937,9 @@ class ChatActivity : LoadingActivity(),
                         0 -> {
                             if (mTargetId == memberId) {
                                 if (onlineCount == 1) {
-                                    bindView.tvTitleHint.text = "在线-加密聊天"
+                                    bindView.tvTitleHint.text = getString(R.string.在线加密聊天) // "${R.string.在线加密聊天}" // "在线-加密聊天"
                                 } else {
-                                    bindView.tvTitleHint.text = "离线-加密聊天"
+                                    bindView.tvTitleHint.text = getString(R.string.离线加密聊天) // "${R.string.离线加密聊天}" //"离线-加密聊天"
                                 }
                             }
                         }
@@ -948,7 +948,7 @@ class ChatActivity : LoadingActivity(),
                             if (mTargetId == groupId) {
                                 inLineNum = onlineCount
                                 bindView.tvTitleHint.text =
-                                    "加密聊天 (${groupMemberList.size.toGroupMemberSize()})"//显示在线人数/总人数
+                                    "${getString(R.string.加密聊天)} (${groupMemberList.size.toGroupMemberSize()})"//显示在线人数/总人数 // changed the "加密聊天" // vannnn //
                             }
                         }
                     }
@@ -1746,9 +1746,9 @@ class ChatActivity : LoadingActivity(),
         mAdapter.notifyDataSetChanged()//刷新数据显示群成员头像 昵称
         groupMemberList.clear()
         if (memberList != null && memberList.size > 0) {
-            bindView.tvTitleHint.text = "加密聊天 (${memberList.size.toGroupMemberSize()})"//显示在线人数
+            bindView.tvTitleHint.text = "${getString(R.string.加密聊天)} (${memberList.size.toGroupMemberSize()})"//显示在线人数 // changed the "加密聊天" // vannnn //
         } else {
-            bindView.tvTitleHint.text = "加密聊天 (1)"//显示在线人数
+            bindView.tvTitleHint.text = "${getString(R.string.加密聊天)} (1)"//显示在线人数 // changed the "加密聊天" // vannnn //
         }
 
         memberList?.let { groupMemberList.addAll(it) }

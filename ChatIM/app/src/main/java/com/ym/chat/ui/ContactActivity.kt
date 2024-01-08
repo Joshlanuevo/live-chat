@@ -388,14 +388,14 @@ class ContactActivity : LoadingActivity() {
 
     private fun setAllSelectState() {
         if (isAllSelect) {
-            bindView.toolbar.tvSubtitle.text = "取消"
+            bindView.toolbar.tvSubtitle.text = getString(R.string.quxiao) // "取消"
             bindView.tvComplete.isEnabled = true
             friendLists.forEachIndexed { index, friend ->
                 friend.isSelect = true
             }
             setDataHandle(friendLists, friendAllLists)
         } else {
-            bindView.toolbar.tvSubtitle.text = "全选"
+            bindView.toolbar.tvSubtitle.text = getString(R.string.全选) // "全选"
             bindView.tvComplete.isEnabled = false
             if (inType == 0 || inType == 2) {
                 friendLists.forEachIndexed { index, friend ->
@@ -419,12 +419,12 @@ class ContactActivity : LoadingActivity() {
         when (inType) {
             0 -> {
                 //0。创建群主
-                bindView.toolbar.tvSubtitle.text = "全选"
+                bindView.toolbar.tvSubtitle.text = getString(R.string.全选) // "全选"
                 showCreateGroupAndSendGroupMsg()
             }
             1 -> {
                 //1。群发消息选择好友
-                bindView.toolbar.tvSubtitle.text = "全选"
+                bindView.toolbar.tvSubtitle.text = getString(R.string.全选) // "全选"
                 showCreateGroupAndSendGroupMsg()
             }
             2 -> {
@@ -524,8 +524,8 @@ class ContactActivity : LoadingActivity() {
         }
         memberLists.addAll(friendMembers)
 
-        bindView.toolbar.tvTitle.text = "选择好友"
-        bindView.toolbar.tvSubtitle.text = "全选"
+        bindView.toolbar.tvTitle.text = getString(R.string.选择好友) // "选择好友"
+        bindView.toolbar.tvSubtitle.text = getString(R.string.全选) // "全选"
 //                    mViewModel.getFriendList()
         friendLists.clear()
         var friends = ChatDao.getFriendDb().getFriendList()
@@ -554,7 +554,7 @@ class ContactActivity : LoadingActivity() {
      * 显示界面
      */
     private fun showCreateGroupAndSendGroupMsg() {
-        bindView.toolbar.tvTitle.text = "选择好友"
+        bindView.toolbar.tvTitle.text = getString(R.string.选择好友) // "选择好友"
         var friends = ChatDao.getFriendDb().getFriendList()
 //                    mViewModel.getFriendList()
         friendLists.clear()

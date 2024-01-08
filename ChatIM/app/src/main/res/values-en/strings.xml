@@ -47,7 +47,7 @@
     <string name="xiaoxitongzhi">Message notification sound</string>
     <string name="qingchubendishuju">Clear local data</string>
     <string name="danliaowenjiancun">Single chat file storage capacity</string>
-    <string name="wodeshoucang">My collection</string>
+    <string name="wodeshoucang">My Collection</string> <!--vannn-->
     <string name="sousuohaoyou">Search friends</string>
     <string name="queding">Confim</string>
     <string name="fankuileixing">Feedback type</string>
@@ -255,7 +255,7 @@
     <string name="qingkongxiaoxi">Clear Messages</string>
     <string name="jinyinxiaoxi">Mute Messages</string>
     <string name="biaojiweidu">Mark as Unread</string>
-    <string name="yichuduihua">Remove Dialogue</string>
+    <string name="yichuduihua">Delete Chat</string> <!--vannn-->
     <string name="yuanchengxiaoxiyibeixiaohui">Message has been remotely destroyed</string>
     <string name="huanyingshiyong">Welcome to use\"My Wishlist\"</string>
     <string name="chusihhuachenggong">My Wishlist initialized successfully</string>
