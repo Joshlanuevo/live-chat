@@ -21,10 +21,11 @@
 
         <ImageView
             android:id="@+id/ivLogo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="fitXY"
             android:layout_marginTop="39dp"
-            android:src="@drawable/ic_yl" />
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/tv1"

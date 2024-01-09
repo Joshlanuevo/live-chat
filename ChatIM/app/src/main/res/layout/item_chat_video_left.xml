@@ -166,7 +166,6 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:visibility="gone"
         android:textColor="@color/white"
         android:textSize="11dp"
         android:background="@drawable/shape_time_ivbg"

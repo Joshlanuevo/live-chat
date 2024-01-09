@@ -203,7 +203,7 @@
             android:layout_width="wrap_content"
             android:visibility="gone"
             android:layout_height="wrap_content"
-            android:textColor="@color/tv_blue"
+            android:textColor="#6a6a6a"
             android:textSize="11dp"
             tools:text="10:00" />
 
