@@ -25,7 +25,7 @@
             android:layout_height="80dp"
             android:scaleType="fitXY"
             android:layout_marginTop="39dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher_xy" />
 
         <TextView
             android:id="@+id/tv1"

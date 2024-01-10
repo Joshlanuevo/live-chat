@@ -3,7 +3,6 @@ package com.ym.chat.ui.fragment
 import android.content.Intent
 import android.view.Gravity
 import coil.load
-import coil.transform.RoundedCornersTransformation
 import com.dylanc.viewbinding.binding
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.ym.base.constant.EventKeys
@@ -21,7 +20,6 @@ import com.ym.chat.popup.HomeAddPopupWindow
 import com.ym.chat.ui.ChatActivity
 import com.ym.chat.ui.SearchFriendActivity
 import com.ym.chat.utils.ImCache
-import com.ym.chat.utils.PlatformUtils
 import com.ym.chat.viewmodel.FriendViewModel
 
 /**
@@ -40,7 +38,7 @@ class ContactFragment : LoadingFragment(R.layout.fragment_contact) {
 //            //添加好友
 //            startActivity(Intent(activity, SearchFriendActivity::class.java))
 //        }
-        bindView.ivLogo.load(R.mipmap.ic_launcher)
+        bindView.ivLogo.load(R.mipmap.ic_launcher_xy)
         mAdapter.addFullSpanNodeProvider(FriendGroupItem())
         mAdapter.addNodeProvider(FriendUserItem(onItemClickListener = {
             if (it is FriendListBean) {

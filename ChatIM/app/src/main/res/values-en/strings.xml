@@ -1,6 +1,6 @@
 <resources>
-<!--    <string name="app_name">Live700</string>-->
-    <string name="app_name">维云科技</string>
+    <string name="app_name">Live700</string>
+<!--    <string name="app_name">维云科技</string>-->
     <string name="需要存储权限">Need Storage Permission</string>
     <string name="voice_rec">Slide Up To Cancel</string>
     <string name="voice_cancel">Release To Cancel</string>
@@ -224,7 +224,7 @@
     <string name="gerenzhongxin">Personal Center</string>
     <string name="群发助手">Group Assistant</string>
     <string name="分享邀请码">Share Invitation Code</string>
-    <string name="设置">Setting</string>
+    <string name="设置">Settings</string>
     <string name="建议反馈">Suggestions Feedback</string>
     <string name="全选同意">Select All Agree</string>
     <string name="全选拒绝">Select All Reject</string>

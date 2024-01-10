@@ -311,7 +311,7 @@ open class YmUpdateService : JobIntentService() {
     private fun initRemoteViews() {
         if (mRemoteViews == null) { //防止直接走失败
             mRemoteViews = RemoteViews(packageName, R.layout.notification_update)
-            mRemoteViews?.setImageViewResource(R.id.notice_update_icon, R.mipmap.ic_launcher)
+            mRemoteViews?.setImageViewResource(R.id.notice_update_icon, R.mipmap.ic_launcher_xy)
         }
     }
 

@@ -56,6 +56,9 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
             //意见反馈
             startActivity(Intent(activity, FeedbackActivity::class.java))
         }
+//        bindView.tvLanguages.click {
+//            startActivity(Intent(activity, FeedbackActivity::class.java))
+//        }
         bindView.consInfo.click {
             //编辑用户信息
             startActivity(Intent(activity, PersonalInfoActivity::class.java))

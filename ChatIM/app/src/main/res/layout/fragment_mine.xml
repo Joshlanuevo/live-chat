@@ -264,6 +264,65 @@
                     android:src="@drawable/ic_mine_next" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="@dimen/dp_17"
+                android:layout_marginRight="@dimen/dp_17"
+                android:background="@color/color_eeeeee" />
+
+
+            <LinearLayout
+                android:id="@+id/tvLanguages"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_item_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- Add a horizontal ScrollView to allow scrolling through multiple flags -->
+                <HorizontalScrollView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fillViewport="false"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingRight="16dp">
+
+                        <!-- Replace these ImageViews with your actual flag drawables -->
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_mine_ch"
+                            android:layout_marginRight="8dp"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_mine_us"
+                            android:layout_marginRight="8dp"/>
+
+                        <!-- Add additional flags here following the same pattern -->
+                        <!-- ... -->
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <!-- This ImageView can be used as an indicator for more options or a next page -->
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_mine_next" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

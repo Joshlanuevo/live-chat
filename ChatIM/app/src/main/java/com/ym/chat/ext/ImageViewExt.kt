@@ -11,7 +11,6 @@ import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestListener
 import com.ym.base.util.save.LoginData
 import com.ym.base.widget.ext.gone
 import com.ym.base.widget.ext.visible
@@ -19,9 +18,7 @@ import com.ym.chat.R
 import com.ym.chat.bean.FriendInfoBean
 import com.ym.chat.bean.FriendListBean
 import com.ym.chat.bean.GroupMemberBean
-import com.ym.chat.db.ChatDao
 import com.ym.chat.utils.AvatarUtil
-import com.ym.chat.utils.PlatformUtils
 
 
 /**
@@ -193,7 +190,7 @@ private fun getImgRes(lastStr: String): Int {
 
 fun ImageView.loadImg(user: FriendListBean?, tv: TextView?) {
     if (user?.memberLevelCode == "System") {
-        load(R.mipmap.ic_launcher) {
+        load(R.mipmap.ic_launcher_xy) {
             transformations(RoundedCornersTransformation(100f))//显示圆形图片
         }
     } else {
