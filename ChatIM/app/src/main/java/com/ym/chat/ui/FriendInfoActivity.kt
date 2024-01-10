@@ -179,7 +179,7 @@ class FriendInfoActivity : LoadingActivity() {
                 bindView.tvUsername.text.toString().trim().copyToClipboard()
                 ToastUtils.showToastWithImg(
                     this@FriendInfoActivity,
-                    "已复制",
+                    "${getString(R.string.已复制)}", // "已复制"
                     R.drawable.ic_dialog_success
                 )
             }

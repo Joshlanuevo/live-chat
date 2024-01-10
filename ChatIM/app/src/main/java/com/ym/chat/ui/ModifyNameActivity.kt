@@ -117,7 +117,7 @@ class ModifyNameActivity : LoadingActivity() {
                         )
                     } //把修改的信息保存到本地账号
                     this.finish()
-                    "编辑用户信息成功".toast()
+                    getString(R.string.编辑用户信息成功).toast() // "编辑用户信息成功"
                 }
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()

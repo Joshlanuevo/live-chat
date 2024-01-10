@@ -169,11 +169,11 @@ class ContactActivity : LoadingActivity() {
                         var content = ""
                         var isDeleteAdmin = false
                         if (memberBean.role.lowercase() == "normal") {
-                            title = "设置管理员"
-                            content = "您确定要设置 ${memberBean?.nickname} 为管理员吗？ "
+                            title = getString(R.string.设置管理员)  // "设置管理员"
+                            content = getString(R.string.设置管理员提示, memberBean?.nickname) // "您确定要设置 ${memberBean?.nickname} 为管理员吗？ "
                         } else {
-                            title = "取消管理员"
-                            content = "您确定要取消 ${memberBean?.nickname} 的管理员吗?"
+                            title = getString(R.string.取消管理员) // "取消管理员"
+                            content = getString(R.string.取消管理员提示, memberBean?.nickname) // "您确定要取消 ${memberBean?.nickname} 的管理员吗?"
                             isDeleteAdmin = true
                         }
                         HintDialog(
@@ -201,11 +201,11 @@ class ContactActivity : LoadingActivity() {
                         var title = ""
                         var content = ""
                         if (memberBean?.allowSpeak == "N") {
-                            title = "解除禁言"
-                            content = "您确定要解除 ${memberBean?.nickname} 禁言吗？ "
+                            title = getString(R.string.解除禁言) // "解除禁言"
+                            content = getString(R.string.解除禁言提示, memberBean?.nickname) // "您确定要解除 ${memberBean?.nickname} 禁言吗？"
                         } else {
-                            title = "设置禁言"
-                            content = "您确定要对 ${memberBean?.nickname} 设置禁言吗?"
+                            title = getString(R.string.设置禁言) // "设置禁言"
+                            content = getString(R.string.设置禁言提示, memberBean?.nickname) // "您确定要对 ${memberBean?.nickname} 设置禁言吗?"
                         }
                         HintDialog(
                             title,
@@ -228,9 +228,10 @@ class ContactActivity : LoadingActivity() {
                         ).show(supportFragmentManager, "HintDialog")
                     }
                     2 -> {//移除成员
+                        val confirmationMessage = getString(R.string.移出群组提示, memberBean.nickname)
                         HintDialog(
-                            "注意",
-                            "是否将${memberBean.nickname}移出群组？",
+                            getString(R.string.zhuyi), // "注意"
+                            confirmationMessage,
                             object : ConfirmDialogCallback {
                                 override fun onItemClick() {
                                     memberBean.id?.let { it1 ->
@@ -435,7 +436,7 @@ class ContactActivity : LoadingActivity() {
                 //3。查看群所有成员
                 groupId = intent.getStringExtra(GROUP_ID).toString()
                 memberType = intent.getIntExtra(MEMBERTYPE, 0)
-                bindView.toolbar.tvTitle.text = "全部群成员"
+                bindView.toolbar.tvTitle.text = getString(R.string.全部群成员) // "全部群成员"
                 bindView.toolbar.tvSubtitle.gone()
                 bindView.flComplete.gone()
                 showLookGroupMember()
@@ -634,7 +635,7 @@ class ContactActivity : LoadingActivity() {
                     if (!TextUtils.isEmpty(result.exc?.message)) {
                         result.exc?.message.toast()
                     } else {
-                        "获取数据失败".toast()
+                        getString(R.string.获取数据失败).toast() // "获取数据失败"
                     }
                 }
             }
@@ -672,7 +673,7 @@ class ContactActivity : LoadingActivity() {
                     if (!TextUtils.isEmpty(result.exc?.message)) {
                         result.exc?.message.toast()
                     } else {
-                        "创建群组失败".toast()
+                        getString(R.string.创建群组失败).toast() // "创建群组失败"
                     }
                 }
             }
@@ -696,7 +697,7 @@ class ContactActivity : LoadingActivity() {
                     if (!TextUtils.isEmpty(result.exc?.message)) {
                         result.exc?.message.toast()
                     } else {
-                        "邀请失败".toast()
+                        getString(R.string.邀请失败).toast() // "邀请失败"
                     }
                 }
             }
@@ -711,7 +712,7 @@ class ContactActivity : LoadingActivity() {
                 }
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
-                    if (isDelAdmin) "取消管理员成功".toast() else "设置管理员成功".toast()
+                    if (isDelAdmin) getString(R.string.取消管理员成功).toast() else getString(R.string.设置管理员成功).toast() // "取消管理员成功" // "设置管理员成功"
                     friendLists?.forEach { f ->
                         if (f.id == setAndDelAdminId) {
                             f.role = if (isDelAdmin) "normal" else "admin"
@@ -867,7 +868,7 @@ class ContactActivity : LoadingActivity() {
                     )
                 ) {
                     //如果是群主
-                    listData.add(setTxtTitle("群主"))
+                    listData.add(setTxtTitle(getString(R.string.群主))) //"群主"
                     it.showLine = false
                     listData.add(it)
                 }
@@ -880,7 +881,7 @@ class ContactActivity : LoadingActivity() {
                 ) {
                     //如果是管理员
                     if (!isAdmin) {
-                        listData.add(setTxtTitle("管理员"))
+                        listData.add(setTxtTitle(getString(R.string.管理员))) // "管理员"
                         isAdmin = true
                     }
                     it.showLine = true
@@ -947,7 +948,7 @@ class ContactActivity : LoadingActivity() {
     private fun setEmptyView() {
         mEmptyBind?.let { vb ->
             if (inType == 2) {
-                vb.tvEmpty.text = "没有能入群的好友喔"
+                vb.tvEmpty.text = getString(R.string.没有能入群的好友喔) // "没有能入群的好友喔"
             }
             mAdapter.setEmptyView(vb.root)
         }

@@ -170,12 +170,12 @@ class PictureActivity : BaseActivity() {
         if (url.lowercase().contains(".gif")) {
             //如果是gif图片
             if (checkPermission()) {
-                "图片已开始下载...".toast()
+                getString(R.string.图片已开始下载).toast() // "图片已开始下载..."
                 down(url)
             }
         } else {
             //普通图片
-            "图片已开始下载...".toast()
+            getString(R.string.图片已开始下载).toast() // "图片已开始下载..."
             GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT) {
                 var bitmap =
                     WeChatImageUtils.GetImageInputStream(url)
@@ -187,7 +187,7 @@ class PictureActivity : BaseActivity() {
                         null
                     )
                 url?.let {
-                    "图片已保存到本地相册".toast()
+                    getString(R.string.图片已保存到本地相册).toast() // "图片已保存到本地相册"
                 }
             }
         }
@@ -234,7 +234,7 @@ class PictureActivity : BaseActivity() {
                     )
                     runOnUiThread(Runnable {
                         if (isOk) {
-                            "图片已保存到本地相册".toast()
+                            getString(R.string.图片已保存到本地相册).toast() // "图片已保存到本地相册"
                         } else {
                             "----图片已保存到本地相册异常".logE()
                         }
@@ -324,8 +324,8 @@ class PictureActivity : BaseActivity() {
     private fun showHintDialog() {
         if (hintDialog == null)
             hintDialog = HintDialog(
-                "提示",
-                "下载gif图之前必须要获取，保存文件的所有权限,是否允许确定",
+                "${getString(R.string.提示)}", // "提示"
+                "${getString(R.string.下载gif图之前必须要获取)}", // "下载gif图之前必须要获取，保存文件的所有权限,是否允许确定"
                 isShowBtnCancel = false,
                 isCanTouchOutsideSet = false,
                 iconId = R.drawable.ic_hint_delete,

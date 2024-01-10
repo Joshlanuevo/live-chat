@@ -88,7 +88,7 @@ class ChatTextLeft(
                             val intent = Intent(Intent.ACTION_VIEW, uri)
                             context.startActivity(intent)
                         } catch (e: ActivityNotFoundException) {
-                            "错误的链接地址".toast()
+                            context.getString(R.string.cuowudelianjiedizhi).toast() // "错误的链接地址"
                         }
                     }
                 }

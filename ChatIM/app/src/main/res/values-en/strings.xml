@@ -41,7 +41,7 @@
     <string name="jiamichat">Encrypted chat</string>
     <string name="benqunyijinzhijietu">Screenshots are prohibited in this group</string>
     <string name="nijiangfaxiaoxigei">You will send a message to：</string>
-    <string name="shanchu">delete</string>
+    <string name="shanchu">Delete</string>
     <string name="zhuanfa">Forward</string>
     <string name="zhidinghuihua">Pinned conversation</string>
     <string name="xiaoxitongzhi">Message notification sound</string>
@@ -90,6 +90,7 @@
     <string name="quanbuchengyuan">All group members (3/2000)</string>
     <string name="wo">Me</string>
     <string name="qungonggao">Group announcement</string>
+    <string name="我知道了">Got it</string> <!--vannn-->
     <string name="huanyingdajiajinqun">Welcome everyone to join the group</string>
     <string name="xiaoximiandarao">Do not disturb messages</string>
     <string name="qunchengyuanjinyan">Group members banned</string>
@@ -378,8 +379,9 @@
     <string name="文件已下载完成">File download completed</string>
     <string name="你确定要发送GIf表情图">Are you sure you want to send a GIf emoticon?</string>
     <string name="您想要在群组中置顶这则消息吗">Do you want to pin this message to the top of the group?</string>
+    <string name="你想取消置顶此消息吗">Do you want to unpin this message?</string> <!--vannn-->
     <string name="最多只能置顶5条消息">A maximum of 5 messages can be pinned to the top</string>
-    <string name="quedingxiaohui">Are you sure you want to destroy the message? It cannot be retrieved after it is destroyed.</string>
+    <string name="quedingxiaohui">Are you sure you want to delete the message? It cannot be retrieved after it is deleted.</string> <!--changed the word destroy to delete // vannn-->
     <string name="聊天设置">Chat settings</string>
     <string name="GIF图片张">GIF image upload failed!</string>
     <string name="欢迎使用">Welcome to "My Collection"</string>
@@ -506,6 +508,7 @@
     <string name="搜索好友">Search friends/groups</string>
     <string name="此群禁言状态">This group is banned and messages cannot be forwarded</string>
     <string name="查询的会员是本人">The member being queried is me</string>
+    <string name="查询的会员不存在">Member being queried doesnt exist</string>
     <string name="最近聊天">Recent chat</string>
     <string name="暂无搜索内容">No search content yet</string>
     <string name="转发消息">Forward message</string>
@@ -542,7 +545,7 @@
     <string name="您修改了群头像">You modified the group avatar</string>
     <string name="系统通知1">【System notification】</string>
     <string name="修改了群头像">%s changed the group avatar</string>
-    <string name="您修改了群名称为">You have modified the group name to %s</string>
+    <string name="您修改了群名称为">You have modified the group name to \"%s\</string>
     <string name="开启了本群禁言">%s has enabled the ban on this group</string>
     <string name="您取消了本群禁言">You have unbanned this group</string>
     <string name="取消了本群禁言设置">%s has canceled the ban setting of this group</string>
@@ -613,5 +616,8 @@
     <string name="英文">English</string>
     <string name="更换语言">Change language</string>
     <string name="您创建了群组">You created a group</string>
+    <string name="消息发送过于频繁">Messages sent too frequently</string> <!--vannn-->
+    <string name="这个结果查询不存在">result query doesnt exist</string> <!--vannn-->
+    <string name="我们已经是好友了赶快聊天吧">We are already friends, come and chat!</string> <!--vannn-->
     <string name="更换语言需要重启App才能生效">Changing the language requires restarting the app to take effect. Are you sure you want to change it?</string>
 </resources>

@@ -58,19 +58,19 @@ class ShareCodeActivity : LoadingActivity() {
 
         bindView.btnShare.pressEffectAlpha().click {
             url.copyToClipboard()
-            ToastUtils.showToastWithImg(this@ShareCodeActivity, "已复制", R.drawable.ic_dialog_success)
+            ToastUtils.showToastWithImg(this@ShareCodeActivity, "${getString(R.string.已复制)}", R.drawable.ic_dialog_success) // "已复制"
         }
 
 
         bindView.tvNumber.setOnLongClickListener {
             bindView.tvNumber.text.toString().substring(4).copyToClipboard()
-            ToastUtils.showToastWithImg(this@ShareCodeActivity, "已复制", R.drawable.ic_dialog_success)
+            ToastUtils.showToastWithImg(this@ShareCodeActivity, "${getString(R.string.已复制)}", R.drawable.ic_dialog_success) // "已复制"
             true
         }
 
         bindView.tvServiceId.setOnLongClickListener {
             bindView.tvServiceId.text.toString().trim().copyToClipboard()
-            ToastUtils.showToastWithImg(this@ShareCodeActivity, "已复制", R.drawable.ic_dialog_success)
+            ToastUtils.showToastWithImg(this@ShareCodeActivity, "${getString(R.string.已复制)}", R.drawable.ic_dialog_success) // "已复制"
             true
         }
     }

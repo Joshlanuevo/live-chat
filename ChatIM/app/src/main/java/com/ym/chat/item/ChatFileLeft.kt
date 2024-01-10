@@ -78,11 +78,11 @@ class ChatFileLeft(
             val (isExit, id) = DownloadUtil.queryExist(context, fileMsg.url)
             if (isExit) {
                 (holder.viewBinding.ivIcon2.drawable as ClipDrawable).level = 0
-                holder.viewBinding.ivDownload.text = "打开"
+                holder.viewBinding.ivDownload.text = context.getString(R.string.dakai) // "打开"
             } else {
                 (holder.viewBinding.ivIcon2.drawable as ClipDrawable).level =
                     (10000 * (1 - data.downloadProcess)).toInt()
-                holder.viewBinding.ivDownload.text = "下载"
+                holder.viewBinding.ivDownload.text = context.getString(R.string.xiazai) // "下载"
             }
 
             //消息已读回执

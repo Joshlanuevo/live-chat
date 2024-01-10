@@ -285,11 +285,12 @@ class ChatActivity : LoadingActivity(),
                                     2 -> {//清空历史消息
                                         if (data.roleType.lowercase() != "normal") {
                                             HintDialog(
-                                                "删除历史消息",
-                                                "您确定要删除 ${data?.name} 的历史消息\n" +
-                                                        "记录吗？ \n" +
-                                                        "删除历史消息后，所有群成员将无法\n" +
-                                                        "查看历史消息。",
+                                                "${getString(R.string.删除历史消息)}", // "删除历史消息"
+//                                                "您确定要删除 ${data?.name} 的历史消息\n" +
+//                                                        "记录吗？ \n" +
+//                                                        "删除历史消息后，所有群成员将无法\n" +
+//                                                        "查看历史消息。",
+                                                "${getString(R.string.删除提示, data?.name)}",
                                                 object : ConfirmDialogCallback {
                                                     override fun onItemClick() {
                                                         groupInfo?.id?.let { it1 ->
@@ -310,11 +311,11 @@ class ChatActivity : LoadingActivity(),
                                         var title = ""
                                         var content = ""
                                         if (data.roleType.lowercase() == "owner") {
-                                            title = "解散群聊"
-                                            content = "您确定要解散并删除 ${data?.name} 吗？ "
+                                            title = "${getString(R.string.解散群聊)}" // "解散群聊"
+                                            content = "${getString(R.string.确定解散提示, data?.name)} " // "您确定要解散并删除 ${data?.name} 吗？ "
                                         } else {
-                                            title = "退出群聊"
-                                            content = "您是否确认想要离开群组 ${data?.name} ?"
+                                            title = "${getString(R.string.tuichuqunliao)}" // "退出群聊"
+                                            content = "${getString(R.string.确定离开提示, data?.name)}" // "您是否确认想要离开群组 ${data?.name} ?"
                                         }
                                         HintDialog(
                                             title,
@@ -688,7 +689,7 @@ class ChatActivity : LoadingActivity(),
                     openFileInBrowser(this@ChatActivity, uri, fileMsg.url)
                 }
             } else {
-                "文件已开始下载".toast()
+                "${getString(R.string.文件已开始下载)}".toast() // "文件已开始下载"
                 val request =
                     DownloadManager.Request(Uri.parse(fileMsg.url)) //添加下载文件的网络路径
 
@@ -700,7 +701,7 @@ class ChatActivity : LoadingActivity(),
                     fileMsg.name
                 ) //添加保存文件路径与名称
                 request.setTitle(fileMsg.name) //添加在通知栏里显示的标题
-                request.setDescription("下载中") //添加在通知栏里显示的描述
+                request.setDescription("${getString(R.string.downloading)}") // "下载中" //添加在通知栏里显示的描述
                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI) //设置下载的网络类型
                 request.setVisibleInDownloadsUi(false) //是否显示下载 从Android Q开始会被忽略
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED) //下载中与下载完成后都会在通知中显示| 另外可以选 DownloadManager.Request.VISIBILITY_VISIBLE 仅在下载中时显示在通知中,完成后会自动隐藏
@@ -709,7 +710,7 @@ class ChatActivity : LoadingActivity(),
             }
 
         } catch (e: Exception) {
-            "文件下载异常".toast()
+            "${getString(R.string.文件下载异常)}".toast() // "文件下载异常"
         }
     }
 
@@ -722,7 +723,7 @@ class ChatActivity : LoadingActivity(),
             if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) {
                 //获取当前完成任务的ID
                 val reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                "文件已下载完成".toast()
+                "${getString(R.string.文件已下载完成)}".toast() // "文件已下载完成"
 //                val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
 //                val uri = downloadManager.getUriForDownloadedFile(reference)
 //                openFileInBrowser(this@ChatActivity, uri)
@@ -742,7 +743,7 @@ class ChatActivity : LoadingActivity(),
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             context.startActivity(Intent.createChooser(intent, "Chooser"))
         } catch (e: ActivityNotFoundException) {
-            "手机中没有支持此文件的App".toast()
+            "${getString((R.string.手机中没有支持此文件的App))}".toast() // "手机中没有支持此文件的App"
         }
     }
 
@@ -1179,7 +1180,7 @@ class ChatActivity : LoadingActivity(),
 
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
-                    "群发消息已发送成功".toast()
+                    "${getString(R.string.群发消息已发送成功)}".toast() // "群发消息已发送成功"
                     finish()
                 }
 
@@ -1245,7 +1246,7 @@ class ChatActivity : LoadingActivity(),
 
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
-                    "收藏成功".toast()
+                    "${getString(R.string.收藏成功)}".toast() // "收藏成功"
                     collectMsg?.let { msg ->
                         ChatDao.getConversationDb()
                             .updateCollectLastMsg(msg.msgType, msg.content, msg.createTime)
@@ -1255,7 +1256,7 @@ class ChatActivity : LoadingActivity(),
 
                 is BaseViewModel.LoadState.Fail -> {
                     hideLoading()
-                    "收藏失败".toast()
+                    "${getString(R.string.收藏失败)}".toast() // "收藏失败"
                 }
             }
         }
@@ -1312,7 +1313,7 @@ class ChatActivity : LoadingActivity(),
                     this.finish()
                     LiveEventBus.get(EventKeys.EXIT_GROUP, Boolean::class.java)
                         .post(true)
-                    "退群成功".toast()
+                    "${getString(R.string.退群成功)}".toast() // "退群成功"
                 }
 
                 is BaseViewModel.LoadState.Fail -> {
@@ -1336,7 +1337,7 @@ class ChatActivity : LoadingActivity(),
                     this.finish()
                     LiveEventBus.get(EventKeys.EXIT_GROUP, Boolean::class.java)
                         .post(true)
-                    "群已解散".toast()
+                    "${R.string.群已解散}".toast() // "群已解散"
                 }
 
                 is BaseViewModel.LoadState.Fail -> {
@@ -1358,7 +1359,7 @@ class ChatActivity : LoadingActivity(),
 
                 is BaseViewModel.LoadState.Success -> {
                     hideLoading()
-                    "群消息已全部销毁".toast()
+                    "${getString(R.string.群消息已全部销毁)}".toast() // "群消息已全部销毁"
                     //清空本地聊天数据操作
                     groupInfo?.id?.let {
                         ChatDao.getChatMsgDb().delMsgListByGroupId(it)
@@ -1660,15 +1661,15 @@ class ChatActivity : LoadingActivity(),
                 var friend = ChatDao.getFriendDb().getFriendById(it)
                 var content = ""
                 if (chatInfo?.id == it) {
-                    content = "你已被${friend?.nickname}删除好友关系"
+                    content = getString(R.string.shanchutishi1, friend?.nickname) // content = "你已被${friend?.nickname}删除好友关系"
                 } else {
                     //操作人是自己
-                    content = "你已删除${friend?.nickname}的好友关系"
+                    content = getString(R.string.shanchutishi2, friend?.nickname) // "你已删除${friend?.nickname}的好友关系"
                 }
                 if (mChatType == 0) {
                     //被删除好友
                     HintDialog(
-                        "注意",
+                        getString(R.string.zhuyi), // 注意"
                         content,
                         object : ConfirmDialogCallback {
                             override fun onItemClick() {
@@ -1707,7 +1708,7 @@ class ChatActivity : LoadingActivity(),
                 g.name = toName ?: ""
                 g.headUrl = toHeadler ?: ""
             } else {
-                g.name = "群组 $mTargetId"
+                g.name = "${getString(R.string.群组)} $mTargetId" // 群组
                 g.headUrl = toHeadler ?: ""
             }
             groupInfo = g
@@ -1945,7 +1946,7 @@ class ChatActivity : LoadingActivity(),
         //录音成功
         if (!TextUtils.isEmpty(audioFile)) {
             if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                showLoading("发送语音中...")
+                showLoading(getString(R.string.发送语音中)) // showLoading("发送语音中...")
             }
 
             var parentId = ""
@@ -2005,8 +2006,8 @@ class ChatActivity : LoadingActivity(),
         if (isGifE) {
             /**如果是发送gif表情图，必须弹框提示，限制发送太快*/
             HintDialog(
-                "发送",
-                "你确定要发送GIf表情图",
+                getString(R.string.fasong), // "发送"
+                getString(R.string.你确定要发送GIf表情图), // "你确定要发送GIf表情图"
                 isCanTouchOutsideSet = false,
                 iconId = R.drawable.ic_mine_header_group,
                 callback = object : ConfirmDialogCallback {
@@ -2068,7 +2069,7 @@ class ChatActivity : LoadingActivity(),
 
                 val newTime = System.currentTimeMillis()
                 if (newTime - sendTxtMsgTime < ChatUtils.ALLOW_TIME_LONG * 1000) {
-                    "消息发送过于频繁".toast()
+                    getString(R.string.消息发送过于频繁).toast() // "消息发送过于频繁"
                     GNLog.i("消息发送过于频繁")
                     return
                 }
@@ -2081,7 +2082,7 @@ class ChatActivity : LoadingActivity(),
                 ) { localPath, w, h, time, listSize ->
                     //发送图片消息
                     if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                        showLoading("发送图片中...")
+                        showLoading(getString(R.string.发送图片中)) // showLoading("发送图片中...")
                     }
 
                     GNLog.i("选择了相片")
@@ -2098,7 +2099,7 @@ class ChatActivity : LoadingActivity(),
                 GNLog.i("用户点击了选择拍照")
                 val newTime = System.currentTimeMillis()
                 if (newTime - sendTxtMsgTime < ChatUtils.ALLOW_TIME_LONG * 1000) {
-                    "消息发送过于频繁".toast()
+                    getString(R.string.消息发送过于频繁).toast() // "消息发送过于频繁"
                     GNLog.i("消息发送过于频繁")
                     return
                 }
@@ -2108,7 +2109,7 @@ class ChatActivity : LoadingActivity(),
                 ImageUtils.goCamera(this) { localPath, w, h, time, listSize ->
 
                     if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                        showLoading("发送图片中...")
+                        showLoading(getString(R.string.发送图片中)) // showLoading("发送图片中...")
                     }
                     var parentId = ""
                     if (mWaitReplyMsg != null) {
@@ -2164,7 +2165,7 @@ class ChatActivity : LoadingActivity(),
                 ImageUtils.goRecordVideo(this) { localPath, w, h, time ->
                     //发送视频录制消息
                     if (getChatType() == CHAT_TYPE_GROUP_SEND) {
-                        showLoading("发送视频中...")
+                        showLoading(getString(R.string.发送视频中)) // showLoading("发送视频中...")
                     }
                     var parentId = ""
                     if (mWaitReplyMsg != null) {
@@ -2180,7 +2181,7 @@ class ChatActivity : LoadingActivity(),
                 //选择文件
                 isNeedRequestData = false
                 if (mChatType == 2) {
-                    "暂不支持群发消息".toast()
+                    getString(R.string.暂不支持群发消息).toast() // "暂不支持群发消息"
                 } else {
                     val intent = Intent(Intent.ACTION_GET_CONTENT)
                     intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -2215,8 +2216,8 @@ class ChatActivity : LoadingActivity(),
                 } else {
                     "上传的文件过大---size=${fileSizeFloat}".logE()
                     HintDialog(
-                        "注意",
-                        "上传的文件不能大于150M",
+                        getString(R.string.zhuyi), // "注意"
+                        getString(R.string.wenjianguodatishi), // "上传的文件不能大于150M"
                         object : ConfirmDialogCallback {
                             override fun onItemClick() {
                             }
@@ -2287,7 +2288,7 @@ class ChatActivity : LoadingActivity(),
             bindView.coordinator.visible()
 
             val tempMemberList = mutableListOf<GroupMemberBean>()
-            tempMemberList.add(GroupMemberBean(name = "所有人", memberId = "0000000000000000000"))
+            tempMemberList.add(GroupMemberBean(name = getString(R.string.所有人), memberId = "0000000000000000000")) // "所有人"
             tempMemberList.addAll(groupMemberList)
             //测试数据
             mAtAdapter.setList(tempMemberList)
@@ -2429,11 +2430,11 @@ class ChatActivity : LoadingActivity(),
                 1 -> {
                     var member = ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
                     var headUrl = member?.headUrl ?: ""
-                    var name = member?.nickname ?: "此人"
+                    var name = member?.nickname ?: getString(R.string.此人) // "此人"
                     //踢出群聊
                     HintDialog(
-                        "移除群聊",
-                        "是否将${name}移除群聊？",
+                        getString(R.string.yichuqunliao), // "移除群聊"
+                        getString(R.string.yichutishi, name), // "是否将${name}移除群聊？"
                         object : ConfirmDialogCallback {
                             override fun onItemClick() {
                                 //踢出群聊
@@ -2450,11 +2451,18 @@ class ChatActivity : LoadingActivity(),
                     //禁言
                     var member = ChatDao.getGroupDb().getMemberInGroup(data.from, data.groupId)
                     var headUrl = member?.headUrl ?: ""
-                    var name = member?.nickname ?: "此人"
+                    var name = member?.nickname ?: getString(R.string.此人) // "此人"
                     var isMute = member?.allowSpeak == "N"
+
+                    // Handle english translation
+                    val titleResId = if (isMute) R.string.取消禁言 else R.string.设置禁言
+                    val contentResId = if (isMute) R.string.quxiaojinyan else R.string.shezhijinyan
+
                     HintDialog(
-                        if (isMute) "取消禁言" else "设置禁言",
-                        if (isMute) "是否将${name}取消禁言？" else "是否将${name}设置禁言？",
+//                        if (isMute) "取消禁言" else "设置禁言",
+//                        if (isMute) "是否将${name}取消禁言？" else "是否将${name}设置禁言？",
+                        getString(titleResId),
+                        getString(contentResId, name),
                         object : ConfirmDialogCallback {
                             override fun onItemClick() {
                                 //设置禁言
@@ -2486,8 +2494,8 @@ class ChatActivity : LoadingActivity(),
         override fun reSendMsg(data: ChatMessageBean) {
             //重发消息
             HintDialog(
-                "重发消息",
-                "是否重发该消息？",
+                getString(R.string.重发消息), // "重发消息"
+                getString(R.string.是否重发该消息), // "是否重发该消息？"
                 object : ConfirmDialogCallback {
                     override fun onItemClick() {
                         //消息重发
@@ -2510,7 +2518,7 @@ class ChatActivity : LoadingActivity(),
                     //添加表情
                     try {
                         if (currentGifNum >= MAX_GIF_NUM) {
-                            "最多只能添加${MAX_GIF_NUM}张表情".toast()
+                            getString(R.string.最多只能添加, MAX_GIF_NUM).toast() // "最多只能添加${MAX_GIF_NUM}张表情".toast()
                             return
                         }
                         val imageMsg = GsonUtils.fromJson(data.content, ImageBean::class.java)
@@ -2524,12 +2532,12 @@ class ChatActivity : LoadingActivity(),
                                         imageMsg.height
                                     )
                                 if (result.code == 200) {
-                                    "表情已添加成功".toast()
+                                    getString(R.string.表情已添加成功).toast() // "表情已添加成功"
                                     mEmojViewModel.getEmojList()
                                 } else if (result.code == 40102) {
-                                    "表情包数量超出限制".toast()
+                                    getString(R.string.表情包数量超出限制).toast() // "表情包数量超出限制"
                                 } else {
-                                    "GIF图片张,上传失败！".logE()
+                                    getString(R.string.GIF图片张).logE() // "GIF图片上传失败！"
                                 }
                             } catch (e: Exception) {
                                 e.printStackTrace()
@@ -2557,7 +2565,7 @@ class ChatActivity : LoadingActivity(),
                         getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText("simple text", data.content)
                     clipboard.setPrimaryClip(clip)
-                    "消息内容已复制".toast()
+                    getString(R.string.消息内容已复制).toast() // "消息内容已复制"
                 }
 
                 ChatPopClickType.Forward -> {
@@ -2618,8 +2626,8 @@ class ChatActivity : LoadingActivity(),
         }
 
         SelectHintDialog(
-            "注意",
-            "确定要销毁消息，销毁后无法找回。",
+            getString(R.string.zhuyi), // "注意"
+            getString(R.string.quedingxiaohui), //"确定要销毁消息，销毁后无法找回。"
             object : ConfirmSelectDialogCallback {
                 override fun onItemClick(isSelect: Boolean) {
 //                    var delMsgType = if (isSelect) {
@@ -2900,7 +2908,7 @@ class ChatActivity : LoadingActivity(),
     private fun showDelDialog(data: MsgTopBean) {
         HintDialog(
             groupInfo?.name ?: "",
-            "您确定要删除群组中这则置顶消息吗？",
+            getString(R.string.你想取消置顶此消息吗), // "您想要在群组中置顶这则消息吗？"
             object : ConfirmDialogCallback {
                 override fun onItemClick() {
                     //只有群主管理员才能删除置顶消息
@@ -2922,12 +2930,12 @@ class ChatActivity : LoadingActivity(),
     private fun setTopDialog(data: ChatMessageBean) {
         HintDialog(
             groupInfo?.name ?: "",
-            "您想要在群组中置顶这则消息吗？",
+            getString(R.string.您想要在群组中置顶这则消息吗), // "您想要在群组中置顶这则消息吗？"
             object : ConfirmDialogCallback {
                 override fun onItemClick() {
                     msgTopList.let {
                         if (msgTopList.size >= 5) {
-                            "最多只能置顶5条消息".toast()
+                            getString(R.string.最多只能置顶5条消息).toast() // "最多只能置顶5条消息"
                         } else {
                             var id = data.id
                             if ("Modify" == data.operationType) {
@@ -3120,8 +3128,8 @@ class ChatActivity : LoadingActivity(),
     /**删除一个gif*/
     override fun onDelGifClick(id: String) {
         HintDialog(
-            "注意",
-            "你确定要删除吗？",
+            getString(R.string.zhuyi), // "注意"
+            getString(R.string.quedingshanchu), // "你确定要删除吗？"
             isShowBtnCancel = false,
             iconId = R.drawable.ic_mine_header_group,
             callback = object : ConfirmDialogCallback {

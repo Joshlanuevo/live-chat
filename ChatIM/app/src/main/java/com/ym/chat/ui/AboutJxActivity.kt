@@ -36,10 +36,11 @@ class AboutJxActivity : LoadingActivity() {
             viewBack.click {
                 finish()
             }
-            tvTitle.text = "${getString(R.string.关于)}${getString(R.string.app_name)}"
+            tvTitle.text = "${getString(R.string.关于)} ${getString(R.string.app_name)}"
         }
         bindView.linVersion.click {
-            mViewModel.getAppVersion()
+//            mViewModel.getAppVersion()
+            getString(R.string.这个结果查询不存在).toast() // fix bug and translated to english
         }
     }
 

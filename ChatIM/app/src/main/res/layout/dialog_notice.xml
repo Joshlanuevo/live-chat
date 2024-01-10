@@ -21,10 +21,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="群公告"
+            android:text="@string/qungonggao"
             android:layout_marginBottom="10dp"
             android:textColor="#333333"
-            android:textSize="16dp" />
+            android:textSize="16dp" /> <!--"群公告" changed // vannn-->
 
         <View
             android:background="#EEEEEE"
@@ -51,7 +51,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:text="我知道了" />
+            android:text="@string/我知道了" /> <!--vannn-->
 
     </LinearLayout>
 </LinearLayout>

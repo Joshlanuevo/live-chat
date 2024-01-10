@@ -350,7 +350,7 @@
                 <ImageView
                     android:layout_width="21dp"
                     android:layout_height="18dp"
-                    android:src="@drawable/ic_gif_img" />
+                    android:src="@drawable/ic_gif2_img" />
 
             </LinearLayout>
 

@@ -70,11 +70,11 @@ class ChatGroupViewModel : BaseViewModel() {
                 if (!TextUtils.isEmpty(errorInfo)) {
                     createGroupLiveData.value = LoadState.Fail(exc = Exception(errorInfo))
                 } else {
-                    createGroupLiveData.value = LoadState.Fail(exc = Exception("创建群组失败"))
+                    createGroupLiveData.value = LoadState.Fail(exc = Exception(ChatUtils.getString(R.string.创建群组失败))) // "创建群组失败"
                 }
             }
         }, onError = {
-            createGroupLiveData.value = LoadState.Fail(exc = Exception("创建群组失败"))
+            createGroupLiveData.value = LoadState.Fail(exc = Exception(ChatUtils.getString(R.string.创建群组失败))) // "创建群组失败"
         }, onStart = {
             createGroupLiveData.value = LoadState.Loading()
         })
@@ -291,7 +291,7 @@ class ChatGroupViewModel : BaseViewModel() {
                 //清除本地消息
                 ChatDao.getChatMsgDb().delMsgListByGroupId(groupId)
                 //更新本地会话数据
-                ChatDao.getConversationDb().updateMsgByTargtId(groupId, "消息已被远程销毁")
+                ChatDao.getConversationDb().updateMsgByTargtId(groupId, ChatUtils.getString(R.string.yuanchengxiaoxiyibeixiaohui)) // "消息已被远程销毁"
                 deleteRemoteGroupMessage.value = LoadState.Success(result)
             } else {
                 val errorInfo = result.info

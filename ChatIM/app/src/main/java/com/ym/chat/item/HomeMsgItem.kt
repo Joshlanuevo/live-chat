@@ -270,7 +270,7 @@ class HomeMsgItem(
             if (groupInfo != null) {
                 viewBinding.tvNickName.text = groupInfo.name
             } else {
-                viewBinding.tvNickName.text = "群 ${data.chatId}"
+                viewBinding.tvNickName.text = "${context.getString(R.string.群)} ${data.chatId}" // "群"
             }
         }
 

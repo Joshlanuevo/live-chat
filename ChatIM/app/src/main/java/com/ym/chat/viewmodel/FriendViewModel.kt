@@ -136,7 +136,7 @@ class FriendViewModel : BaseViewModel() {
 
         //我管理的群组
         val list = FriendGroupNode()
-        list.title = "我管理的群组"
+        list.title = ActivityUtils.getTopActivity().getString(R.string.我管理的群组) // "我管理的群组"
         list.type = 1
         list.size = 0
         list.isExpanded = false
@@ -145,7 +145,7 @@ class FriendViewModel : BaseViewModel() {
 
         //我加入的群组
         val list1 = FriendGroupNode()
-        list1.title = "我加入的群组"
+        list1.title = ActivityUtils.getTopActivity().getString(R.string.我加入的群组) // "我加入的群组"
         list1.type = 2
         list1.isExpanded = false
         list1.size = 0
@@ -154,7 +154,7 @@ class FriendViewModel : BaseViewModel() {
 
         //好友列表数据
         val list2 = FriendGroupNode()
-        list2.title = "联系人"
+        list2.title = ActivityUtils.getTopActivity().getString(R.string.联系人) // "联系人"
         list2.type = 3
         list2.isExpanded = false
         orginData.add(list2)

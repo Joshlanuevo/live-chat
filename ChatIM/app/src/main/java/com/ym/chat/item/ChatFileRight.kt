@@ -105,7 +105,7 @@ class ChatFileRight(
                 } else {
                     (holder.viewBinding.ivIcon2.drawable as ClipDrawable).level =
                         (10000 * (1 - data.downloadProcess)).toInt()
-                    holder.viewBinding.ivDownload.text = "下载"
+                    holder.viewBinding.ivDownload.text = context.getString(R.string.xiazai) // "下载"
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -133,14 +133,14 @@ object NotificationUtils {
             msgStyle.addMessage(getMsgContent(context, it), it.createTime, chatPartner)
         }
 
-        val count = tempMsgList?.size ?: 0 // vannn
+//        val count = tempMsgList?.size ?: 0 // vannn
 
         var notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setStyle(msgStyle)
             .setDeleteIntent(removeIntent)
             .setCategory(Notification.CATEGORY_MESSAGE)
-            .setNumber(count) // vannn
+//            .setNumber(count) // vannn
             .setPriority(PRIORITY_MAX)
             .setContentIntent(pendingIntent).apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

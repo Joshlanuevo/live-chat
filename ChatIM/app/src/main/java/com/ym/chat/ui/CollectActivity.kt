@@ -338,7 +338,7 @@ class CollectActivity : LoadingActivity(),
     private fun showSendDialog(recordBean: RecordBean) {
         HintDialog(
             "",
-            "是否重发该消息？",
+            "${getString(R.string.是否重发该消息)} ", // "是否重发该消息？"
             object : ConfirmDialogCallback {
                 override fun onItemClick() {
                     //消息重发

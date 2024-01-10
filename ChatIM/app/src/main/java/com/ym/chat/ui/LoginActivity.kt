@@ -282,7 +282,7 @@ class LoginActivity : LoadingActivity() {
             bindView.tvAccountLogin.textSize = 14f
             bindView.viewCode.visible()
 //            bindView.etAccount.filters = arrayOf<InputFilter>(object : LengthFilter(11) {})
-            bindView.etAccount.hint = "请输入账号/手机号"
+            bindView.etAccount.hint = getString(R.string.qingshuruzhanghao) // "请输入账号/手机号"
             bindView.etAccount.setText("")
             bindView.etAccount.inputType = InputType.TYPE_CLASS_TEXT
         } else {

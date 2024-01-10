@@ -136,7 +136,7 @@ class UserChatSetActivity : LoadingActivity() {
                     if (!TextUtils.isEmpty(result.exc?.message)) {
                         result.exc?.message.toast()
                     } else {
-                        "设置失败".toast()
+                        getString(R.string.设置失败).toast() // "设置失败"
                     }
                 }
             }

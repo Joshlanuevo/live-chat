@@ -89,6 +89,7 @@
     <string name="quanbuchengyuan">全部群成员 (3/2000)</string>
     <string name="wo">我</string>
     <string name="qungonggao">群公告</string>
+    <string name="我知道了">我知道了</string> <!--vannn-->
     <string name="huanyingdajiajinqun">欢迎大家进群</string>
     <string name="xiaoximiandarao">消息免打扰</string>
     <string name="qunchengyuanjinyan">群成员禁言</string>
@@ -330,7 +331,7 @@
     <string name="切换账号">切换账号</string>
     <string name="shanchutishi">您确定要删除已登录过的账号缓存吗？，删除后不再保存你此账号的登录信息。</string>
     <string name="qiehuanzhanghao">您确定要切换帐号为 %s 吗? </string>
-    <string name="删除提示">您确定要删除 %s 的历史消息记录吗？删除历史消息后，所有群成员将无法查看历史消息</string>
+    <string name="删除提示">您确定要删除 %s 的历史消息 \n 记录吗？删除历史消息后，所有群成员将无法查看历史消息</string>
     <string name="完成">完成</string>
     <string name="我的账号">我的账号</string>
     <string name="群公告不能为空">群公告不能为空</string>
@@ -378,6 +379,7 @@
     <string name="文件已下载完成">文件已下载完成</string>
     <string name="你确定要发送GIf表情图">你确定要发送GIf表情图</string>
     <string name="您想要在群组中置顶这则消息吗">您想要在群组中置顶这则消息吗？</string>
+    <string name="你想取消置顶此消息吗">你想取消置顶此消息吗？</string>
     <string name="最多只能置顶5条消息">最多只能置顶5条消息</string>
     <string name="quedingxiaohui">确定要销毁消息，销毁后无法找回。</string>
     <string name="聊天设置">聊天设置</string>
@@ -506,6 +508,7 @@
     <string name="搜索好友">搜索好友/群组</string>
     <string name="此群禁言状态">此群禁言状态，不能转发消息</string>
     <string name="查询的会员是本人">查询的会员是本人</string>
+    <string name="查询的会员不存在">查询的会员不存在</string>
     <string name="最近聊天">最近聊天</string>
     <string name="暂无搜索内容">暂无搜索内容</string>
     <string name="转发消息">转发消息</string>
@@ -542,7 +545,7 @@
     <string name="您修改了群头像">您修改了群头像</string>
     <string name="系统通知1">【系统通知】</string>
     <string name="修改了群头像">%s 修改了群头像</string>
-    <string name="您修改了群名称为">您修改了群名称为 %s</string>
+    <string name="您修改了群名称为">您修改了群名称为 \"%s\</string>
     <string name="开启了本群禁言">%s 开启了本群禁言</string>
     <string name="您取消了本群禁言">您取消了本群禁言</string>
     <string name="取消了本群禁言设置">%s 取消了本群禁言设置</string>
@@ -614,6 +617,9 @@
     <string name="英文">英文</string>
     <string name="更换语言">更换语言</string>
     <string name="您创建了群组">您创建了群组</string>
+    <string name="消息发送过于频繁">消息发送过于频繁</string>
+    <string name="这个结果查询不存在">这个结果查询不存在</string>
+    <string name="我们已经是好友了赶快聊天吧">我们已经是好友了，赶快聊天吧!</string> <!--vannn-->
     <string name="更换语言需要重启App才能生效">请注意更换语言需要重启App才能生效，您确定要更换吗？</string>
 
 </resources>

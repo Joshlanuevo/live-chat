@@ -1,5 +1,6 @@
 package com.ym.chat.service
 
+import com.ym.chat.R
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
@@ -162,7 +163,7 @@ class ChatWebSocketClient(
                         getSysNitice()
                     } else if (code == 10008) {
                         //登陆失败
-                        "ws登陆失败".toast()
+                        context.getString(R.string.ws登陆失败).toast() // "ws登陆失败".toast()
                         GNLog.netWork("ws登陆失败")
                         MMKVUtils.clearUserInfo()
                         LiveEventBus.get(EventKeys.LOGIN_OR_OUT, Boolean::class.java).post(false)
@@ -237,7 +238,7 @@ class ChatWebSocketClient(
                         //生成会话列表数据
                         ChatDao.getConversationDb().saveGroupConversation(
                             groupIdStr,
-                            "您创建了群组",
+                            context.getString(R.string.您创建了群组), // "您创建了群组"
                             MsgType.MESSAGETYPE_TEXT,
                             nameStr = groupName,
                             isMute = true,
@@ -298,7 +299,7 @@ class ChatWebSocketClient(
                                 ) else "Ta"
                             ChatDao.getConversationDb().saveFriendConversation(
                                 friendMemberId,
-                                "您已和 「${name}」成为好友",
+                                context.getString(R.string.成为好友, name), // "您已和 「${name}」成为好友"
                                 MsgType.MESSAGETYPE_TEXT
                             )
                         } else {
@@ -307,14 +308,14 @@ class ChatWebSocketClient(
                                 if (!jsonData.isNull("memberName")) jsonData.optString("memberName") else "Ta"
                             ChatDao.getConversationDb().saveFriendConversation(
                                 memberId,
-                                "您已和 「${name}」成为好友",
+                                context.getString(R.string.成为好友, name), // "您已和 「${name}」成为好友"
                                 MsgType.MESSAGETYPE_TEXT
                             )
                             //存储好友系统通知
                             ChatDao.getConversationDb()
                                 .updateNotifyLastMsg(
                                     msgType = 0,
-                                    content = "好友申请",
+                                    content = context.getString(R.string.好友申请), // "好友申请"
                                     msgTime = System.currentTimeMillis()
                                 )
                         }
@@ -504,7 +505,7 @@ class ChatWebSocketClient(
                 CommandType.CLEAR_LOCAL_CACHE_MSG -> {
                     //清除本地缓存
                     BaseApp.appContent?.let { it1 -> DataCleanManagerUtils.clearAllCache(it1) }
-                    "已清除本地缓存".toast()
+                    context.getString(R.string.已清除本地缓存).toast() // "已清除本地缓存".toast()
                 }
 
                 CommandType.SYSTEM_MSG, CommandType.DEVICE_LOGIN_VERIFICATION, CommandType.SYSTEM_FEEDBACK_MSG, DELETE_NOTIFY_MSG, CommandType.NOTIFICATION_COUNT -> {
@@ -552,7 +553,7 @@ class ChatWebSocketClient(
                             ChatDao.getChatMsgDb().delMsgListByGroupId(groupId)
                             //更新本地会话数据
                             ChatDao.getConversationDb()
-                                .updateMsgByTargtId(groupId, "消息已被远程销毁")
+                                .updateMsgByTargtId(groupId, context.getString(R.string.yuanchengxiaoxiyibeixiaohui)) // "消息已被远程销毁"
 
 
                             ChatDao.getConverList()
@@ -590,7 +591,7 @@ class ChatWebSocketClient(
                         ChatDao.getChatMsgDb().delMsgListByFriendId(delTarget)
                         //更新本地会话数据
                         ChatDao.getConversationDb()
-                            .updateMsgByTargtId(delTarget, "消息已被远程销毁")
+                            .updateMsgByTargtId(delTarget, context.getString(R.string.yuanchengxiaoxiyibeixiaohui)) // "消息已被远程销毁"
 
                         LiveEventBus.get(EventKeys.DEL_MSG_ALL, String::class.java)
                             .post(delTarget)
@@ -642,11 +643,11 @@ class ChatWebSocketClient(
                             if (operatorId.isNotEmpty()) {//如果为空说明是编辑置顶消息
                                 //不为空时 生成通知
                                 if (MMKVUtils.getUser()?.id == operatorId) {
-                                    operatorName = "我"
+                                    operatorName = "${context.getString(R.string.wo)} " // "我"
                                 }
                                 var content = when (operationType) {
-                                    "Add" -> "${operatorName}设置了一条置顶消息"
-                                    "Delete" -> "${operatorName}删除了一条置顶消息"
+                                    "Add" -> "${operatorName}${context.getString(R.string.设置了一条置顶消息)}" // "${operatorName}设置了一条置顶消息"
+                                    "Delete" -> "${operatorName}${context.getString(R.string.删除了一条置顶消息)}" // "${operatorName}删除了一条置顶消息"
                                     else -> ""
                                 }
                                 ChatUtils.createGroupNotice(
@@ -729,7 +730,7 @@ class ChatWebSocketClient(
                             msgType = MsgType.MESSAGETYPE_NOTICE
                             content = if (operatorId == MMKVUtils.getUser()?.id) {
                                 //踢出成员管理员自己
-                                "您把${memberName}移出了群组"
+                                "${context.getString(R.string.您把)}${memberName}${context.getString(R.string.移出了群组)}" // "您把${memberName}移出了群组"
                             } else if (memberId == MMKVUtils.getUser()?.id) {
                                 //我被别人踢出了群聊
                                 LiveEventBus.get(
@@ -737,10 +738,10 @@ class ChatWebSocketClient(
                                     Boolean::class.java
                                 )
                                     .post(true)
-                                "您被${name}移出了群组"
+                                "${context.getString(R.string.您被)}${name}${context.getString(R.string.移出了群组)}" // "您被${name}移出了群组"
                             } else {
                                 //吃瓜群众看到的提示，非自己
-                                "${memberName}被${name}移出了群组"
+                                "${memberName}${context.getString(R.string.被)}${name}${context.getString(R.string.移出了群组)}" // "${memberName}被${name}移出了群组"
                             }
                         }
 

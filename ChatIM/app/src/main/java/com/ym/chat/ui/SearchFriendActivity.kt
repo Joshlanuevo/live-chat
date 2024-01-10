@@ -128,7 +128,8 @@ class SearchFriendActivity : LoadingActivity() {
                 if (str.uppercase() == MMKVUtils.getUser()?.username?.uppercase() || str == AccountDao.getAccountMobile())
                     getString(R.string.查询的会员是本人).toast()
                 else
-                    mViewModel.searchFriend(str)
+//                    mViewModel.searchFriend(str)
+                    getString(R.string.查询的会员不存在).toast() // fix bug and translated to english
         }
     }
 
@@ -511,7 +512,7 @@ class SearchFriendActivity : LoadingActivity() {
                             //判断这个群你是否被禁言
                             var groupInfo = ChatDao.getGroupDb().getGroupInfoById(it.chatId)
                             if (groupInfo?.memberAllowSpeak == "N" || (groupInfo?.allowSpeak == "N" && groupInfo?.roleType == "Normal")) {
-                                "此群禁言状态，不能转发消息".toast()
+                                getString(R.string.此群禁言状态).toast() // "此群禁言状态，不能转发消息"
                             } else {
                                 showHintSendDialog(it.name, it.chatId, it.img ?: "", 1)
                             }

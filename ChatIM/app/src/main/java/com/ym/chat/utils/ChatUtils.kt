@@ -208,13 +208,13 @@ object ChatUtils {
                 //                tvReplyName.setText(msg.getN());
 //                tvReplyContent.setText(msg.getT());
                 ivReplyPreview.loadImgSquare(image.url)
-                tvReplyContent.text = "图片"
+                tvReplyContent.text = context.getString(R.string.tupian) // 图片"
             }
             MsgType.MESSAGETYPE_VOICE -> {
 
                 //语音消息
                 ivReplyPreview.setVisibility(View.GONE)
-                tvReplyContent.text = "语音消息"
+                tvReplyContent.text = context.getString(R.string.语音消息) // "语音消息"
             }
             MsgType.MESSAGETYPE_VIDEO -> {
 
@@ -222,13 +222,13 @@ object ChatUtils {
                 ivReplyPreview.setVisibility(View.VISIBLE)
                 val imageMsg = GsonUtils.fromJson(msg.content, VideoMsgBean::class.java)
                 ivReplyPreview.loadImgSquare(imageMsg.coverUrl)
-                tvReplyContent.text = "视频"
+                tvReplyContent.text = context.getString(R.string.视频) // "视频"
             }
             MsgType.MESSAGETYPE_REPLY -> {
 
                 //回复消息
                 ivReplyPreview.setVisibility(View.GONE)
-                tvReplyContent.text = "回复消息"
+                tvReplyContent.text = context.getString(R.string.回复消息) // "回复消息"
             }
             MsgType.MESSAGETYPE_TEXT, MsgType.MESSAGETYPE_AT -> {
 
@@ -668,10 +668,10 @@ object ChatUtils {
                     val content =
                         if (groupAction.setValue == MMKVUtils.getUser()?.id) {
                             //转给的群主是自己
-                            "【系统通知】群主已转让给我"
+                            "${getString(R.string.群主已转让给我)}" // "【系统通知】群主已转让给我"
                         } else {
                             //非自己的提示
-                            "【系统通知】群主已转让给${groupAction.targetName}"
+                            getString(R.string.群主已转让给, groupAction.targetName) // "【系统通知】群主已转让给${groupAction.targetName}"
                         }
                     ChatUtils.createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
 
@@ -689,15 +689,15 @@ object ChatUtils {
                 ChatDao.getGroupDb().updateIconById(groupAction.groupId, groupAction.setValue)
                 var operatorName = groupAction.operatorName
                 if (operatorName.isNullOrEmpty()) {
-                    operatorName = "【系统通知】"
+                    operatorName = "${getString(R.string.系统通知1)}" // "【系统通知】"
                 }
 
                 //生成提示
                 val content = if (groupAction.operatorId == MMKVUtils.getUser()?.id) {
                     //管理员自己
-                    "您修改了群头像"
+                    "${getString(R.string.您修改了群头像)}" // "您修改了群头像"
                 } else {
-                    "${operatorName}修改了群头像"
+                    "${getString(R.string.修改了群头像, operatorName)}" // "${operatorName}修改了群头像"
                 }
                 createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
             }
@@ -708,16 +708,16 @@ object ChatUtils {
 
                 var operatorName = groupAction.operatorName
                 if (operatorName.isNullOrEmpty()) {
-                    operatorName = "【系统通知】"
+                    operatorName = "${getString(R.string.系统通知1)}" // "【系统通知】"
                 }
 
                 //生成提示
                 val content = if (groupAction.operatorId == MMKVUtils.getUser()?.id) {
                     //管理员自己
-                    "您修改了群名称为\"${groupAction.setValue}\""
+                    "${getString(R.string.您修改了群名称为, groupAction.setValue)}" // "您修改了群名称为\"${groupAction.setValue}\""
                 } else {
                     //吃瓜群众，跟我没啥关系
-                    "${operatorName}修改了群名称为\"${groupAction.setValue}\""
+                    "${getString(R.string.您修改了群名称为, groupAction.setValue)}" // "${operatorName}修改了群名称为\"${groupAction.setValue}\""
                 }
                 createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
             }
@@ -728,7 +728,7 @@ object ChatUtils {
 
                 var operatorName = groupAction.operatorName
                 if (operatorName.isNullOrEmpty()) {
-                    operatorName = "【系统通知】"
+                    operatorName = getString(R.string.系统通知1) // "【系统通知】"
                 }
 
                 val isMute = groupAction.setValue == "N"
@@ -738,16 +738,16 @@ object ChatUtils {
                         "您开启了本群禁言"
                     } else {
                         //吃瓜群众，跟我没啥关系
-                        "${operatorName}开启了本群禁言"
+                        getString(R.string.开启了本群禁言, operatorName)// "${operatorName}开启了本群禁言"
                     }
 //                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 } else {
                     val content = if (groupAction.operatorId == MMKVUtils.getUser()?.id) {
                         //管理员自己
-                        "您取消了本群禁言"
+                        "${getString(R.string.您取消了本群禁言)}" // "您取消了本群禁言"
                     } else {
                         //吃瓜群众，跟我没啥关系
-                        "${operatorName}取消了本群禁言设置"
+                        "${getString(R.string.取消了本群禁言设置, operatorName)}" // "${operatorName}取消了本群禁言设置"
                     }
 //                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 }
@@ -756,9 +756,9 @@ object ChatUtils {
                 var operatorName = groupAction.operatorName
                 if (operatorName.isNullOrEmpty()) {//系统后台设置
                     val content = if (groupAction.setValue == MMKVUtils.getUser()?.id) {
-                        "【系统通知】您被设为了管理员"
+                        "${getString(R.string.您被设为了管理员)}" //"【系统通知】您被设为了管理员"
                     } else {
-                        "【系统通知】${groupAction.targetName}被设为了管理员"
+                        "${getString(R.string.被设为了管理员, groupAction.targetName)}" // "【系统通知】${groupAction.targetName}被设为了管理员"
                     }
 //                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 } else {//前端app或者pc端设置
@@ -774,10 +774,10 @@ object ChatUtils {
                                 isSyncGroup = true,
                                 isEventUpdateConver = false
                             )
-                        "您被${operatorName}设为了管理员"
+                        "${getString(R.string.您被设为了管理员1, operatorName)}" // "您被${operatorName}设为了管理员"
                     } else {
                         //吃瓜群众，跟我没啥关系
-                        "${groupAction.targetName}被${operatorName}设为了管理员"
+                        "${getString(R.string.设为了管理, groupAction.targetName, operatorName)}" //  ${groupAction.targetName}被${operatorName}设为了管理员"
                     }
 //                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 }
@@ -786,16 +786,16 @@ object ChatUtils {
                 var operatorName = groupAction.operatorName
                 if (operatorName.isNullOrEmpty()) {//系统后台设置
                     val content = if (groupAction.setValue == MMKVUtils.getUser()?.id) {
-                        "【系统通知】您被移除了管理员权限"
+                        "${getString(R.string.您被移除了管理员权限)}" // "【系统通知】您被移除了管理员权限"
                     } else {
-                        "【系统通知】${groupAction.targetName}被移除了管理员权限"
+                        "${getString(R.string.被移除了管理员权限, groupAction.targetName)}" // "【系统通知】${groupAction.targetName}被移除了管理员权限"
                     }
 //                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 } else {//前端app或者pc端设置
                     //取消管理员
                     val content = if (groupAction.operatorId == MMKVUtils.getUser()?.id) {
                         //管理员自己
-                        "${groupAction.targetName}被您取消了管理员权限"
+                        "${getString(R.string.被您取消了管理员权限)}" // "${groupAction.targetName}被您取消了管理员权限"
                     } else if (groupAction.setValue == MMKVUtils.getUser()?.id) {
                         //被取消管理员的是自己
                         if (ImCache.isUpdateNotifyMsg)
@@ -804,10 +804,10 @@ object ChatUtils {
                                 isSyncGroup = true,
                                 isEventUpdateConver = false
                             )
-                        "您被${operatorName}移除了管理员权限"
+                        "${getString(R.string.移除了管理员权限, operatorName)}" // "您被${operatorName}移除了管理员权限"
                     } else {
                         //吃瓜群众，跟我没啥关系
-                        "${groupAction.targetName}被移除了管理员权限"
+                        "${getString(R.string.被移除了管理员权限1, groupAction.targetName)}" // "${groupAction.targetName}被移除了管理员权限"
                     }
 //                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 }
@@ -819,23 +819,23 @@ object ChatUtils {
 
                 var operatorName = groupAction.operatorName
                 if (operatorName.isNullOrEmpty()) {
-                    operatorName = "【系统通知】"
+                    operatorName = "${getString(R.string.系统通知1)}" // "【系统通知】"
                 }
 
                 //生成提示
                 val content = if (groupAction.operatorId == MMKVUtils.getUser()?.id) {
                     //管理员自己
-                    "您设置了群公告\"${groupAction.setValue}\""
+                    "${getString(R.string.您设置了群公告)}\"${groupAction.setValue}\"" // "您设置了群公告\"${groupAction.setValue}\""
                 } else {
                     //吃瓜群众，跟我没啥关系
-                    "${operatorName}设置了群公告为\"${groupAction.setValue}\""
+                    "${operatorName}${getString(R.string.设置了群公告为)}\"${groupAction.setValue}\"" // "${operatorName}设置了群公告为\"${groupAction.setValue}\""
                 }
                 createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
             }
             MsgType.MemberAllowSpeak -> {
                 var operatorName = groupAction.operatorName
                 if (operatorName.isNullOrEmpty()) {
-                    operatorName = "【系统通知】"
+                    operatorName = "${getString(R.string.系统通知1)}" // "【系统通知】"
                 }
 
                 if (groupAction.operatorId != MMKVUtils.getUser()?.id) {
@@ -1198,7 +1198,7 @@ object ChatUtils {
         return hasContains
     }
 
-    fun getString(resId: Int): String {
-        return ActivityUtils.getTopActivity().getString(resId)
+    fun getString(resId: Int, vararg formatArgs: Any?): String {
+        return ActivityUtils.getTopActivity().getString(resId, *formatArgs)
     }
 }
