@@ -1782,7 +1782,7 @@ class ChatActivity : LoadingActivity(),
             if (owerAndManagerList != null && owerAndManagerList.size > 0) {
                 if (!owerAndManagerList.contains(MMKVUtils.getUser()?.id)) {
                     //当前用户非群主或者管理员
-                    var text = if (isMemberMute) "请勿泄露数据" else "任务正在派发"
+                    var text = if (isMemberMute) "全员禁言中" else "任务正在派发"
 //                    bindView.inputPanelFrameLayout.setMute(text, null)
                 } else {
                     //当前用户是管理员

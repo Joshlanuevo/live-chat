@@ -243,12 +243,11 @@
         <TextView
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
-            android:visibility="gone"
             android:layout_height="18dp"
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginRight="@dimen/dp_6"
             android:gravity="center"
-            android:textColor="@color/tv_blue"
+            android:textColor="#ffffff"
             android:textSize="11dp"
             tools:text="10:00" />
 

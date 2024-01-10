@@ -740,7 +740,7 @@ object ChatUtils {
                         //吃瓜群众，跟我没啥关系
                         getString(R.string.开启了本群禁言, operatorName)// "${operatorName}开启了本群禁言"
                     }
-//                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
+                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 } else {
                     val content = if (groupAction.operatorId == MMKVUtils.getUser()?.id) {
                         //管理员自己
@@ -749,7 +749,7 @@ object ChatUtils {
                         //吃瓜群众，跟我没啥关系
                         "${getString(R.string.取消了本群禁言设置, operatorName)}" // "${operatorName}取消了本群禁言设置"
                     }
-//                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
+                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 }
             }
             MsgType.SetMemberRole -> {
@@ -760,7 +760,7 @@ object ChatUtils {
                     } else {
                         "${getString(R.string.被设为了管理员, groupAction.targetName)}" // "【系统通知】${groupAction.targetName}被设为了管理员"
                     }
-//                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
+                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 } else {//前端app或者pc端设置
                     //设置管理员，生成提示
                     val content = if (groupAction?.operatorId == MMKVUtils.getUser()?.id) {
@@ -779,7 +779,7 @@ object ChatUtils {
                         //吃瓜群众，跟我没啥关系
                         "${getString(R.string.设为了管理, groupAction.targetName, operatorName)}" //  ${groupAction.targetName}被${operatorName}设为了管理员"
                     }
-//                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
+                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 }
             }
             MsgType.CancelMemberRole -> {
@@ -790,7 +790,7 @@ object ChatUtils {
                     } else {
                         "${getString(R.string.被移除了管理员权限, groupAction.targetName)}" // "【系统通知】${groupAction.targetName}被移除了管理员权限"
                     }
-//                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
+                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 } else {//前端app或者pc端设置
                     //取消管理员
                     val content = if (groupAction.operatorId == MMKVUtils.getUser()?.id) {
@@ -809,7 +809,7 @@ object ChatUtils {
                         //吃瓜群众，跟我没啥关系
                         "${getString(R.string.被移除了管理员权限1, groupAction.targetName)}" // "${groupAction.targetName}被移除了管理员权限"
                     }
-//                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
+                    createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
                 }
             }
             MsgType.Notice -> {
@@ -861,7 +861,7 @@ object ChatUtils {
                         "\"${operatorName}\"把\"${groupAction.targetName ?: ""}\"取消了禁言"
                     }
                 }
-//                createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
+                createGroupNotice(groupAction.groupId, content, msgId, msgCreateTime)
             }
         }
     }

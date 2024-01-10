@@ -55,6 +55,12 @@ inline fun String?.toast() {
     }
 }
 
+inline fun String?.toast1() {
+    if (!this.isNullOrBlank() && AppUtils.isAppForeground() && this.toLowerCase() != "null") {
+        ToastUtils.make().setGravity(Gravity.CENTER, 0, -300).show(this)
+    }
+}
+
 inline fun String?.toastBottom() {
     if (!this.isNullOrBlank() && AppUtils.isAppForeground() && this.toLowerCase() != "null") {
         ToastUtils.make().setGravity(Gravity.CENTER, 0, 300).show(this)

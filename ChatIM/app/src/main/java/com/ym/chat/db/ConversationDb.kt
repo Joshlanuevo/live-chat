@@ -192,7 +192,11 @@ class ConversationDb {
                     temoConver.lastTime = System.currentTimeMillis()
                 }
                 if (serviceMsgCount >= 0) {
-                    temoConver.msgCount = serviceMsgCount
+                    if(temoConver.lastMsg==lastMsgStr&&temoConver.lastTime==msgTime){
+
+                    }else{
+                        temoConver.msgCount = serviceMsgCount
+                    }
                 } else {
                     if (dir == 0 && !isEdit) {
                         var lastCount = temoConver.msgCount + 1
@@ -321,7 +325,11 @@ class ConversationDb {
                 }
 
                 if (serviceMsgCount >= 0) {
-                    tempConver.msgCount = serviceMsgCount
+                    if(tempConver.lastMsg==lastMsgStr&&tempConver.lastTime==msgTime){
+
+                    }else{
+                        tempConver.msgCount = serviceMsgCount
+                    }
                 } else {
                     if (dir == 0 && !isEdit) {
                         var lastCount = tempConver.msgCount + 1

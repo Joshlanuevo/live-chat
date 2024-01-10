@@ -413,11 +413,7 @@ class FriendInfoActivity : LoadingActivity() {
                     var chatInfo = result.data?.data
                     bindView.tvNickName.text = chatInfo?.showNickName()
                     bindView.layoutHeader.ivHeader.loadImg(chatInfo)
-                    if (inType != 0) {
-                        bindView.tvUsername.text = "****"
-                    } else {
-                        bindView.tvUsername.text = chatInfo?.username
-                    }
+                    bindView.tvUsername.text = chatInfo?.username
                     bindView.tvPhone.text = chatInfo?.mobile
 //                    if (switchBlack != chatInfo?.black) {
 //                        isSwitchBlack = false
