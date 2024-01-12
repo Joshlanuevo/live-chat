@@ -265,64 +265,250 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="@dimen/dp_17"
-                android:layout_marginRight="@dimen/dp_17"
-                android:background="@color/color_eeeeee" />
-
-
-            <LinearLayout
-                android:id="@+id/tvLanguages"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/bg_item_white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <!-- Add a horizontal ScrollView to allow scrolling through multiple flags -->
-                <HorizontalScrollView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fillViewport="false"
-                    android:scrollbars="none">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingRight="16dp">
-
-                        <!-- Replace these ImageViews with your actual flag drawables -->
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mine_ch"
-                            android:layout_marginRight="8dp"/>
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mine_us"
-                            android:layout_marginRight="8dp"/>
-
-                        <!-- Add additional flags here following the same pattern -->
-                        <!-- ... -->
-
-                    </LinearLayout>
-                </HorizontalScrollView>
-
-                <!-- This ImageView can be used as an indicator for more options or a next page -->
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_mine_next" />
-
-            </LinearLayout>
 
         </LinearLayout>
+
+
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tvLanguages"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/bg_mine_menu"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_mine_menu"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingRight="16dp">
+
+            <HorizontalScrollView
+                android:id="@+id/tvLanguagesScrollView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="10dp"
+                android:scrollbars="none">
+
+            <!-- Your existing ImageViews for flags -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_mine_menu"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingRight="16dp">
+
+                    <!-- Replace these ImageViews with your actual flag drawables -->
+                    <ImageView
+                        android:id="@+id/tvChinese"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_cn" />
+
+                    <ImageView
+                        android:id="@+id/tvEnglish"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_usa" />
+
+                    <ImageView
+                        android:id="@+id/tvVietnamese"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_vn" />
+
+                    <ImageView
+                        android:id="@+id/tvHongkong"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_hk" />
+
+                    <ImageView
+                        android:id="@+id/tvThailand"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_th" />
+
+                    <ImageView
+                        android:id="@+id/tvIndia"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_in" />
+
+                    <ImageView
+                        android:id="@+id/tvPhilippines"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_ph" />
+
+                    <ImageView
+                        android:id="@+id/tvIndonesia"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_id" />
+
+                    <ImageView
+                        android:id="@+id/tvMalaysia"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_my" />
+
+                    <ImageView
+                        android:id="@+id/tvSpain"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_es" />
+
+                    <ImageView
+                        android:id="@+id/tvPortugal"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="8dp"
+                        android:src="@drawable/ic_mine_pt" />
+
+                    <!-- Add additional flags here following the same pattern -->
+                    <!-- ... -->
+<!--                    <ImageView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:src="@drawable/ic_mine_next" />-->
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <ImageView
+                android:id="@+id/ic_mine_next_lang"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_mine_next"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+        <!-- Add a horizontal ScrollView to allow scrolling through multiple flags -->
+<!--        <HorizontalScrollView-->
+<!--            android:id="@+id/tvLanguages"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:layout_marginTop="25dp"-->
+<!--            android:layout_marginRight="15dp"-->
+<!--            android:background="@drawable/bg_mine_menu"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:scrollbars="none">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@drawable/bg_mine_menu"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:paddingRight="16dp">-->
+
+<!--                &lt;!&ndash; Replace these ImageViews with your actual flag drawables &ndash;&gt;-->
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvChinese"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginLeft="10dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_ch" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvEnglish"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_us" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvVietnamese"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_us" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvVietnamese6"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_us" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvVietnamese5"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_us" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvVietnamese4"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_us" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvVietnamese3"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_us" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvVietnamese2"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_us" />-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/tvVietnamese1"-->
+<!--                    android:layout_width="40dp"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:layout_marginRight="8dp"-->
+<!--                    android:src="@drawable/ic_mine_us" />-->
+
+<!--                &lt;!&ndash; Add additional flags here following the same pattern &ndash;&gt;-->
+<!--                &lt;!&ndash; ... &ndash;&gt;-->
+<!--                <ImageView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:src="@drawable/ic_mine_next" />-->
+
+<!--            </LinearLayout>-->
+
+<!--        </HorizontalScrollView>-->
+
+        <!-- This ImageView can be used as an indicator for more options or a next page -->
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:src="@drawable/ic_mine_next" />-->
+
+<!--    </LinearLayout>-->
 </LinearLayout>

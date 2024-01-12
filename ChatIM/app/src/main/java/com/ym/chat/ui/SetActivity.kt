@@ -48,17 +48,17 @@ class SetActivity : LoadingActivity() {
             tvTitle.text = getString(R.string.设置)
         }
 
-        val lang = SPUtils.getInstance().getString("SP_LANGUAGE")
-        Log.d("系统语言", Locale.getDefault().language)
+//        val lang = SPUtils.getInstance().getString("SP_LANGUAGE")
+//        Log.d("系统语言", Locale.getDefault().language)
 
-        if (TextUtils.isEmpty(lang)) {
-            val lang = Locale.getDefault().language
-            bindView.switchLang.isChecked = lang.lowercase() != "zh"
-        } else if (lang.equals("ch")) {
-            bindView.switchLang.isChecked = false
-        } else if (lang.equals("en")) {
-            bindView.switchLang.isChecked = true
-        }
+//        if (TextUtils.isEmpty(lang)) {
+//            val lang = Locale.getDefault().language
+//            bindView.switchLang.isChecked = lang.lowercase() != "zh"
+//        } else if (lang.equals("ch")) {
+//            bindView.switchLang.isChecked = false
+//        } else if (lang.equals("en")) {
+//            bindView.switchLang.isChecked = true
+//        }
         initClick()
     }
 
@@ -107,74 +107,74 @@ class SetActivity : LoadingActivity() {
             startActivity(Intent(this, PrivacySetActivity::class.java))
         }
 
-        bindView.switchLang.setOnCheckedChangeListener(object :
-            CompoundButton.OnCheckedChangeListener {
-            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
-                if (p1) {
-                    //设置英文
-                    if (!isShowDialog) {
-                        return
-                    }
-                    HintDialog(
-                        getString(R.string.更换语言),
-                        getString(R.string.更换语言需要重启App才能生效),
-                        object : ConfirmDialogCallback {
-                            override fun onItemClick() {
-
-                                LiveEventBus.get(EventKeys.LANGUAGE).post(LanguageChangeEvent());
-                                LanguageUtils.changeLanguage(this@SetActivity, "en", "en")
-                                val i = Intent(this@SetActivity, HomeActivity::class.java)
-                                i.flags =
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                                startActivity(i)
-//                                ProcessPhoenix.triggerRebirth(this@SetActivity,i)
-                            }
-                        },
-                        headUrl = MMKVUtils.getUser()?.headUrl,
-                        isShowHeader = true,
-                        isTitleTxt = true,
-                        cancel = object : CancelDialogCallback {
-                            override fun onItemClick() {
-                                isShowDialog = false
-                                bindView.switchLang.isChecked = false
-                                isShowDialog = true
-                            }
-
-                        }
-                    ).show(supportFragmentManager, "HintDialog")
-                } else {
-                    if (!isShowDialog) {
-                        return
-                    }
-                    //设置中文
-                    HintDialog(
-                        getString(R.string.更换语言),
-                        getString(R.string.更换语言需要重启App才能生效),
-                        object : ConfirmDialogCallback {
-                            override fun onItemClick() {
-                                LiveEventBus.get(EventKeys.LANGUAGE).post(LanguageChangeEvent())
-                                LanguageUtils.changeLanguage(this@SetActivity, "zh", "cn")
-                                val i = Intent(this@SetActivity, HomeActivity::class.java)
-                                i.flags =
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                                startActivity(i)
-//                                ProcessPhoenix.triggerRebirth(this@SetActivity,i);
-                            }
-                        },
-                        headUrl = MMKVUtils.getUser()?.headUrl,
-                        isShowHeader = true,
-                        isTitleTxt = true,
-                        cancel = object : CancelDialogCallback {
-                            override fun onItemClick() {
-                                isShowDialog = false
-                                bindView.switchLang.isChecked = true
-                                isShowDialog = true
-                            }
-                        }
-                    ).show(supportFragmentManager, "HintDialog")
-                }
-            }
-        })
+//        bindView.switchLang.setOnCheckedChangeListener(object :
+//            CompoundButton.OnCheckedChangeListener {
+//            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+//                if (p1) {
+//                    //设置英文
+//                    if (!isShowDialog) {
+//                        return
+//                    }
+//                    HintDialog(
+//                        getString(R.string.更换语言),
+//                        getString(R.string.更换语言需要重启App才能生效),
+//                        object : ConfirmDialogCallback {
+//                            override fun onItemClick() {
+//
+//                                LiveEventBus.get(EventKeys.LANGUAGE).post(LanguageChangeEvent());
+//                                LanguageUtils.changeLanguage(this@SetActivity, "en", "en")
+//                                val i = Intent(this@SetActivity, HomeActivity::class.java)
+//                                i.flags =
+//                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                                startActivity(i)
+////                                ProcessPhoenix.triggerRebirth(this@SetActivity,i)
+//                            }
+//                        },
+//                        headUrl = MMKVUtils.getUser()?.headUrl,
+//                        isShowHeader = true,
+//                        isTitleTxt = true,
+//                        cancel = object : CancelDialogCallback {
+//                            override fun onItemClick() {
+//                                isShowDialog = false
+//                                bindView.switchLang.isChecked = false
+//                                isShowDialog = true
+//                            }
+//
+//                        }
+//                    ).show(supportFragmentManager, "HintDialog")
+//                } else {
+//                    if (!isShowDialog) {
+//                        return
+//                    }
+//                    //设置中文
+//                    HintDialog(
+//                        getString(R.string.更换语言),
+//                        getString(R.string.更换语言需要重启App才能生效),
+//                        object : ConfirmDialogCallback {
+//                            override fun onItemClick() {
+//                                LiveEventBus.get(EventKeys.LANGUAGE).post(LanguageChangeEvent())
+//                                LanguageUtils.changeLanguage(this@SetActivity, "zh", "cn")
+//                                val i = Intent(this@SetActivity, HomeActivity::class.java)
+//                                i.flags =
+//                                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+//                                startActivity(i)
+////                                ProcessPhoenix.triggerRebirth(this@SetActivity,i);
+//                            }
+//                        },
+//                        headUrl = MMKVUtils.getUser()?.headUrl,
+//                        isShowHeader = true,
+//                        isTitleTxt = true,
+//                        cancel = object : CancelDialogCallback {
+//                            override fun onItemClick() {
+//                                isShowDialog = false
+//                                bindView.switchLang.isChecked = true
+//                                isShowDialog = true
+//                            }
+//                        }
+//                    ).show(supportFragmentManager, "HintDialog")
+//                }
+//            }
+//        })
         bindView.llClearCahce.click {
             //清理缓存
             HintDialog(

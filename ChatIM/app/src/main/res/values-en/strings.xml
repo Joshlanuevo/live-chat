@@ -6,7 +6,6 @@
     <string name="voice_cancel">Release To Cancel</string>
     <string name="voice_short">Recording Too Short</string>
     <string name="please_to_talk">Press To Talk</string>
-
     <string name="checkUpdateFail">Check Update Failed</string>
     <string name="no_update">No Update</string>
     <string name="go_open">Go Open</string>
@@ -71,7 +70,7 @@
     <string name="yulanzitidaxiao">Preview font size</string>
     <string name="tuodongxiamian">拖动下面的滑块，可设置 字体大小</string>
     <string name="gerenxinx">Personal information</string>
-    <string name="zhanghao">Account</string>
+    <string name="zhanghao">Account: </string>
     <string name="dianhua">Telephone</string>
     <string name="youxiang">Mail</string>
     <string name="weishezhi">Not set</string>
@@ -82,7 +81,7 @@
     <string name="laheihaoyou">Block friends</string>
     <string name="jinyan">Ban messages</string>
     <string name="shanchuhaoyou">Delete friend</string>
-    <string name="lianxiren">Contact</string>
+    <string name="lianxiren">Contacts</string>
     <string name="qingshuru">Please Input</string>
     <string name="baocun">Save</string>
     <string name="sousuo">Search friends/groups</string>
@@ -105,9 +104,9 @@
     <string name="meiyoujilu">No Record</string>
     <string name="xinjianqunfa">Create a new group message</string>
     <string name="xiaoxi">Message</string>
-    <string name="liaotian">Chat</string>
+    <string name="liaotian">Chats</string>
     <string name="haoyou">Friends</string>
-    <string name="faxian">Find</string>
+    <string name="faxian">Discover</string>
     <string name="wode">Me</string>
     <string name="huanyindenglu">Welcome login</string>
     <string name="zhanghaodenglu">Account login</string>
@@ -151,7 +150,7 @@
     <string name="qingkongjilu">Clear History</string>
     <string name="shanchuxiaoxi">Delete Message</string>
     <string name="duoxuanxiaoxi">Multi-select Messages</string>
-    <string name="faqiqunliao">Initiate Group Chat</string>
+    <string name="faqiqunliao">Create Group Chat</string>
     <string name="tianjiahaoyou">Add Friend</string>
     <string name="saoyisao">Scan QR Code</string>
     <string name="jingshengweiguanliyuan">Promote to Administrator</string>
@@ -568,8 +567,8 @@
     <string name="需要打开拍照权限">Need to turn on photo permission</string>
     <string name="网络连接不可用">Network connection not available, please check the network</string>
     <string name="可用">available/total</string>
-    <string name="我管理的群组">Groups I manage</string>
-    <string name="我加入的群组">Groups I joined</string>
+    <string name="我管理的群组">Group manage</string>
+    <string name="我加入的群组">Group joined</string>
     <string name="联系人">Contact person</string>
     <string name="确认新密码">Confirm the new password</string>
     <string name="验证码发送失败">Failed to send verification code</string>
@@ -617,6 +616,8 @@
     <string name="英文">English</string>
     <string name="更换语言">Change language</string>
     <string name="您创建了群组">You created a group</string>
+    <string name="已经使用语言">Language already used</string>
+    <string name="敬请关注">Stay tuned！</string>
     <string name="消息发送过于频繁">Messages sent too frequently</string> <!--vannn-->
     <string name="这个结果查询不存在">result query doesnt exist</string> <!--vannn-->
     <string name="我们已经是好友了赶快聊天吧">We are already friends, come and chat!</string> <!--vannn-->

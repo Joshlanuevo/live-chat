@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_eeeeee"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/titleBar"
+        layout="@layout/view_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_set_group"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/llLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/anquanshezhi"
+                android:textColor="@color/color_333333"
+                android:textSize="16dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_cacaca" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_set_group"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_cacaca" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_set_group"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llLanguageGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Language"
+                android:textColor="@color/color_333333"
+                android:textSize="16dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_cacaca"
+            android:visibility="gone" />
+
+        <!-- Chinese Language -->
+        <LinearLayout
+            android:id="@+id/chineseLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_item_white_top"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <RadioButton
+                android:id="@+id/chineseRadioButton"
+                android:layout_width="363dp"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Chinese" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/color_eeeeee" />
+
+        <!-- English Language -->
+        <LinearLayout
+            android:id="@+id/englishLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_item_white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <RadioButton
+                android:id="@+id/englishRadioButton"
+                android:layout_width="363dp"
+                android:layout_height="wrap_content"
+                android:text="English"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/color_eeeeee" />
+
+        <!-- Vietnamese Language -->
+        <LinearLayout
+            android:id="@+id/vietnameseLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_item_white_bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <RadioButton
+                android:id="@+id/vietnameseRadioButton"
+                android:layout_width="363dp"
+                android:layout_height="wrap_content"
+                android:text="Vietnamese"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+
+
+</LinearLayout>

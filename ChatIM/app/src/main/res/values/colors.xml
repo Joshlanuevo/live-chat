@@ -6,6 +6,7 @@
     <color name="activity_bg">#dedede</color>
 
     <color name="color_main">#6C5DD3</color><!--主题色-->
+    <color name="chat_count">#FF3333</color>
     <color name="color_gray_text">#808191</color><!--主题灰色-->
     <color name="color_brown">#431000</color><!--棕色-->
     <color name="color_main_pre">#6C5DD3</color><!--主题色 点击阴影效果-->

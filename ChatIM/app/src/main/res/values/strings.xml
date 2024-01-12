@@ -6,7 +6,6 @@
     <string name="voice_cancel">松开手指，取消发送</string>
     <string name="voice_short">录音时间太短</string>
     <string name="please_to_talk">按住 说话</string>
-
     <string name="checkUpdateFail">检查更新失败，请重试!</string>
     <string name="no_update">不更新</string>
     <string name="go_open">去打开</string>
@@ -617,6 +616,8 @@
     <string name="中文">中文</string>
     <string name="英文">英文</string>
     <string name="更换语言">更换语言</string>
+    <string name="已经使用语言">已经使用语言</string>
+    <string name="敬请关注">敬请关注！</string>
     <string name="您创建了群组">您创建了群组</string>
     <string name="消息发送过于频繁">消息发送过于频繁</string>
     <string name="这个结果查询不存在">这个结果查询不存在</string>

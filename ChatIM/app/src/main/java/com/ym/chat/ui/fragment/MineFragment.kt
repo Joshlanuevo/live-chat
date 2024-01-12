@@ -1,12 +1,14 @@
 package com.ym.chat.ui.fragment
 
 import android.annotation.SuppressLint
+import androidx.fragment.app.Fragment
 import android.content.Intent
 import coil.load
 import com.dylanc.viewbinding.binding
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.ym.base.constant.EventKeys
 import com.ym.base.ext.copyToClipboard
+import com.ym.base.ext.toast
 import com.ym.base.mvvm.BaseFragment
 import com.ym.base.util.save.LoginData
 import com.ym.base.util.save.MMKVUtils
@@ -15,9 +17,13 @@ import com.ym.base.widget.ext.gone
 import com.ym.base.widget.ext.visible
 import com.ym.chat.R
 import com.ym.chat.databinding.FragmentMineBinding
+import com.ym.chat.dialog.CancelDialogCallback
+import com.ym.chat.dialog.ConfirmDialogCallback
+import com.ym.chat.dialog.HintDialog
 import com.ym.chat.ext.loadImg
 import com.ym.chat.rxhttp.UserRepository
 import com.ym.chat.ui.*
+import com.ym.chat.utils.LanguageUtils
 import com.ym.chat.utils.ToastUtils
 import com.ym.chat.utils.Utils
 
@@ -33,6 +39,21 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
         updateUI()
     }
     override fun initView() {
+        bindView.icMineNextLang.setOnClickListener {
+            // Perform the sliding animation here
+            // You can use a HorizontalScrollView or ViewPager to handle the sliding effect
+            // For example, if using HorizontalScrollView:
+            val yourScrollIncrement = 200
+
+            // Assuming you have a HorizontalScrollView with id tvLanguagesScrollView
+            val scrollView = bindView.tvLanguagesScrollView
+
+            // Calculate the next scroll position based on your requirements
+            val newScrollX = scrollView.scrollX + yourScrollIncrement
+
+            // Animate the scrolling
+            scrollView.smoothScrollTo(newScrollX, 0)
+        }
 
         if (MMKVUtils.isAdmin()) {
             bindView.llGroupSend.visible()
@@ -57,8 +78,43 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
             startActivity(Intent(activity, FeedbackActivity::class.java))
         }
 //        bindView.tvLanguages.click {
-//            startActivity(Intent(activity, FeedbackActivity::class.java))
+//            startActivity(Intent(activity, LanguageActivity::class.java))
 //        }
+        bindView.tvChinese.click {
+            showChangeLanguageDialog("zh", "cn")
+        }
+
+        bindView.tvEnglish.click {
+            showChangeLanguageDialog("en", "us")
+        }
+
+        bindView.tvVietnamese.click {
+            showChangeLanguageDialog("vi", "VN")
+        }
+        bindView.tvHongkong.click {
+            showToastForFlagClick()
+        }
+        bindView.tvThailand.click {
+            showToastForFlagClick()
+        }
+        bindView.tvIndia.click {
+            showToastForFlagClick()
+        }
+        bindView.tvPhilippines.click {
+            showToastForFlagClick()
+        }
+        bindView.tvIndonesia.click {
+            showToastForFlagClick()
+        }
+        bindView.tvMalaysia.click {
+            showToastForFlagClick()
+        }
+        bindView.tvSpain.click {
+            showToastForFlagClick()
+        }
+        bindView.tvPortugal.click {
+            showToastForFlagClick()
+        }
         bindView.consInfo.click {
             //编辑用户信息
             startActivity(Intent(activity, PersonalInfoActivity::class.java))
@@ -70,6 +126,54 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
             true
         }
     }
+
+
+
+    private var currentLanguage: String = ""
+
+    private fun showChangeLanguageDialog(language: String, country: String) {
+        val appLocale = LanguageUtils.getAppLocale(requireContext())
+        currentLanguage = appLocale.language
+
+        if (currentLanguage == language) {
+            // User is already in the selected language, show a message
+            getString(R.string.已经使用语言, language).toast()
+            return
+        }
+
+        HintDialog(
+            getString(R.string.更换语言),
+            getString(R.string.更换语言需要重启App才能生效),
+            object : ConfirmDialogCallback {
+                override fun onItemClick() {
+                    LanguageUtils.changeLanguage(requireContext(), language, country)
+                    restartApp()
+                }
+            },
+            headUrl = MMKVUtils.getUser()?.headUrl,
+            isShowHeader = true,
+            isTitleTxt = true,
+            cancel = object : CancelDialogCallback {
+                override fun onItemClick() {
+                    // Handle cancellation if needed
+                }
+            }
+        ).show(childFragmentManager, "HintDialog")
+    }
+
+    private fun restartApp() {
+        val intent = Intent(requireContext(), HomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        // If using ProcessPhoenix
+        // ProcessPhoenix.triggerRebirth(this, intent)
+    }
+
+    private fun showToastForFlagClick() {
+        // Display a toast message indicating that more translations are coming soon
+        getString(R.string.敬请关注).toast()
+    }
+
 
     /**
      * 用户信息显示
@@ -84,7 +188,7 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
 //            if (username?.isEmpty() == true) {
 //                username = user?.code
 //            }
-            bindView.tvJxh.text = "${getText(R.string.zhanghao)}:${user?.showUserName()}"
+            bindView.tvJxh.text = "${getText(R.string.zhanghao)} ${user?.showUserName()}"
             bindView.layoutHeader.apply {
                 setRoundRadius(200f)
                 setChatId(user?.id?:"")
@@ -131,7 +235,7 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
 //            if (username?.isEmpty() == true) {
 //                username = user?.code
 //            }
-            bindView.tvJxh.text = String.format(getString(R.string.友聊号),user?.showUserName())
+            bindView.tvJxh.text = String.format(getString(R.string.友聊号), user?.showUserName())
 
             bindView.tvNickName.text = user?.name
             setGender()
@@ -150,7 +254,7 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
         LiveEventBus.get(EventKeys.EDIT_USER, String::class.java).observe(this) {
             user = MMKVUtils.getUser()
             bindView.tvNickName.text = user?.name
-            bindView.tvJxh.text = "友聊号:${user?.showUserName()}"
+            bindView.tvJxh.text = "友聊号: ${user?.showUserName()}"
             setGender()
 
 //            bindView.layoutHeader.ivHeader.loadImg(user)

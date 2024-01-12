@@ -101,6 +101,10 @@
             android:configChanges="screenLayout|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.LanguageActivity"
+            android:configChanges="screenLayout|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.ModifyNameActivity"
             android:configChanges="screenLayout|orientation"
             android:screenOrientation="portrait" />
