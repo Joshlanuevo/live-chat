@@ -137,8 +137,8 @@
     <string name="ninshurudejiumimacuowu">Incorrect old password, 9 attempts left</string>
     <string name="qingshuruxinmima">Please enter a new password (8~16 characters, including at least one letter and one number)</string>
     <string name="qingshuruzhanghaodaxiaoxie">Please enter an account with 1-15 characters, including uppercase and lowercase letters or numbers</string>
-    <string name="shoujihao">Phone Number</string>
-    <string name="mima">Password</string>
+    <string name="shoujihao">Phone Number: </string>
+    <string name="mima">Password: </string>
     <string name="ninyichuangliyigequnzu">You have created a group</string>
     <string name="qunzukeyi">Group can:</string>
     <string name="qunzhidingxiaoxi">Up to 5 messages can be pinned in the group</string>

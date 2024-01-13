@@ -132,7 +132,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_14"
             android:text="@string/zhanghao"
             android:textColor="#666666"
             android:textSize="14dp" />
@@ -142,7 +142,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_70"
+            android:layout_marginLeft="@dimen/dp_75"
             android:text="1111"
             android:textColor="#333333"
             android:textSize="14dp" />
@@ -193,13 +193,14 @@
                     android:id="@+id/tvPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_54"
+                    android:layout_marginLeft="104dp"
                     android:text="19959845546"
                     android:textColor="#333333"
                     android:textSize="14dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.52" />
 
                 <ImageView
                     android:id="@+id/ivPhoneArrow"

@@ -136,8 +136,8 @@
     <string name="ninshurudejiumimacuowu">Mật khẩu cũ bạn đã nhập sai, còn 9 lần thử</string>
     <string name="qingshuruxinmima">Vui lòng nhập mật khẩu mới (8~16 ký tự, bao gồm ít nhất một chữ cái và một số)</string>
     <string name="qingshuruzhanghaodaxiaoxie">Vui lòng nhập tài khoản, từ 1 đến 15 ký tự, bao gồm chữ cái hoa/thường hoặc số</string>
-    <string name="shoujihao">Số điện thoại</string>
-    <string name="mima">Mật khẩu</string>
+    <string name="shoujihao">Số điện thoại:</string>
+    <string name="mima">Mật khẩu: </string>
     <string name="ninyichuangliyigequnzu">Bạn đã tạo một nhóm</string>
     <string name="qunzukeyi">Nhóm có thể:</string>
     <string name="qunzhidingxiaoxi">Cố định tin nhắn nhóm, tối đa 5 tin</string>

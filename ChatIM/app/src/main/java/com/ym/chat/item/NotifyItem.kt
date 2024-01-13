@@ -103,7 +103,7 @@ class NotifyItem(
                         vb.tvTypeTitle.text = context.getString(R.string.xitongtongzhi) // "系统通知"
                         if (data.contentBriefly != null)
                             vb.tvContent.text = Html.fromHtml(data.contentBriefly)
-                        vb.tvLook.visible()
+                            vb.tvLook.visible()
                     } else {
                         vb.ivTypeIcon.setImageResource(R.drawable.ic_notify_feedback_msg)
                         vb.tvTypeTitle.text = context.getString(R.string.fankuiwenjianhuifu) // "反馈回复通知"
