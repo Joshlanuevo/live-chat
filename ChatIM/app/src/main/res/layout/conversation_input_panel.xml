@@ -212,7 +212,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
-                    android:src="@drawable/ic_emoj_chat"
+                    android:src="@drawable/ic_emoj_chat_new"
                     tools:visibility="visible" />
 
                 <FrameLayout

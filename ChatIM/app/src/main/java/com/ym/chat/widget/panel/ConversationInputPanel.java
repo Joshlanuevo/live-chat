@@ -325,7 +325,7 @@ public class ConversationInputPanel extends FrameLayout implements View.OnClickL
                 )
                 .setOnSoftKeyboardOpenListener(ignore -> Log.d(TAG, "Opened soft keyboard"))
                 .setOnEmojiPopupDismissListener(() -> {
-                            emotionImageView.setImageResource(R.drawable.ic_emoj_chat);
+                            emotionImageView.setImageResource(R.drawable.ic_emoj_chat_new);
                         }
                 )
                 .setOnSoftKeyboardCloseListener(() -> Log.d(TAG, "Closed soft keyboard"))
@@ -499,7 +499,7 @@ public class ConversationInputPanel extends FrameLayout implements View.OnClickL
 
     private void hideEmotionLayout() {
         emojiPopup.dismiss();
-        emotionImageView.setImageResource(R.drawable.ic_emoj_chat);
+        emotionImageView.setImageResource(R.drawable.ic_emoj_chat_new);
         if (onConversationInputPanelStateChangeListener != null) {
             onConversationInputPanelStateChangeListener.onInputPanelCollapsed();
         }
@@ -525,7 +525,7 @@ public class ConversationInputPanel extends FrameLayout implements View.OnClickL
      * 关闭表情面板
      */
     public void closeConversationInputPanel() {
-        emotionImageView.setImageResource(R.drawable.ic_emoj_chat);
+        emotionImageView.setImageResource(R.drawable.ic_emoj_chat_new);
         rootLinearLayout.hideAttachedInput(true);
         rootLinearLayout.hideCurrentInput(editText);
     }
@@ -576,7 +576,7 @@ public class ConversationInputPanel extends FrameLayout implements View.OnClickL
                     hideConversationExtension();
                     rootLinearLayout.showSoftkey(editText);
                 } else {
-                    emotionImageView.setImageResource(R.drawable.ic_emoj_chat);
+                    emotionImageView.setImageResource(R.drawable.ic_emoj_chat_new);
                     showConversationExtension();
                 }
                 break;
