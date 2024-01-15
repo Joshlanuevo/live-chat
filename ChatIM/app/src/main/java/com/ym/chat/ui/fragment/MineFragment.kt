@@ -89,31 +89,31 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
         }
 
         bindView.tvVietnamese.click {
-            showChangeLanguageDialog("vi", "VN")
+            showChangeLanguageDialog("vi", "vn")
         }
         bindView.tvHongkong.click {
-            showToastForFlagClick()
+            showChangeLanguageDialog("hk", "hk")
         }
         bindView.tvThailand.click {
-            showToastForFlagClick()
+            showChangeLanguageDialog("th", "th")
         }
         bindView.tvIndia.click {
-            showToastForFlagClick()
+            showChangeLanguageDialog("in", "india")
         }
         bindView.tvPhilippines.click {
-            showToastForFlagClick()
+            showChangeLanguageDialog("ph", "ph")
         }
         bindView.tvIndonesia.click {
-            showToastForFlagClick()
+            showChangeLanguageDialog("id", "id")
         }
         bindView.tvMalaysia.click {
-            showToastForFlagClick()
+            showChangeLanguageDialog("my", "my")
         }
         bindView.tvSpain.click {
-            showToastForFlagClick()
+            showChangeLanguageDialog("es", "es")
         }
         bindView.tvPortugal.click {
-            showToastForFlagClick()
+            showChangeLanguageDialog("pt", "pt")
         }
         bindView.consInfo.click {
             //编辑用户信息
@@ -169,10 +169,10 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
         // ProcessPhoenix.triggerRebirth(this, intent)
     }
 
-    private fun showToastForFlagClick() {
-        // Display a toast message indicating that more translations are coming soon
-        getString(R.string.敬请关注).toast()
-    }
+//    private fun showToastForFlagClick() {
+//        // Display a toast message indicating that more translations are coming soon
+//        getString(R.string.敬请关注).toast()
+//    }
 
 
     /**

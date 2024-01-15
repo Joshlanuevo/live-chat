@@ -222,7 +222,7 @@
     <string name="sousuoxiaoxihuoyonghu">搜索消息或用户</string>
     <string name="gerenzhongxin">个人中心</string>
     <string name="群发助手">群发助手</string>
-    <string name="分享邀请码">分享邀请码</string>
+    <string name="分享邀请码" formatted="false">分享邀请码</string>
     <string name="设置">设置</string>
     <string name="建议反馈">建议反馈</string>
     <string name="全选同意">全选同意</string>

@@ -193,7 +193,7 @@
                     android:id="@+id/tvPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="104dp"
+                    android:layout_marginLeft="164dp"
                     android:text="19959845546"
                     android:textColor="#333333"
                     android:textSize="14dp"
