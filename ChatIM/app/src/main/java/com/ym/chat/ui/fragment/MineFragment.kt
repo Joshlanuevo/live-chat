@@ -89,31 +89,31 @@ class MineFragment : BaseFragment(R.layout.fragment_mine) {
         }
 
         bindView.tvVietnamese.click {
-            showChangeLanguageDialog("vi", "vn")
+            showChangeLanguageDialog("vi", "VN")
         }
         bindView.tvHongkong.click {
-            showChangeLanguageDialog("hk", "hk")
+            showChangeLanguageDialog("hk", "HK")
         }
         bindView.tvThailand.click {
-            showChangeLanguageDialog("th", "th")
+            showChangeLanguageDialog("th", "TH")
         }
         bindView.tvIndia.click {
-            showChangeLanguageDialog("in", "india")
+            showChangeLanguageDialog("hi", "INDIA")
         }
         bindView.tvPhilippines.click {
-            showChangeLanguageDialog("ph", "ph")
+            showChangeLanguageDialog("ph", "PH")
         }
         bindView.tvIndonesia.click {
-            showChangeLanguageDialog("id", "id")
+            showChangeLanguageDialog("in", "INDONESIA")
         }
         bindView.tvMalaysia.click {
-            showChangeLanguageDialog("my", "my")
+            showChangeLanguageDialog("my", "MY")
         }
         bindView.tvSpain.click {
-            showChangeLanguageDialog("es", "es")
+            showChangeLanguageDialog("es", "ES")
         }
         bindView.tvPortugal.click {
-            showChangeLanguageDialog("pt", "pt")
+            showChangeLanguageDialog("pt", "PH")
         }
         bindView.consInfo.click {
             //编辑用户信息

@@ -27,6 +27,7 @@ import com.ym.chat.utils.ImCache.notifycationMsg
 import com.ym.chat.widget.ateditview.AtUserHelper
 import com.ym.chat.widget.ateditview.AtUserLinkOnClickListener
 
+
 object NotificationUtils {
     private var notificationManager: NotificationManager? = null
     const val channelId = "22"
@@ -133,7 +134,7 @@ object NotificationUtils {
             msgStyle.addMessage(getMsgContent(context, it), it.createTime, chatPartner)
         }
 
-//        val count = tempMsgList?.size ?: 0 // vannn
+//        val count = ChatDao.getConversationDb().getConverunReadCount() // vannn
 
         var notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
