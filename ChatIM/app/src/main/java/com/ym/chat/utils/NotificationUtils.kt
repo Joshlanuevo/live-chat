@@ -134,14 +134,14 @@ object NotificationUtils {
             msgStyle.addMessage(getMsgContent(context, it), it.createTime, chatPartner)
         }
 
-//        val count = ChatDao.getConversationDb().getConverunReadCount() // vannn
+        val count = ChatDao.getConversationDb().getConverunReadCount()
 
         var notification = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setStyle(msgStyle)
             .setDeleteIntent(removeIntent)
             .setCategory(Notification.CATEGORY_MESSAGE)
-//            .setNumber(count) // vannn
+            .setNumber(count) // display the badge for unread messages
             .setPriority(PRIORITY_MAX)
             .setContentIntent(pendingIntent).apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

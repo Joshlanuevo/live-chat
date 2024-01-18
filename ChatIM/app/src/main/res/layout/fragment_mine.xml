@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_55"
+            android:layout_marginTop="@dimen/dp_60"
             android:text="@string/gerenzhongxin"
             android:textColor="#11142D"
             android:textSize="18sp"
@@ -98,12 +98,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_2"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_25"
             android:src="@drawable/ic_mine_next"
             app:layout_constraintBottom_toBottomOf="@id/layout_header"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/layout_header" />
+            app:layout_constraintTop_toTopOf="@id/layout_header"
+            app:layout_constraintVertical_bias="0.75" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
