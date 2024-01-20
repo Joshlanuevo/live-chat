@@ -259,6 +259,10 @@ dependencies {
     //下载查看文件
 //    implementation 'com.github.heynchy:eros-plugin-filecache-manager:0.2.6'
 
+    // Dependency for ShortcutBadger to manage app icon badge counts
+    implementation "me.leolin:ShortcutBadger:1.1.22@aar"
+
+
 }
 
 apply plugin: 'io.objectbox'

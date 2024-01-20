@@ -26,7 +26,7 @@ import com.ym.chat.ui.SplashActivity
 import com.ym.chat.utils.ImCache.notifycationMsg
 import com.ym.chat.widget.ateditview.AtUserHelper
 import com.ym.chat.widget.ateditview.AtUserLinkOnClickListener
-
+import me.leolin.shortcutbadger.ShortcutBadger
 
 object NotificationUtils {
     private var notificationManager: NotificationManager? = null
@@ -177,23 +177,26 @@ object NotificationUtils {
     private fun show(id: Int, notification: Notification, channelId: String) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        initNotificationManager()
+        initNotificationManager(Utils.getApp(), channelId)
         if (Build.BRAND.lowercase() == "xiaomi") {
-            BadgeUtils.setCount(0, Utils.getApp(), notification)
-            notificationManager?.notify(id, notification)
+//            BadgeUtils.setCount(0, Utils.getApp(), notification)
+            ShortcutBadger.applyNotification(Utils.getApp(), notification, 0)
+//            notificationManager?.notify(id, notification)
         } else {
-            notificationManager?.notify(id, notification)
-            BadgeUtils.setCount(0, Utils.getApp(), notification)
+//            notificationManager?.notify(id, notification)
+            ShortcutBadger.applyCount(Utils.getApp(), 0)
+//            BadgeUtils.setCount(0, Utils.getApp(), notification)
         }
+        notificationManager?.notify(id, notification)
     }
 
     @Synchronized
-    private fun initNotificationManager() {
+    private fun initNotificationManager(context: Context, channelId: String) {
         synchronized(this) {
             if (notificationManager == null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val name = "消息"
-                    val descriptionText = "消息描述"
+                    val name = context.getString(R.string.xiaoxi) // "消息"
+                    val descriptionText = context.getString(R.string.消息描述) // "消息描述"
                     val importance = IMPORTANCE_HIGH
                     val channel = NotificationChannel(channelId, name, importance).apply {
                         description = descriptionText
@@ -216,7 +219,7 @@ object NotificationUtils {
         chatType: String
     ) {
         builder.setShowWhen(true)
-        val replyLabel = "回复"
+        val replyLabel = context.getString(R.string.huifu) // "回复"
         val remoteInput: RemoteInput = RemoteInput.Builder("KEY_TEXT_REPLY")
             .setLabel(replyLabel)
             .build()
