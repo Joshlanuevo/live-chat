@@ -523,7 +523,7 @@ class WebsocketWork(val context: Context, val parameters: WorkerParameters) :
             .setContentTitle(title)
             .setTicker(title)
             .setContentText(progress)
-            .setSmallIcon(R.mipmap.ic_launcher_xy)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setOngoing(true)
             // Add the cancel action to the notification which can
             // be used to cancel the worker

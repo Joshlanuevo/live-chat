@@ -190,7 +190,7 @@ private fun getImgRes(lastStr: String): Int {
 
 fun ImageView.loadImg(user: FriendListBean?, tv: TextView?) {
     if (user?.memberLevelCode == "System") {
-        load(R.mipmap.ic_launcher_xy) {
+        load(R.mipmap.ic_launcher) {
             transformations(RoundedCornersTransformation(100f))//显示圆形图片
         }
     } else {

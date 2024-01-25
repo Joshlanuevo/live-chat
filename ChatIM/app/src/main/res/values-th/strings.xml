@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Live700</string>
-<!--    <string name="app_name">维云科技</string>-->
+<!--    <string name="app_name">Live700</string>-->
+    <string name="app_name">维云科技</string>
     <string name="需要存储权限">ต้องการสิทธิ์การเข้าถึงพื้นที่จัดเก็บ</string>
     <string name="voice_rec">เลื่อนขึ้นเพื่อยกเลิก</string>
     <string name="voice_cancel">ปล่อยเพื่อยกเลิก</string>

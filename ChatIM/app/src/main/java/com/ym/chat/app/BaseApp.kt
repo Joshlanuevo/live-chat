@@ -15,7 +15,6 @@ import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.ios.IosEmojiProvider
 import com.ym.chat.utils.LanguageUtils
 
-
 class BaseApp : Application() {
 
     companion object {

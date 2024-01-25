@@ -159,14 +159,19 @@ class HomeMsgItem(
             //我的收藏
             viewBinding.tvNickName.text = context.getString(R.string.wodeshoucang)
 //            showLastMsg(viewBinding.tvMsgPre, data)
-            viewBinding.tvMsgPre.text = welcomeString
+//            viewBinding.tvMsgPre.text = welcomeString
             viewBinding.tvHeader.gone()
             viewBinding.redPoint.gone()
             viewBinding.layoutHeader.apply {
                 setRoundRadius(100F)
             }.showImageRes(R.drawable.msg_collect)
 //            showCollectLastMsg(viewBinding.tvMsgPre, data)
-            viewBinding.tvMsgPre.text = welcomeString
+//            viewBinding.tvMsgPre.text = welcomeString
+            if (data.lastMsg == "") {
+                viewBinding.tvMsgPre.text = welcomeString
+            } else {
+                viewBinding.tvMsgPre.text = data.lastMsg
+            }
         } else if (data.sysType == 2) {
             //系统通知
             viewBinding.tvNickName.text = context.getString(R.string.xitongtongzhi)

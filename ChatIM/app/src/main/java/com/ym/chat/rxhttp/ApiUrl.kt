@@ -39,13 +39,13 @@ open class ApiUrl {
          * 生产的默认配置从jenkins读取
          */
         var wsUrl = when (currentType) {
-            HOST_TYPE.DEV -> "ws://chat-dev.youliaoim.com/message-ws"
-            HOST_TYPE.RELEASE -> "wss://chatlc101.devtest88.com/message-ws"
-            else -> "ws://im-chat-dev.gnit.vip/message-ws"
+//            HOST_TYPE.DEV -> "ws://chat-dev.youliaoim.com/message-ws"
+//            HOST_TYPE.RELEASE -> "wss://chatlc101.devtest88.com/message-ws"
+//            else -> "ws://im-chat-dev.gnit.vip/message-ws"
 
-//            HOST_TYPE.DEV -> "ws://www.chatlc102.com/message-ws"
-//            HOST_TYPE.RELEASE -> "wss://www.chatlc102.com/message-ws"
-//            else -> "ws://www.chatlc102.com/message-ws"
+            HOST_TYPE.DEV -> "ws://www.chatlc102.com/message-ws"
+            HOST_TYPE.RELEASE -> "wss://www.chatlc102.com/message-ws"
+            else -> "ws://www.chatlc102.com/message-ws"
         }
 
         /**
@@ -53,13 +53,13 @@ open class ApiUrl {
          * 生产的默认配置从jenkins读取
          */
         var baseApiHost = when (currentType) {
-            HOST_TYPE.DEV -> "https://chatlc101.devtest88.com/v1/"
-            HOST_TYPE.RELEASE -> "https://chatlc101.devtest88.com/v1/"
-            else -> "https://chatlc101.devtest88.com/v1/"
+//            HOST_TYPE.DEV -> "https://chatlc101.devtest88.com/v1/"
+//            HOST_TYPE.RELEASE -> "https://chatlc101.devtest88.com/v1/"
+//            else -> "https://chatlc101.devtest88.com/v1/"
 
-//            HOST_TYPE.DEV -> "https://www.chatlc102.com/v1/"
-//            HOST_TYPE.RELEASE -> "https://www.chatlc102.com/v1/"
-//            else -> "https://www.chatlc102.com/v1/"
+            HOST_TYPE.DEV -> "https://www.chatlc102.com/v1/"
+            HOST_TYPE.RELEASE -> "https://www.chatlc102.com/v1/"
+            else -> "https://www.chatlc102.com/v1/"
         }
 
         val baseApiUrl

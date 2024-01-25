@@ -38,7 +38,7 @@ class ContactFragment : LoadingFragment(R.layout.fragment_contact) {
 //            //添加好友
 //            startActivity(Intent(activity, SearchFriendActivity::class.java))
 //        }
-        bindView.ivLogo.load(R.mipmap.ic_launcher_xy)
+        bindView.ivLogo.load(R.mipmap.ic_launcher)
         mAdapter.addFullSpanNodeProvider(FriendGroupItem())
         mAdapter.addNodeProvider(FriendUserItem(onItemClickListener = {
             if (it is FriendListBean) {

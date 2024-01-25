@@ -80,10 +80,10 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:layout_width="9dp"
-        android:layout_height="6dp"
-        android:layout_marginLeft="190dp"
-        android:elevation="@dimen/dp_4"
-        android:src="@drawable/ic_pup_bg_top_key" />
+<!--    <ImageView-->
+<!--        android:layout_width="9dp"-->
+<!--        android:layout_height="6dp"-->
+<!--        android:layout_marginLeft="190dp"-->
+<!--        android:elevation="@dimen/dp_4"-->
+<!--        android:src="@drawable/ic_pup_bg_top_key" />-->
 </FrameLayout>

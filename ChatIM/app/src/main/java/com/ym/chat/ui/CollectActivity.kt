@@ -573,6 +573,7 @@ class CollectActivity : LoadingActivity(),
         }
     }
 
+    // dito
     /**
      * 编辑消息成功
      * 刷新数据

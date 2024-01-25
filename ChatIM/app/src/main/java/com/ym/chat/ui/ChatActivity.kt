@@ -521,6 +521,7 @@ class ChatActivity : LoadingActivity(),
 //        requestData()
     }
 
+
     private var mUnReadCount = 0
 
     /**
@@ -1961,6 +1962,11 @@ class ChatActivity : LoadingActivity(),
 
     override fun clickSendButton(str: String?) {
         str?.let {
+            // Check for sensitive words and prevent message sending
+            if (mViewModel.keyWordResult.value?.content?.contains(str) == true) {
+                "内容包含敏感词，请重新输入 ！".toast()
+                return@let // Exit the let block to avoid sending the message
+            }
             if (str.length > MAXSTRINGLENGTH) {
                 val size = if (str.length % MAXSTRINGLENGTH == 0) {
                     str.length / MAXSTRINGLENGTH
@@ -2605,7 +2611,6 @@ class ChatActivity : LoadingActivity(),
             }
         }
     }
-
 
     /**
      * 删除弹框

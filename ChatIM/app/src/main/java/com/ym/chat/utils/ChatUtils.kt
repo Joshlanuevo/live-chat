@@ -1175,28 +1175,48 @@ object ChatUtils {
         }
     }
 
-    /**
-     * 消息数据是否含有敏感词
-     */
     fun msgContentHasKeyWork(msgContent: String): Boolean {
         var hasContains = false
         val keyStr = SPUtils.getInstance().getString(EventKeys.MSG_KEYWORD, "")
+
         if (!TextUtils.isEmpty(keyStr)) {
-            if (keyStr.contains(",")) {
-                val array = keyStr.split(",")
-                array.forEach { key ->
-                    if (msgContent.contains(key)) {
-//                        "内容包含敏感词，请重新输入".toast()
-                        hasContains = true
-                        return@forEach
-                    }
+            val keywords = keyStr.split(",").map { it.trim() } // Trim and split the keywords
+
+            // Case-insensitive comparison
+            for (key in keywords) {
+                if (msgContent.lowercase().contains(key.lowercase())) {
+                    hasContains = true
+                    break
                 }
-            } else {
-                hasContains = msgContent.contains(keyStr)
             }
         }
+
         return hasContains
     }
+
+
+    /**
+     * 消息数据是否含有敏感词
+     */
+//    fun msgContentHasKeyWork(msgContent: String): Boolean {
+//        var hasContains = false
+//        val keyStr = SPUtils.getInstance().getString(EventKeys.MSG_KEYWORD, "")
+//        if (!TextUtils.isEmpty(keyStr)) {
+//            if (keyStr.contains(",")) {
+//                val array = keyStr.split(",")
+//                array.forEach { key ->
+//                    if (msgContent.contains(key)) {
+////                        "内容包含敏感词，请重新输入".toast()
+//                        hasContains = true
+//                        return@forEach
+//                    }
+//                }
+//            } else {
+//                hasContains = msgContent.contains(keyStr)
+//            }
+//        }
+//        return hasContains
+//    }
 
     fun getString(resId: Int, vararg formatArgs: Any?): String {
         return ActivityUtils.getTopActivity().getString(resId, *formatArgs)

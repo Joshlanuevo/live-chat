@@ -15,7 +15,7 @@ import com.ym.chat.utils.MsgType
 /**
  * 会话表数据操作类
  */
-class ConversationDb {
+class ConversationDb() {
 
     private val TAG = "ConversationDb"
 
@@ -41,7 +41,7 @@ class ConversationDb {
                     type = 2
                     sysType = 1
                     sysSort = 0
-                    lastMsg = "欢迎使用\"我的收藏\""
+                    lastMsg = "" // "欢迎使用\"我的收藏\""
                 }
                 put(mineCollectConver)
                 Log.d(TAG, "我的收藏初始化成功")

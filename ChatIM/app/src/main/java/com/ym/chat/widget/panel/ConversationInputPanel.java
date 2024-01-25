@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.GsonUtils;
@@ -59,6 +60,7 @@ import com.ym.chat.utils.ChatUtils;
 import com.ym.chat.utils.EmojiUtils;
 import com.ym.chat.utils.MsgType;
 import com.ym.chat.utils.audio.AudioRecorderPanel;
+import com.ym.chat.viewmodel.ChatViewModel;
 import com.ym.chat.widget.PageTransformer;
 import com.ym.chat.widget.ateditview.AtUserEditText;
 import com.ym.chat.widget.ateditview.AtUserHelper;
@@ -67,6 +69,9 @@ import java.util.List;
 
 public class ConversationInputPanel extends FrameLayout implements View.OnClickListener, TextWatcher, View.OnKeyListener {
     static final String TAG = "ConversationInputPanel";
+
+    MutableLiveData keyWordResult;
+
     LinearLayout inputContainerLinearLayout;
     LinearLayout mediaOption;
     LinearLayout llInputRoot;
@@ -596,7 +601,14 @@ public class ConversationInputPanel extends FrameLayout implements View.OnClickL
                     StringExtKt.toast("请输入发送内容");
                     return;
                 }
+
+//                if (ChatUtils.INSTANCE.msgContentHasKeyWork(s)) {
+//                    StringExtKt.toast("内容包含敏感词，请重新输入");
+//                    return;
+//                }
+
                 if (isAllowSendMsg())
+
                     if (sendMsgListener != null) {
                         if (isAutoClear) {
                             editText.setText("");
