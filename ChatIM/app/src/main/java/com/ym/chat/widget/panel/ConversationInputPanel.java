@@ -70,8 +70,6 @@ import java.util.List;
 public class ConversationInputPanel extends FrameLayout implements View.OnClickListener, TextWatcher, View.OnKeyListener {
     static final String TAG = "ConversationInputPanel";
 
-    MutableLiveData keyWordResult;
-
     LinearLayout inputContainerLinearLayout;
     LinearLayout mediaOption;
     LinearLayout llInputRoot;
@@ -602,13 +600,7 @@ public class ConversationInputPanel extends FrameLayout implements View.OnClickL
                     return;
                 }
 
-//                if (ChatUtils.INSTANCE.msgContentHasKeyWork(s)) {
-//                    StringExtKt.toast("内容包含敏感词，请重新输入");
-//                    return;
-//                }
-
                 if (isAllowSendMsg())
-
                     if (sendMsgListener != null) {
                         if (isAutoClear) {
                             editText.setText("");

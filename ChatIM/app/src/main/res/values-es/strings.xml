@@ -1,6 +1,6 @@
 <resources>
-<!--    <string name="app_name">Live700</string>-->
-    <string name="app_name">维云科技</string>
+    <string name="app_name">Live700</string>
+<!--    <string name="app_name">维云科技</string>-->
     <string name="需要存储权限">Necesita permisos de almacenamiento</string>
     <string name="voice_rec">Deslizar hacia arriba para cancelar</string>
     <string name="voice_cancel">Soltar para cancelar</string>

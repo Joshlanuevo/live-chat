@@ -12,6 +12,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import com.chad.library.adapter.base.BaseBinderAdapter
 import com.dylanc.viewbinding.binding
@@ -35,6 +36,8 @@ import com.ym.chat.ext.setColorAndString
 import com.ym.chat.item.*
 import com.ym.chat.utils.ChatType
 import com.ym.chat.viewmodel.FriendViewModel
+import com.ym.chat.utils.LanguageUtils
+import com.ym.chat.utils.ToastUtils
 import java.util.*
 
 /**
@@ -124,14 +127,30 @@ class SearchFriendActivity : LoadingActivity() {
      */
     private fun searchStrVerify() {
         mSearchKeyWord?.let { str ->
-            if (str.isNotEmpty())
-                if (str.uppercase() == MMKVUtils.getUser()?.username?.uppercase() || str == AccountDao.getAccountMobile())
+            if (str.isNotEmpty()) {
+                if (str.uppercase() == MMKVUtils.getUser()?.username?.uppercase() || str == AccountDao.getAccountMobile()) {
                     getString(R.string.查询的会员是本人).toast()
-                else
-//                    mViewModel.searchFriend(str)
-                    getString(R.string.查询的会员不存在).toast() // fix bug and translated to english
+                } else {
+                    mViewModel.searchFriend(str)
+                }
+            } else {
+                getString(R.string.查询的会员不存在).toast()
+            }
         }
     }
+
+
+
+//    private fun searchStrVerify() {
+//        mSearchKeyWord?.let { str ->
+//            if (str.isNotEmpty())
+//                if (str.uppercase() == MMKVUtils.getUser()?.username?.uppercase() || str == AccountDao.getAccountMobile())
+//                    getString(R.string.查询的会员是本人).toast()
+//                else
+//                    mViewModel.searchFriend(str)
+//                    getString(R.string.查询的会员不存在).toast() // fix bug and translated to english
+//        }
+//    }
 
     /**
      * 禁止EditText输入空格和换行符
