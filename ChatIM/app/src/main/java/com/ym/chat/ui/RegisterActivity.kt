@@ -18,7 +18,7 @@ class RegisterActivity : BaseActivity() {
     private lateinit var fraStep1: RegisterStep1Fragment
 
     override fun initView() {
-        bindView.tvInfo.text = getString(R.string.app_name)+getString(R.string.让通信如此简单)
+        bindView.tvInfo.text = "${getString(R.string.app_name)}" + " " + "${getString(R.string.让通信如此简单)}"
         bindView.tvAppName.text = getString(R.string.app_name)
         bindView.tvBack.click {
             finish()

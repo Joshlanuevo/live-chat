@@ -21,6 +21,8 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="MediaStore.Images.Media.INTERNAL_CONTENT_URI" />
     <uses-permission android:name="MediaStore.Images.Media.EXTERNAL_CONTENT_URI" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <!--for android-->
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>

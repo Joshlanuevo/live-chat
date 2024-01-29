@@ -75,8 +75,8 @@ class LoginActivity : LoadingActivity() {
 
     override fun initView() {
         bindView.tvAppName.text =getString(R.string.app_name)
-        bindView.tvInfo.text = getString(R.string.app_name) + getString(R.string.让通信如此简单)
-        bindView.tvMobileLogin.text = getString(R.string.app_name) + getString(R.string.zhanghaodenglu)
+        bindView.tvInfo.text = "${getString(R.string.app_name)}" + " " + "${getString(R.string.让通信如此简单)}"
+        bindView.tvMobileLogin.text = "${getString(R.string.app_name)}" + " " + "${getString(R.string.zhanghaodenglu)}"
         bindView.tvMobileLogin.click {
 //            //手机账号登录
 //            bindView.tvMobileLogin.setTextColor(getColor(R.color.color_main))

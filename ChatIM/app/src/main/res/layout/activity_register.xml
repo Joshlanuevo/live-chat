@@ -82,7 +82,7 @@
         android:id="@+id/tvMobileLogin"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginLeft="64dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="@string/zhanghaozhuce"
@@ -98,6 +98,7 @@
         android:layout_height="1dp"
         android:layout_weight="1"
         android:background="#6C5DD3"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@id/tvMobileLogin"
         app:layout_constraintRight_toRightOf="@id/tvMobileLogin"
         app:layout_constraintTop_toBottomOf="@id/tvMobileLogin" />

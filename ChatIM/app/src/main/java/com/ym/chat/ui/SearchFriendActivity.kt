@@ -133,8 +133,6 @@ class SearchFriendActivity : LoadingActivity() {
                 } else {
                     mViewModel.searchFriend(str)
                 }
-            } else {
-                getString(R.string.查询的会员不存在).toast()
             }
         }
     }

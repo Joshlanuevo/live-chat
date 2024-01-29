@@ -258,13 +258,13 @@
             android:layout_marginRight="@dimen/dp_80"
             android:background="@drawable/bg_black_half_90dp"
             android:gravity="center"
-            android:text="本群已禁止截图"
+            android:text="@string/benqunyijinzhijietu"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/layoutTop"
             tools:ignore="MissingConstraints"
-            tools:visibility="visible" />
+            tools:visibility="visible" /> <!--"本群已禁止截图"-->
 
         <!--@功能选择群成员-->
         <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -304,7 +304,7 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_10"
-                android:text="你将发消息给：" />
+                android:text="@string/nijiangfaxiaoxigei" /> <!--"你将发消息给："-->
 
             <ScrollView
                 android:layout_width="match_parent"

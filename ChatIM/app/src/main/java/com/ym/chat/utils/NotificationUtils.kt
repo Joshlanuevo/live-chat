@@ -116,6 +116,14 @@ object NotificationUtils {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        // Full-screen intent
+        val fullScreenIntent = PendingIntent.getActivity(
+            Utils.getApp(),
+            0,
+            intentClick,  // Use the same intent as the regular intent
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
         //通知栏移除
         val intent =
             Intent("com.ym.chat.broadcast.NOTIFICATION_REMOVE").putExtra("targetId", targetId)
@@ -143,6 +151,8 @@ object NotificationUtils {
             .setCategory(Notification.CATEGORY_MESSAGE)
             .setNumber(count) // display the badge for unread messages
             .setPriority(PRIORITY_MAX)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setFullScreenIntent(fullScreenIntent, true)  // Set full-screen intent
             .setContentIntent(pendingIntent).apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     adaptAndroidN(context, this, targetId, msg.chatType);
@@ -201,6 +211,7 @@ object NotificationUtils {
                     val channel = NotificationChannel(channelId, name, importance).apply {
                         description = descriptionText
                     }
+                    channel.lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
                     channel.setShowBadge(false)
                     // Register the channel with the system
                     notificationManager = Utils.getApp()

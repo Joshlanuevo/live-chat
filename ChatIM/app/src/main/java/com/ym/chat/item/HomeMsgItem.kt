@@ -170,7 +170,7 @@ class HomeMsgItem(
             if (data.lastMsg == "") {
                 viewBinding.tvMsgPre.text = welcomeString
             } else {
-                viewBinding.tvMsgPre.text = data.lastMsg
+                showCollectLastMsg(viewBinding.tvMsgPre, data)
             }
         } else if (data.sysType == 2) {
             //系统通知
