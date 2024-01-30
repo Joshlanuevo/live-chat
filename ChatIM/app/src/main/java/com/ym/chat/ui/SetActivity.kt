@@ -1,13 +1,7 @@
 package com.ym.chat.ui
 
 import android.content.Intent
-import android.text.TextUtils
-import android.util.Log
-import android.widget.CompoundButton
-import androidx.core.view.ContentInfoCompat.Flags
-import com.blankj.utilcode.util.SPUtils
 import com.dylanc.viewbinding.binding
-import com.jakewharton.processphoenix.ProcessPhoenix
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.ym.base.constant.EventKeys
 import com.ym.base.ext.toast
@@ -15,17 +9,13 @@ import com.ym.base.mvvm.BaseViewModel
 import com.ym.base.util.save.MMKVUtils
 import com.ym.base.widget.ext.click
 import com.ym.chat.R
-import com.ym.chat.bean.LanguageChangeEvent
 import com.ym.chat.databinding.ActivitySetBinding
-import com.ym.chat.dialog.CancelDialogCallback
 import com.ym.chat.dialog.ConfirmDialogCallback
 import com.ym.chat.dialog.HintDialog
 import com.ym.chat.service.WebsocketWork
 import com.ym.chat.utils.AppManagerUtils
 import com.ym.chat.utils.DataCleanManagerUtils
-import com.ym.chat.utils.LanguageUtils
 import com.ym.chat.viewmodel.SetViewModel
-import java.util.Locale
 
 /**
  * @version V1.0

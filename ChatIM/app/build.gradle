@@ -162,8 +162,11 @@ android {
     //统一打包命名
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "im_v${variant.versionName}_${variant.buildType.name}_${releaseTime()}.apk"
+//            outputFileName = "im_v${variant.versionName}_${variant.buildType.name}_${releaseTime()}.apk"
 //            outputFileName = "im_release_apk.apk"
+            def formattedDate = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+00:00"))
+            def buildNumber = getBuildNumber()
+            outputFileName = "im_v${variant.versionName}_${formattedDate}.${buildNumber}.apk"
         }
     }
 
@@ -266,6 +269,19 @@ dependencies {
 }
 
 apply plugin: 'io.objectbox'
+
+def getBuildNumber() {
+    def buildNumberFile = project.rootProject.file('buildNumber.txt')
+    if (buildNumberFile.exists()) {
+        def buildNumber = buildNumberFile.text.toInteger()
+        buildNumber += 1
+        buildNumberFile.text = buildNumber.toString()
+        return buildNumber
+    } else {
+        buildNumberFile.text = "1"
+        return 1
+    }
+}
 
 
 //获取编译时间
