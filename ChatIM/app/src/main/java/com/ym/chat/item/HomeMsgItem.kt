@@ -207,6 +207,10 @@ class HomeMsgItem(
             showLastMsg(viewBinding.tvMsgPre, data)
         }
 
+        if (data.lastMsg == "") {
+            viewBinding.tvMsgPre.text = context.getString(R.string.聊天为空)
+        }
+
         //免打扰设置
         if (isConverList) {
             if (data.isMute) {
@@ -311,7 +315,12 @@ class HomeMsgItem(
                 viewBinding.tvFrom.gone()
                 viewBinding.tvFrom.text = ""
             }
-            showLastMsg(viewBinding.tvMsgPre, data)
+//            showLastMsg(viewBinding.tvMsgPre, data)
+            if (TextUtils.isEmpty(data.lastMsg)) {
+                viewBinding.tvMsgPre.text = context.getString(R.string.聊天为空)
+            } else {
+                showLastMsg(viewBinding.tvMsgPre, data)
+            }
         }
 
 //        //@消息显示

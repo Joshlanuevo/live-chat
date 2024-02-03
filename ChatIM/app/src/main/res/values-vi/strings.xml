@@ -619,6 +619,7 @@
     <string name="已经使用语言">Ngôn ngữ đã được sử dụng</string>
     <string name="敬请关注">Hãy theo dõi！</string>
     <string name="这个结果查询不存在">Kết quả truy vấn này không tồn tại</string>
+    <string name="聊天为空">"Cuộc trò chuyện trống rỗng."</string> <!--vannn-->
     <string name="我们已经是好友了赶快聊天吧">Chúng ta đã là bạn, hãy trò chuyện ngay thôi!</string>
     <string name="更换语言需要重启App才能生效">Lưu ý: Để thay đổi ngôn ngữ có hiệu lực, bạn cần khởi động lại ứng dụng. Bạn có muốn thay đổi không?</string>
 </resources>

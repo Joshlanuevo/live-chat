@@ -620,6 +620,7 @@
     <string name="敬请关注">Fique atento!</string>
     <string name="消息发送过于频繁">Mensagens enviadas com muita frequência</string> <!--vannn-->
     <string name="这个结果查询不存在">Consulta de resultado não existe</string> <!--vannn-->
+    <string name="聊天为空">"O chat está vazio."</string> <!--vannn-->
     <string name="我们已经是好友了赶快聊天吧">Já somos amigos, venha conversar!</string> <!--vannn-->
     <string name="更换语言需要重启App才能生效">Mudar o idioma requer reiniciar o aplicativo para ter efeito. Você tem certeza de que deseja mudar?</string>
 </resources>

@@ -620,6 +620,7 @@
     <string name="敬请关注">Magtuon ng pansin!</string>
     <string name="消息发送过于频繁">Ang mga mensahe ay sobrang madalas na ipinadadala</string> <!--vannn-->
     <string name="这个结果查询不存在">Ang resulta ng query ay hindi umiiral</string> <!--vannn-->
+    <string name="聊天为空">"Ang usapan ay walang laman."</string> <!--vannn-->
     <string name="我们已经是好友了赶快聊天吧">Tayo ay magkaibigan na, mag-usap na tayo!</string> <!--vannn-->
     <string name="更换语言需要重启App才能生效">Ang pagpapalit ng wika ay nangangailangan ng pagsisimula ng app upang maging epektibo. Sigurado ka bang gusto mong baguhin ito?</string>
 </resources>

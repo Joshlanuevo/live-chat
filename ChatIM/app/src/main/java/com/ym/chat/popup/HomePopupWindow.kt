@@ -8,15 +8,11 @@ import android.widget.TextView
 import com.xu.xpopupwindow.XPopupWindow
 import com.ym.base.util.save.MMKVUtils
 import com.ym.base.widget.ext.click
-import com.ym.base.widget.ext.gone
 import com.ym.base.widget.ext.visible
 import com.ym.chat.R
-import com.ym.chat.ui.AddFriendActivity
 import com.ym.chat.ui.ContactActivity
 import com.ym.chat.ui.QRCodeActivity
 import com.ym.chat.ui.SearchFriendActivity
-import com.ym.chat.utils.MemberLevelType
-import com.ym.chat.utils.MsgType
 
 /**
  * 首页右上方
