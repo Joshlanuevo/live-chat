@@ -621,7 +621,13 @@
     <string name="您创建了群组">您创建了群组</string>
     <string name="消息发送过于频繁">消息发送过于频繁</string>
     <string name="这个结果查询不存在">这个结果查询不存在</string>
+    <string name="获取收藏信息失败">获取收藏信息失败</string> <!--vannn-->
     <string name="聊天为空">"聊天为空."</string> <!--vannn-->
+    <string name="正在连接">正在连接...</string> <!--vannn-->
+    <string name="已连接">已连接</string> <!--vannn-->
+    <string name="连接失败">连接失败</string> <!--vannn-->
+    <string name="等待网络">等待网络</string> <!--vannn-->
+    <string name="连接中">连接中...</string> <!--vannn-->
     <string name="我们已经是好友了赶快聊天吧">我们已经是好友了，赶快聊天吧!</string> <!--vannn-->
     <string name="更换语言需要重启App才能生效">请注意更换语言需要重启App才能生效，您确定要更换吗？</string>
 

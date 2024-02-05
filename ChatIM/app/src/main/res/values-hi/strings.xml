@@ -620,7 +620,13 @@
     <string name="敬请关注">संबंधित रहें!</string>
     <string name="消息发送过于频繁">संदेश बहुत अधिक बार भेजे गए हैं</string> <!--vannn-->
     <string name="这个结果查询不存在">परिणाम की जाँच मौजूद नहीं है</string> <!--vannn-->
+    <string name="获取收藏信息失败">संग्रहण जानकारी प्राप्त करने में विफल</string> <!--vannn-->
     <string name="聊天为空">"चैट खाली है।"</string> <!--vannn-->
+    <string name="正在连接">कनेक्ट...</string> <!--vannn-->
+    <string name="已连接">जुड़े हुए</string> <!--vannn-->
+    <string name="连接失败">कनेक्शन विफल</string> <!--vannn-->
+    <string name="等待网络">नेटवर्क का इंतजार किया जा रहा है</string> <!--vannn-->
+    <string name="连接中">कनेक्टिंग...</string> <!--vannn-->
     <string name="我们已经是好友了赶快聊天吧">हम पहले से ही दोस्त हैं, जल्दी से चैट करें!</string> <!--vannn-->
     <string name="更换语言需要重启App才能生效">भाषा बदलने के लिए ऐप को पुनः चालना आवश्यक है। क्या आप वाकई इसे बदलना चाहते हैं?</string>
 </resources>

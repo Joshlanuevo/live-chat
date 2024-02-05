@@ -1,5 +1,6 @@
 package com.ym.chat.viewmodel
 
+import android.content.Context
 import android.text.TextUtils
 import androidx.lifecycle.MutableLiveData
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -17,6 +18,7 @@ import com.ym.chat.service.WebsocketServiceManager
 import com.ym.chat.service.WebsocketWork
 import com.ym.chat.utils.ChatType
 import com.ym.chat.utils.MsgType
+import com.ym.chat.R
 import com.ym.chat.utils.StringExt.isAtMsg
 import rxhttp.wrapper.utils.GsonUtil
 
@@ -43,7 +45,7 @@ class CollectModel : BaseViewModel() {
     /**
      * 获取收藏数据列表
      */
-    fun getCollectList(curPage: String, pageSize: String = "20") {
+    fun getCollectList(context: Context, curPage: String, pageSize: String = "20") {
         if (collectResult.value is LoadState.Loading) return
         requestLifeLaunch({
             val result = CollectRepository.getCollectList(curPage, pageSize)
@@ -58,7 +60,7 @@ class CollectModel : BaseViewModel() {
                 }
             }
         }, onError = {
-            collectResult.value = LoadState.Fail(exc = Exception("获取收藏信息失败"))
+            collectResult.value = LoadState.Fail(exc = Exception("${context.getString(R.string.获取收藏信息失败)}")) // "获取收藏信息失败"
         }, onStart = {
             collectResult.value = LoadState.Loading()
         })
@@ -69,7 +71,7 @@ class CollectModel : BaseViewModel() {
      * 删除多个时，
      * @string  id与id用逗号隔开的字符串
      */
-    fun delCollectList(favoriteIdList: MutableList<String>) {
+    fun delCollectList(context: Context, favoriteIdList: MutableList<String>) {
         if (delCollectResult.value is LoadState.Loading) return
         requestLifeLaunch({
             val result = CollectRepository.delCollectList(favoriteIdList)
@@ -84,7 +86,7 @@ class CollectModel : BaseViewModel() {
                 }
             }
         }, onError = {
-            delCollectResult.value = LoadState.Fail(exc = Exception("删除收藏信息失败"))
+            delCollectResult.value = LoadState.Fail(exc = Exception("${context.getString(R.string.获取收藏信息失败)}")) // "获取收藏信息失败"
         }, onStart = {
             delCollectResult.value = LoadState.Loading()
         })

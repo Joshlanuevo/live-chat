@@ -620,7 +620,13 @@
     <string name="敬请关注">Jangan lepaskan!</string>
     <string name="消息发送过于频繁">Mesej dihantar terlalu kerap</string> <!--vannn-->
     <string name="这个结果查询不存在">Pertanyaan keputusan ini tidak wujud</string> <!--vannn-->
+    <string name="获取收藏信息失败">Gagal mendapatkan maklumat pengumpulan</string> <!--vannn-->
     <string name="聊天为空">"Perbualan kosong."</string> <!--vannn-->
+    <string name="正在连接">Menyambung...</string> <!--vannn-->
+    <string name="已连接">Bersambung</string> <!--vannn-->
+    <string name="连接失败">Sambungan gagal</string> <!--vannn-->
+    <string name="等待网络">Menunggu rangkaian</string> <!--vannn-->
+    <string name="连接中">Menyambung...</string> <!--vannn-->
     <string name="我们已经是好友了赶快聊天吧">Kita sudah menjadi rakan, mari berbual!</string> <!--vannn-->
     <string name="更换语言需要重启App才能生效">Menukar bahasa memerlukan anda untuk memulakan semula aplikasi agar berkuat kuasa. Adakah anda pasti mahu menukar?</string>
 </resources>

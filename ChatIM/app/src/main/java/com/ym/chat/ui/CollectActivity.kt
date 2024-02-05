@@ -115,7 +115,7 @@ class CollectActivity : LoadingActivity(),
     override fun requestData() {
         //获取表情数据
         mEmojViewModel.getEmojList()
-        mViewModel.getCollectList(curPage.toString(), pageSize.toString())
+        mViewModel.getCollectList(this, curPage.toString(), pageSize.toString())
     }
 
     private fun addItemBinder() {
@@ -235,7 +235,7 @@ class CollectActivity : LoadingActivity(),
                     delCollectId = recordBean.id
                     collectIds.add(delCollectId)
                     //删除
-                    mViewModel.delCollectList(collectIds)
+                    mViewModel.delCollectList(this@CollectActivity, collectIds)
                 }
             },
             R.drawable.ic_dialog_top
@@ -360,13 +360,13 @@ class CollectActivity : LoadingActivity(),
         bindView.refreshLayout.setOnRefreshListener {
             curPage++
             isRefresh = true
-            mViewModel.getCollectList(curPage.toString(), pageSize.toString())
+            mViewModel.getCollectList(this, curPage.toString(), pageSize.toString())
         }
         //加载更多
         bindView.refreshLayout.setOnLoadMoreListener() {
             curPage = 1
             isRefresh = true
-            mViewModel.getCollectList(curPage.toString(), pageSize.toString())
+            mViewModel.getCollectList(this, curPage.toString(), pageSize.toString())
         }
     }
 

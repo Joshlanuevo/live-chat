@@ -3155,40 +3155,40 @@ class ChatActivity : LoadingActivity(),
             ImConnectSatus.CONNECTING -> {
                 //连接中
                 bindView.tvWsState.visible()
-                bindView.tvWsState.text = "正在连接..."
+                bindView.tvWsState.text = "${getString(R.string.正在连接)}" // "正在连接..."
             }
 
             ImConnectSatus.SUCCESS -> {
                 //连接成功
                 bindView.tvWsState.gone()
-                bindView.tvWsState.text = "已连接"
+                bindView.tvWsState.text = "${getString(R.string.已连接)}" // "已连接"
             }
 
             ImConnectSatus.CONNECT_FAIL -> {
                 //连接失败
                 bindView.tvWsState.visible()
-                bindView.tvWsState.text = "连接失败"
+                bindView.tvWsState.text = "${getString(R.string.连接失败)}" // "连接失败"
             }
 
             ImConnectSatus.CLOSE -> {
                 //连接已断开
                 bindView.tvWsState.visible()
-                if (bindView.tvWsState.text != "连接中...") {
-                    bindView.tvWsState.text = "连接中..."
+                if (bindView.tvWsState.text != "${getString(R.string.连接中)}") { // "连接中..."
+                    bindView.tvWsState.text = "${getString(R.string.连接中)}" // "连接中..."
                 }
             }
 
             ImConnectSatus.NET_ERROR -> {
                 //网络已断开
                 bindView.tvWsState.visible()
-                bindView.tvWsState.text = "等待网络"
+                bindView.tvWsState.text = "${getString(R.string.等待网络)}" // "等待网络"
             }
 
             ImConnectSatus.RECONNECT -> {
                 //自动重连中
                 bindView.tvWsState.visible()
-                if (bindView.tvWsState.text != "连接中...") {
-                    bindView.tvWsState.text = "连接中..."
+                if (bindView.tvWsState.text != "${getString(R.string.连接中)}") { // "连接中..."
+                    bindView.tvWsState.text = "${getString(R.string.连接中)}" // "连接中..."
                 }
             }
         }

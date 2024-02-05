@@ -620,7 +620,13 @@
     <string name="敬请关注">Stay tuned！</string>
     <string name="消息发送过于频繁">Messages sent too frequently</string> <!--vannn-->
     <string name="这个结果查询不存在">result query doesnt exist</string> <!--vannn-->
+    <string name="获取收藏信息失败">Failed to obtain collection information</string> <!--vannn-->
     <string name="聊天为空">"The chat is empty."</string> <!--vannn-->
+    <string name="正在连接">Connecting...</string> <!--vannn-->
+    <string name="已连接">Connected</string> <!--vannn-->
+    <string name="连接失败">Connection failed</string> <!--vannn-->
+    <string name="等待网络">Waiting for network</string> <!--vannn-->
+    <string name="连接中">Connecting...</string> <!--vannn-->
     <string name="我们已经是好友了赶快聊天吧">We are already friends, come and chat!</string> <!--vannn-->
     <string name="更换语言需要重启App才能生效">Changing the language requires restarting the app to take effect. Are you sure you want to change it?</string>
 </resources>
