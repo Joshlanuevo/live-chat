@@ -21,6 +21,8 @@ import com.ym.chat.R
 import com.ym.chat.bean.ConversationBean
 import com.ym.chat.databinding.ItemHomeMsgBinding
 import com.ym.chat.db.ChatDao
+import com.ym.chat.db.NotifyDb
+import com.ym.chat.ui.CollectActivity
 import com.ym.chat.utils.MsgType
 import com.ym.chat.utils.PopUtils
 import com.ym.chat.utils.TimeUtils
@@ -153,6 +155,7 @@ class HomeMsgItem(
         viewBinding.ivSilence.gone()
         viewBinding.tvMsgCount.setBackgroundResource(R.drawable.bg_red_10dp)
         val welcomeString = context.getString(R.string.huanyingshiyong)
+//        val delString = ChatDao.getConversationDb().updateCollectLastMsg(msgType = "text", content = context.getString(R.string.欢迎使用), msgTime = System.currentTimeMillis()).toString()
         //系统会话
         viewBinding.tvFrom.gone()
         if (data.sysType == 1) {
@@ -172,16 +175,27 @@ class HomeMsgItem(
             } else {
                 showCollectLastMsg(viewBinding.tvMsgPre, data)
             }
+//        } else if (data.lastMsg == delString) {
+//                viewBinding.tvMsgPre.text = context.getString(R.string.欢迎使用)
         } else if (data.sysType == 2) {
             //系统通知
             viewBinding.tvNickName.text = context.getString(R.string.xitongtongzhi)
-            viewBinding.tvMsgPre.text = data.lastMsg
+//            viewBinding.tvMsgPre.text = context.getString(R.string.haoyoutongzhi) // data.lastMsg
             viewBinding.tvMsgCount.gone()
             viewBinding.tvHeader.gone()
             viewBinding.layoutHeader.apply {
                 setRoundRadius(100F)
             }.showImageRes(R.drawable.ic_notify)
-            viewBinding.tvMsgPre.text = data.lastMsg
+            if (data.lastMsg == NotifyDb().getTypeTitle("Friend")) {
+                viewBinding.tvMsgPre.text = context.getString(R.string.haoyoutongzhi)
+            } else if (data.lastMsg == NotifyDb().getTypeTitle("VerfiyNotify")) {
+                viewBinding.tvMsgPre.text = context.getString(R.string.yanzhengtongzhi)
+            } else if (data.lastMsg == NotifyDb().getTypeTitle("InviteGroup")) {
+                viewBinding.tvMsgPre.text = context.getString(R.string.qunzutongzhi)
+            } else {
+                viewBinding.tvMsgPre.text = context.getString(R.string.xitongtongzhi)
+            }
+//            viewBinding.tvMsgPre.text = context.getString(R.string.haoyoutongzhi) // data.lastMsg
 
             //未读消息
             val count = ChatDao.getNotifyDb().getUnReadMsgCount()
