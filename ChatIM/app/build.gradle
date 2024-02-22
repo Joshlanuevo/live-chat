@@ -6,7 +6,6 @@ android {
     buildToolsVersion BuildConfig.buildToolsVersion
 
     defaultConfig {
-
         applicationId BuildConfig.app.applicationId
 //        applicationId randomPackageName()
         minSdkVersion BuildConfig.minSdkVersion
@@ -22,6 +21,21 @@ android {
 //        resConfigs "zh-rCN"//随便过滤一种没有的语言，就会只打默认的语言到APK
         ndk {
             abiFilters "armeabi-v7a", "x86", "armeabi-v8a","arm64-v8a"
+        }
+
+//        manifestPlaceholders = [
+//                JPUSH_PKGNAME : applicationId,
+//                JPUSH_APPKEY  : "03b8da5e04737f43e4a5c45f",//值来自开发者平台取得的AppKey
+//                JPUSH_CHANNEL : "default_developer",
+//                //xiaomi_config_start
+//                XIAOMI_APPID  : "MI-2882303761520289936",
+//                XIAOMI_APPKEY : "MI-5482028916936",
+//        ]
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
         }
     }
 
@@ -147,7 +161,24 @@ android {
 
             manifestPlaceholders = [
                     APP_LABEL: appName,
-                    APP_ICON : appIcon
+                    APP_ICON : appIcon,
+                    JPUSH_PKGNAME : "com.ym.chat",
+                    JPUSH_APPKEY  : "03b8da5e04737f43e4a5c45f", //值来自开发者平台取得的AppKey
+                    JPUSH_CHANNEL : "default_developer",
+
+                    //xiaomi_config_start
+                    XIAOMI_APPID  : "MI-2882303761520289936",
+                    XIAOMI_APPKEY : "MI-5482028916936",
+                    //xiaomi_config_end
+
+//                    MEIZU_APPKEY : "MZ-魅族的APPKEY",
+//                    MEIZU_APPID : "MZ-魅族的APPID",
+//                    OPPO_APPKEY : "OP-oppo的APPKEY",
+//                    OPPO_APPID : "OP-oppo的APPID",
+//                    OPPO_APPSECRET : "OP-oppo的APPSECRET",
+//                    VIVO_APPKEY : "vivo的APPKEY",
+//                    VIVO_APPID : "vivo的APPID"
+
             ]
         }
     }
@@ -173,6 +204,12 @@ android {
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
     }
 }
 dependencies {
@@ -264,6 +301,31 @@ dependencies {
 
     // Dependency for ShortcutBadger to manage app icon badge counts
     implementation "me.leolin:ShortcutBadger:1.1.22@aar"
+
+    // 此处以JPush 5.0.3 版本为例，注意：从 5.0.0 版本开始可以自动拉取 JCore 包，无需另外配置
+//    implementation 'cn.jiguang.sdk:jpush:5.0.0'
+    implementation 'cn.jiguang.sdk:jpush:5.0.3'
+//    implementation 'cn.jiguang.sdk:jpush:5.2.0'
+//    implementation 'cn.jiguang.sdk:jpush:3.9.3'
+
+    // 接入小米厂商
+//    implementation 'cn.jiguang.sdk.plugin:xiaomi:5.0.0'
+
+//    implementation 'cn.jiguang.sdk:jcore:2.7.2'  // 此处以JCore 2.7.2 版本为例。
+//    implementation 'cn.jiguang.sdk:jpush:4.0.0'  // 此处以JPush 4.0.0 版本为例
+
+//    implementation 'cn.jiguang.sdk.plugin:huawei:4.0.0'// 极光厂商插件版本与接入 JPush 版本保持一致，下同
+//    // 接入 FCM 厂商
+//    implementation 'com.google.firebase:firebase-messaging:21.0.1'
+//    implementation 'cn.jiguang.sdk.plugin:fcm:4.0.0'
+//    // 接入魅族厂商
+//    implementation 'cn.jiguang.sdk.plugin:meizu:4.0.0'
+//    // 接入 VIVO 厂商
+//    implementation 'cn.jiguang.sdk.plugin:vivo:4.0.0'
+//    // 接入 OPPO 厂商
+//    implementation 'cn.jiguang.sdk.plugin:oppo:4.0.0'
+    // 接入小米厂商
+    implementation 'cn.jiguang.sdk.plugin:xiaomi:4.0.0'
 
 
 }

@@ -35,6 +35,7 @@ import com.ym.chat.item.chatlistener.ChatPopClickType
 import com.ym.chat.item.chatlistener.OnChatItemListener
 import com.ym.chat.rxhttp.FriendRepository
 import com.ym.chat.rxhttp.UserRepository
+import com.ym.chat.service.PushMessageService
 import com.ym.chat.ui.ChatActivity
 import com.ym.chat.ui.VideoPlayActivity
 import com.ym.chat.utils.audio.AudioPlayManager
@@ -1062,6 +1063,7 @@ object ChatUtils {
                         Mp3Player.playMusic()
                     }
                     NotificationUtils.showNotification(Utils.getApp(), chatMsg)
+
                 }
             } else {
                 Mp3Player.playMusic()

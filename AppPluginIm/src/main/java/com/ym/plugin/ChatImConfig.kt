@@ -13,7 +13,7 @@ class ChatImConfig : AppConfig() {
     override var versionName = "1.0.0"
 
     //包名
-    override var applicationId = "com.youliao.chat"
+    override var applicationId = "com.ym.chat" // "com.youliao.chat"
 
     //app名称（手机桌面显示）
     override var appName = "友聊"

@@ -14,7 +14,6 @@ import com.ym.base.ext.logD
 import com.ym.base.ext.logE
 import com.ym.base.util.save.MMKVUtils
 
-
 open abstract class BaseActivity : AppCompatActivity() {
     var isShowNoNetDialog = false
     var isLogin = !MMKVUtils.getUserId().isNullOrBlank()

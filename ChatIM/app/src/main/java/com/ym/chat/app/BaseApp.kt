@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Process
+import android.util.Log
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.scwang.smart.refresh.footer.ClassicsFooter
@@ -14,6 +15,7 @@ import com.ym.chat.ui.HomeActivity
 import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.ios.IosEmojiProvider
 import com.ym.chat.utils.LanguageUtils
+import cn.jpush.android.api.JPushInterface
 
 class BaseApp : Application() {
 
@@ -25,6 +27,8 @@ class BaseApp : Application() {
         super.onCreate()
         initData()
         registerActivityLifecycleCallbacks(LanguageUtils.callbacks)
+//        JPushInterface.setDebugMode(true)
+        JPushInterface.init(this)
     }
 
     /***

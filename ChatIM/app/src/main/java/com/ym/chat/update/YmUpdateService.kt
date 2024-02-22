@@ -6,9 +6,11 @@ import android.content.*
 import android.os.Build
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.JobIntentService
 import androidx.core.app.NotificationCompat
+import cn.jpush.android.api.JPushInterface
 import com.blankj.utilcode.util.*
 import com.ym.base.ext.launchError
 import com.ym.base.ext.xmlToString

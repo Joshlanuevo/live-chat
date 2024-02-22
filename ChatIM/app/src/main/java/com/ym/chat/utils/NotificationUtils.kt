@@ -189,15 +189,15 @@ object NotificationUtils {
         // the NotificationChannel class is new and not in the support library
         initNotificationManager(Utils.getApp(), channelId)
         if (Build.BRAND.lowercase() == "xiaomi") {
-//            BadgeUtils.setCount(0, Utils.getApp(), notification)
-            ShortcutBadger.applyNotification(Utils.getApp(), notification, 0)
-//            notificationManager?.notify(id, notification)
+            BadgeUtils.setCount(0, Utils.getApp(), notification)
+            notificationManager?.notify(id, notification)
+//            ShortcutBadger.applyNotification(Utils.getApp(), notification, 0)
         } else {
-//            notificationManager?.notify(id, notification)
-            ShortcutBadger.applyCount(Utils.getApp(), 0)
-//            BadgeUtils.setCount(0, Utils.getApp(), notification)
+//            ShortcutBadger.applyCount(Utils.getApp(), 0)
+            notificationManager?.notify(id, notification)
+            BadgeUtils.setCount(0, Utils.getApp(), notification)
         }
-        notificationManager?.notify(id, notification)
+//        notificationManager?.notify(id, notification)
     }
 
     @Synchronized

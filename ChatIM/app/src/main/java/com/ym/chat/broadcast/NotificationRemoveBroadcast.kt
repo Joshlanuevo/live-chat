@@ -18,6 +18,5 @@ class NotificationRemoveBroadcast : BroadcastReceiver() {
                 ImCache.notifycationMsg[targetId]?.clear()
             }
         }
-
     }
 }
