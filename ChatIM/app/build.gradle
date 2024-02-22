@@ -93,7 +93,7 @@ android {
             crunchPngs false
             //Zipalign优化
             zipAlignEnabled true
-            applicationIdSuffix ".test"
+//            applicationIdSuffix ".test"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
 

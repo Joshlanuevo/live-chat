@@ -1055,6 +1055,7 @@ object ChatUtils {
                         Mp3Player.playMusic()
                     }
                     NotificationUtils.showNotification(Utils.getApp(), chatMsg)
+
                 }
             } else if (chatMsg.chatType == ChatType.CHAT_TYPE_FRIEND) {
                 if (ChatDao.getFriendDb().isMessageNotice(chatMsg.from)) {

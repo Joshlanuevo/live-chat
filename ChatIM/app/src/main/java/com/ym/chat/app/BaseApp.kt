@@ -29,6 +29,7 @@ class BaseApp : Application() {
         registerActivityLifecycleCallbacks(LanguageUtils.callbacks)
 //        JPushInterface.setDebugMode(true)
         JPushInterface.init(this)
+//        Log.d("Registration ID", "Registration ID is: ${JPushInterface.getRegistrationID(this)}")
     }
 
     /***
