@@ -56,6 +56,10 @@
     <!-- Optional for location -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <!--huawei_permission_start-->
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
+    <!--huawei_permission_end-->
     <!--xiaomi_permission_start-->
     <!-- Required -->
     <permission
@@ -65,6 +69,46 @@
     <uses-permission android:name="${applicationId}.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <!--xiaomi_permission_end-->
+
+    <!--jpush_permission_start-->
+    <uses-sdk tools:overrideLibrary="
+     cn.jpush.android.thirdpush.fcm
+    ,cn.jpush.android.thirdpush.huawei
+    ,cn.jpush.android.thirdpush.meizu
+    ,cn.jpush.android.thirdpush.oppo
+    ,cn.jpush.android.thirdpush.vivo
+    ,cn.jpush.android.thirdpush.xiaomi
+    ,com.google.firebase.firebase_core
+    ,com.google.firebase.messaging
+    ,com.google.firebase.analytics.connector.impl
+    ,com.google.firebase.measurement
+    ,com.google.android.gms.measurement.api
+    ,com.google.firebase.measurement_impl
+    ,com.google.firebase.iid
+    ,com.google.firebase
+    ,com.google.firebase.iid.internal
+    ,com.google.android.gms.base
+    ,com.google.android.gms.tasks
+    ,com.google.firebase.analytics.connector
+    ,com.google.android.gms.stats
+    ,com.google.android.gms.ads_identifier
+    ,com.google.android.gms.common
+    ,com.google.android.gms.measurement_base
+    ,com.huawei.android.hms.openid
+    ,com.huawei.agconnect.core
+    ,com.huawei.hmf.tasks
+    ,com.huawei.hms.framework.network.grs
+    ,com.huawei.hms.framework.common
+    ,com.huawei.android.hms.base
+    ,com.huawei.android.hms.push
+    ,android.support.mediacompat
+    ,android.support.fragment
+    ,android.support.coreutils
+    ,android.support.coreui
+    ,android.support.compat
+    ,android.arch.lifecycle" />
+    <!--jpush_permission_end-->
+
 
     <application
         android:name="com.ym.chat.app.BaseApp"
@@ -231,6 +275,16 @@
                 android:value="scene|voip" />
         </activity>
         <!--xiaomi_config_end-->
+
+        <!--huawei_config_start-->
+        <service
+            android:name="cn.jpush.android.service.PluginHuaweiPlatformsService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!--huawei_config_end-->
 
         <!--Required_config-->
         <meta-data

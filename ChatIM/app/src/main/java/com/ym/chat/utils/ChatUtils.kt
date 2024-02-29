@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -1064,7 +1065,6 @@ object ChatUtils {
                         Mp3Player.playMusic()
                     }
                     NotificationUtils.showNotification(Utils.getApp(), chatMsg)
-
                 }
             } else {
                 Mp3Player.playMusic()

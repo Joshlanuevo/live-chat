@@ -41,14 +41,22 @@ android {
 
     signingConfigs {
         release {
-            //签名文件路径
-            storeFile file { "0822.jks" }
-            //签名密码
-            storePassword "gn123456"
-            //别名
-            keyAlias "key"
-            //别名密码
-            keyPassword "gn123456"
+//            //签名文件路径
+//            storeFile file { "0822.jks" }
+//            //签名密码
+//            storePassword "gn123456"
+//            //别名
+//            keyAlias "key"
+//            //别名密码
+//            keyPassword "gn123456"
+            // path to the keystore file
+            storeFile file("C:/Users/live700admin/im-android/keystore/myappkeystore.jks")
+            // keystore password
+            storePassword "111111"
+            // key alias
+            keyAlias "newkey"
+            // key password
+            keyPassword "111111"
         }
     }
 
@@ -177,7 +185,8 @@ android {
 //                    OPPO_APPID : "OP-oppo的APPID",
 //                    OPPO_APPSECRET : "OP-oppo的APPSECRET",
 //                    VIVO_APPKEY : "vivo的APPKEY",
-//                    VIVO_APPID : "vivo的APPID"
+//                    VIVO_APPID : "vivo的APPID",
+//                    HONOR_APPID : "Honor的APP ID",
 
             ]
         }
@@ -324,13 +333,17 @@ dependencies {
 //    implementation 'cn.jiguang.sdk.plugin:vivo:4.0.0'
 //    // 接入 OPPO 厂商
 //    implementation 'cn.jiguang.sdk.plugin:oppo:4.0.0'
+    implementation 'com.huawei.agconnect:agconnect-core:1.5.2.300'
+    implementation 'com.huawei.hms:push:6.5.0.300'
+    implementation 'cn.jiguang.sdk.plugin:huawei:5.0.0'
     // 接入小米厂商
-    implementation 'cn.jiguang.sdk.plugin:xiaomi:4.0.0'
+    implementation 'cn.jiguang.sdk.plugin:xiaomi:5.0.0'
 
 
 }
 
 apply plugin: 'io.objectbox'
+apply plugin: 'com.huawei.agconnect'
 
 def getBuildNumber() {
     def buildNumberFile = project.rootProject.file('buildNumber.txt')
